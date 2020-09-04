@@ -49,7 +49,7 @@ class JsonSchemaGenerator extends DefaultTask {
         File schemaFolder = project.getRootProject().file("angular/src/assets/schema");
         schemaFolder.mkdir();
         Map<String, JsonNode> schema = new HashMap<>();
-        for (ClassPath.ClassInfo topLevelClass : ClassPath.from(classloader).getTopLevelClasses("uk.gov.hmcts.ccf.demo.event")) {
+        for (ClassPath.ClassInfo topLevelClass : ClassPath.from(classloader).getTopLevelClasses("uk.gov.hmcts.unspec.event")) {
             JacksonModule module = new JacksonModule();
             SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2019_09,
                     OptionPreset.PLAIN_JSON).with(new AddonModule()).with(module);
@@ -59,7 +59,7 @@ class JsonSchemaGenerator extends DefaultTask {
             schema.put(topLevelClass.getSimpleName(), jsonSchema);
         }
 
-        for (ClassPath.ClassInfo topLevelClass : ClassPath.from(classloader).getTopLevelClasses("uk.gov.hmcts.ccf.demo.dto")) {
+        for (ClassPath.ClassInfo topLevelClass : ClassPath.from(classloader).getTopLevelClasses("uk.gov.hmcts.unspec.dto")) {
             JacksonModule module = new JacksonModule();
             SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2019_09,
                     OptionPreset.PLAIN_JSON).with(new AddonModule()).with(module);
