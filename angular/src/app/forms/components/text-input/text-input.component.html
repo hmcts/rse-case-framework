@@ -1,0 +1,6 @@
+<div [formGroup]="form" class="govuk-form-group">
+    <label class="govuk-label govuk-label--s" [for]="input.id">
+        {{ input.title }}
+    </label>
+    <input [formControlName]="input.id" class="govuk-input" [id]="input.id" [name]="input.id" type="text">
+</div>

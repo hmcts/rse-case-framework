@@ -1,0 +1,34 @@
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <a (click)="backClicked()" href="javascript:void(0)" class="govuk-back-link">Back</a>
+                <button (click)="onEvent()" class="govuk-button pull-right" data-module="govuk-button" id="create-event-button"
+                    style="float:right">
+                    Start
+                </button>
+                <span style="float: right;" *ngIf="case">
+                    <select [(ngModel)]="selectedValue" class="govuk-select" id="sort" name="sort" >
+                      <option *ngFor="let action of case.actions; let i = index" [value]="action">{{ schema[action].description }}</option>
+                    </select>
+                  </span>
+            </div>
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <mat-tab-group >
+                  <mat-tab label="History" id="history-tab-button">
+                    <app-case-history [events]="events"></app-case-history>
+                  </mat-tab>
+                  <mat-tab label="Claimant" *ngIf="case">
+                        <app-overview [party]="case.data.claimant"></app-overview>
+                    </mat-tab>
+                  <mat-tab label="Defendant" *ngIf="case">
+                    <app-overview [party]="case.data.defendant"></app-overview>
+                  </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+
+    </main>
+</div>

@@ -1,0 +1,20 @@
+<h1 class="govuk-heading-l">Case History</h1>
+<div class="hmcts-timeline">
+
+  <div *ngFor="let event of events" class="hmcts-timeline__item">
+
+    <div class="hmcts-timeline__header">
+      <h2 class="hmcts-timeline__title">
+        {{ schema[event.id].description }}
+      </h2>
+
+      <p class="hmcts-timeline__by">by {{ event.userForename }} {{ event.userSurname }}</p>
+
+    </div>
+
+    <p class="hmcts-timeline__date">{{event.timestamp | date:"d MMM y 'at' HH:mm:ss" }}</p>
+
+    <p class="hmcts-timeline__description">This is a description of the event. And this is what happens when it is long.</p>
+
+  </div>
+</div>

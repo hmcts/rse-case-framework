@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+    <div [ngSwitch]="question.type">
+        <app-text-input *ngSwitchCase="'text'" [form]="form" [input]="question"></app-text-input>
+        <app-radio *ngSwitchCase="'radio'" [form]="form" [input]="question"></app-radio>
+    </div>
+</div>

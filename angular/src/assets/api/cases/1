@@ -1,0 +1,15 @@
+    {
+        "id": "1",
+        "state": "Open",
+        "actions": [
+                "AddNotes",
+                "SubmitForHearing"
+        ],
+        "data": {
+            "id": "1",
+            "name": "A vs B",
+            "localAuthority": "Kensington & Chelsea"
+            "claimant": {},
+            "defendant": {}
+        }
+    }

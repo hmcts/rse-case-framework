@@ -1,0 +1,8 @@
+<h1 class="govuk-heading-l">Enter {{ partyType }}'s details</h1>
+<app-radio [form]="form" [input]="input" [control]="form.controls['partyType']"></app-radio>
+<div [ngSwitch]="formControl.value">
+  <dynamic-form (onSubmitted)="onSubmit($event)" [form]="form" [questions]="individualQuestions" *ngSwitchCase="'Individual'"></dynamic-form>
+  <dynamic-form (onSubmitted)="onSubmit($event)" [form]="form" [questions]="companyQuestions" *ngSwitchCase="'Company'"></dynamic-form>
+  <dynamic-form (onSubmitted)="onSubmit($event)" [form]="form" [questions]="organisationQuestions" *ngSwitchCase="'Organisation'"></dynamic-form>
+  <dynamic-form (onSubmitted)="onSubmit($event)" [form]="form" [questions]="soleTraderQuestions" *ngSwitchCase="'SoleTrader'"></dynamic-form>
+</div>

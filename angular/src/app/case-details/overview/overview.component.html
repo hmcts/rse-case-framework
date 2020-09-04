@@ -1,0 +1,27 @@
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        Claimaint type
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {{ party.partyType }}
+      </dd>
+
+    </div>
+    <div *ngIf="party.partyType == 'Company' || party.partyType == 'Organisation'" class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        {{ party.partyType }} name
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {{ party.name }}
+      </dd>
+    </div>
+  <div *ngIf="party.partyType == 'Individual' || party.partyType == 'SoleTrader'" class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Name
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{ party.firstName }}
+    </dd>
+  </div>
+</dl>
