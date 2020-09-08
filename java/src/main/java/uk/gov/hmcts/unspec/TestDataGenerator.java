@@ -1,6 +1,7 @@
 package uk.gov.hmcts.unspec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,9 @@ import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
+import static org.jooq.generated.Tables.EVENTS;
+import static org.jooq.impl.DSL.count;
+
 @Component
 public class TestDataGenerator implements InitializingBean {
 
@@ -20,11 +24,19 @@ public class TestDataGenerator implements InitializingBean {
     @Value("${generate-data:false}")
     public String generate;
 
+    @Autowired
+    DefaultDSLContext create;
+
     @Override
     public void afterPropertiesSet() {
         if (!"true".equals(generate)) {
             return;
         }
+        int count = create.select(count()).from(EVENTS).fetchSingle().value1();
+        if (count > 0) {
+            return;
+        }
+
         CreateClaim o = CreateClaim.builder()
         .claimantReference("666")
                 .defendantReference("999")

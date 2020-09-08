@@ -12,9 +12,4 @@ task functionalTest(type: Exec, dependsOn: [cleanDb, build]) {
     commandLine 'docker-compose', 'up', '--exit-code-from', 'frontend', '--build'
 }
 
-task runLocal(type: Exec, dependsOn: build) {
-    environment 'NG_COMMAND', 'ng serve --host 0.0.0.0 --configuration local'
-    commandLine 'docker-compose', 'up', '--build'
-}
-
 task check(dependsOn: functionalTest)

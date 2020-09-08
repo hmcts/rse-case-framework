@@ -5,12 +5,12 @@ task build(dependsOn: ':java:generateSchema')
 
 task test(type:Exec, dependsOn: build) {
   workingDir rootProject.projectDir
-  commandLine 'docker-compose', 'run', 'frontend', 'ng', 'test', '--watch=false'
+  commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'test', '--watch=false'
 }
 
 task e2e(type:Exec, dependsOn: build) {
   workingDir rootProject.projectDir
-  commandLine 'docker-compose', 'run', 'frontend', 'ng', 'e2e'
+  commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'e2e'
 }
 
 task check(dependsOn: ['test', 'e2e'])

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
 import uk.gov.hmcts.unspec.event.AddNotes;
@@ -42,8 +43,16 @@ public class StatemachineConfig {
 
     @SneakyThrows
     private void onCreate(Long id, CreateClaim request) {
-        if (request.getClaimantReference().contains("@")) {
+        String ref = request.getClaimantReference();
+        if (ref == null || ref.length() == 0 || ref.contains("@")) {
             throw new IllegalArgumentException("Invalid reference!");
+        }
+
+        if (request.getClaimant() instanceof Individual) {
+            Individual i = (Individual) request.getClaimant();
+            if (i.getTitle() == null || i.getTitle().length() == 0) {
+                throw new RuntimeException();
+            }
         }
 
         UnspecCase data = new UnspecCase(id,
