@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StepComponent} from '../../../multi-step-form/multi-step-form.component';
-import {Form, FormControl, FormGroup} from '@angular/forms';
+import {Form, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RadioInput} from '../../radio/radio.component';
 import {Question} from '../../../dynamic-form/dynamic-form.component';
 import {TextInput} from '../../text-input/text-input.component';
@@ -26,9 +26,9 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   };
 
   individualQuestions: Array<Question> = [
-    { id: 'title', type: 'text' , title: 'Title'},
-    { id: 'firstName', type: 'text' , title: 'First name'},
-    { id: 'lastName', type: 'text' , title: 'Last name'},
+    { id: 'title', type: 'text' , title: 'Title', validators: Validators.required},
+    { id: 'firstName', type: 'text' , title: 'First name', validators: Validators.required},
+    { id: 'lastName', type: 'text' , title: 'Last name', validators: Validators.required},
     { id: 'dateOfBirth', type: 'text' , title: 'Date of birth'},
   ]
 
