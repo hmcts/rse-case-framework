@@ -30,9 +30,20 @@ describe('workspace-project App', () => {
   it('can create a new case', () => {
     page.navigateTo();
     element(by.id('create-case-button')).click();
+
+    element(by.id('claimantReference')).sendKeys('claimant-ref');
+    element(by.id('defendantReference')).sendKeys('defendant-ref');
     element(by.id('submit-button')).click();
+
+    // court details
     element(by.id('submit-button')).click();
+
+    // Claimant details
+    // Enter at least a title
+    element(by.id('title')).sendKeys('Prof');
     element(by.id('submit-button')).click();
+
+    // Defendant details
     element(by.id('submit-button')).click();
     // Confirm answers
     element(by.id('submit-button')).click();
