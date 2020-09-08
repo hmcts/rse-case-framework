@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import {PartyDetailsComponent} from '../../forms/components/steps/party-details/party-details.component';
 import {ChooseCourtComponent} from '../../forms/components/steps/choose-court/choose-court.component';
 import {StepBuilder} from '../../forms/multi-step-form/multi-step-form.component';
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-create-case',
@@ -15,16 +16,13 @@ import {StepBuilder} from '../../forms/multi-step-form/multi-step-form.component
 export class CreateCaseComponent implements OnInit {
   baseUrl = environment.baseUrl;
   pages = new StepBuilder()
-    .page(DynamicFormComponent, (x) => {
-      x.title = 'Claim references';
-      x.questions = [
-        { id: 'claimantReference', type: 'text', title: 'Claimant\'s legal representative\'s reference'},
-        { id: 'defendantReference', type: 'text', title: 'Defendant\'s legal representative\'s reference'},
-      ];
-    })
-    .page(ChooseCourtComponent)
-    .page(PartyDetailsComponent, null, 'claimant')
-    .page(PartyDetailsComponent, (x) => x.partyType = 'Defendant', 'defendant')
+    .dynamicPage('Claim references')
+      .question('claimantReference', 'text', "Claimant\'s legal representative\'s reference", [Validators.required])
+      .question('defendantReference', 'text', "Defendant\'s legal representative\'s reference", [Validators.required])
+      .build()
+    .customPage(ChooseCourtComponent)
+    .customPage(PartyDetailsComponent, null, 'claimant')
+    .customPage(PartyDetailsComponent, (x) => x.partyType = 'Defendant', 'defendant')
     .build();
 
   constructor(

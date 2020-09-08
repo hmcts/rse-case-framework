@@ -8,10 +8,10 @@ import {
   Output, Type,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import Questions from '../../../assets/schema/schema.json';
 import {StepDirective} from '../step.directive';
-import {DynamicFormComponent} from '../dynamic-form/dynamic-form.component';
+import {DynamicFormComponent, Question} from '../dynamic-form/dynamic-form.component';
 import {ActivatedRoute} from '@angular/router';
 
 export interface StepComponent {
@@ -25,11 +25,36 @@ export interface StepType {
   formGroup?: string;
 }
 
+export interface DynamicPageBuilder {
+  question(id: string, type: string, title: string, validators?: ValidatorFn[] ): DynamicPageBuilder;
+
+  build(): StepBuilder;
+}
+
 export class StepBuilder {
   steps = new Array<StepType>();
-  page<T extends StepComponent>(component: Type<T>, initialiser?: (component: T) => void, formGroup?: string): StepBuilder {
+  customPage<T extends StepComponent>(component: Type<T>, initialiser?: (component: T) => void, formGroup?: string): StepBuilder {
     this.steps.push({ type: component, initialise: initialiser, formGroup });
     return this;
+  }
+
+  dynamicPage(title: string): DynamicPageBuilder {
+    const builder: StepBuilder = this;
+    const questions = Array<Question>();
+    const result = new class implements DynamicPageBuilder {
+      question(id: string, type: string, title: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
+        questions.push({ id, type, title, validators});
+        return result;
+      }
+      build(): StepBuilder {
+        builder.customPage(DynamicFormComponent, (x) => {
+          x.title = title;
+          x.questions = questions;
+        });
+        return builder;
+      }
+    }();
+    return result;
   }
 
   build(): Array<StepType> {

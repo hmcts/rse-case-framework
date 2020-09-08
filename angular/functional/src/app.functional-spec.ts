@@ -39,11 +39,15 @@ describe('workspace-project App', () => {
     element(by.id('submit-button')).click();
 
     // Claimant details
-    // Enter at least a title
     element(by.id('title')).sendKeys('Prof');
+    element(by.id('firstName')).sendKeys('Foo');
+    element(by.id('lastName')).sendKeys('Foo');
     element(by.id('submit-button')).click();
 
     // Defendant details
+    element(by.id('title')).sendKeys('Prof');
+    element(by.id('firstName')).sendKeys('Foo');
+    element(by.id('lastName')).sendKeys('Foo');
     element(by.id('submit-button')).click();
     // Confirm answers
     element(by.id('submit-button')).click();

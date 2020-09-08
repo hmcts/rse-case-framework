@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {Question} from '../../dynamic-form/dynamic-form.component';
 
 export interface TextInput extends Question{
@@ -15,9 +15,17 @@ export class TextInputComponent implements OnInit {
 
   @Input() input: TextInput = { id: '', title: '', type: 'text'};
   @Input() form: FormGroup;
+  @Input() validate: boolean;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  valid(): boolean {
+    if (!this.validate) {
+      return true;
+    }
+    return this.form.controls[this.input.id].valid;
+  }
 }

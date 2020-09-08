@@ -1,11 +1,12 @@
 import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Location} from '@angular/common';
-import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import {FormControl, FormGroup, FormBuilder, FormArray, Validator, ValidatorFn} from '@angular/forms';
 import {StepComponent} from '../multi-step-form/multi-step-form.component';
 
 export interface Question {
   id: string;
   type: string;
+  validators?: ValidatorFn | ValidatorFn[]
   [key: string]: any;
 }
 
@@ -32,14 +33,18 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   buildForm(): void {
     if (this.questions) {
       for (const question of this.questions) {
-        let c = new FormControl('');
+        let c = new FormControl('', question.validators);
         this.form.addControl(question.id, c);
       }
     }
   }
 
   onSubmit() {
-    this.onSubmitted.emit(this.form.value)
+    // Show any validation errors
+    this.validate = true;
+    if (this.form.valid) {
+      this.onSubmitted.emit(this.form.value)
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -47,4 +52,5 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   }
 
   @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
+  validate: boolean;
 }
