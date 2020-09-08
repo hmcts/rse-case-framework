@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import {PartyDetailsComponent} from '../../forms/components/steps/party-details/party-details.component';
 import {ChooseCourtComponent} from '../../forms/components/steps/choose-court/choose-court.component';
 import {StepBuilder} from '../../forms/multi-step-form/multi-step-form.component';
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-create-case',
@@ -18,8 +19,8 @@ export class CreateCaseComponent implements OnInit {
     .page(DynamicFormComponent, (x) => {
       x.title = 'Claim references';
       x.questions = [
-        { id: 'claimantReference', type: 'text', title: 'Claimant\'s legal representative\'s reference'},
-        { id: 'defendantReference', type: 'text', title: 'Defendant\'s legal representative\'s reference'},
+        { id: 'claimantReference', type: 'text', title: 'Claimant\'s legal representative\'s reference', validators: Validators.required},
+        { id: 'defendantReference', type: 'text', title: 'Defendant\'s legal representative\'s reference', validators: Validators.required},
       ];
     })
     .page(ChooseCourtComponent)

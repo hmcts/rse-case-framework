@@ -1,6 +1,10 @@
-<div [formGroup]="form" class="govuk-form-group">
-    <label class="govuk-label govuk-label--s" [for]="input.id">
-        {{ input.title }}
-    </label>
-    <input [formControlName]="input.id" class="govuk-input" [id]="input.id" [name]="input.id" type="text">
+<div [formGroup]="form" class="govuk-form-group" [class.govuk-form-group--error]="!valid()">
+  <div id="event-name-hint" class="govuk-hint">
+    {{ input.title }}
+  </div>
+  <span *ngIf="!valid()" id="event-name-error" class="govuk-error-message">
+    <span class="govuk-visually-hidden">Error:</span> Enter {{ input.title }}
+  </span>
+  <input [formControlName]="input.id" class="govuk-input" [class.govuk-form-group--error]="!valid()" [id]="input.id" [name]="input.id" type="text">
 </div>
+

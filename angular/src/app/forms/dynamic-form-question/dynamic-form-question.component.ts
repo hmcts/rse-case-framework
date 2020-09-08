@@ -10,6 +10,7 @@ export class DynamicFormQuestionComponent implements OnInit {
 
   @Input() question: any = {}
   @Input() form: FormGroup;
+  @Input() validate: boolean;
 
   constructor() { }
 
