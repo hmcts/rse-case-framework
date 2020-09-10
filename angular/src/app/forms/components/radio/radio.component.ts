@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 
 export interface RadioInput {
@@ -11,13 +11,13 @@ export interface RadioInput {
   templateUrl: './radio.component.html',
   styleUrls: ['./radio.component.scss']
 })
-export class RadioComponent implements OnInit {
+export class RadioComponent {
 
 constructor() { }
 
+  values = ['Individual', 'Company']
   @Input() input: RadioInput = { title: '', choices: []};
   @Input() form: FormGroup;
   @Input() control: FormControl;
-  ngOnInit(): void {
-  }
+
 }

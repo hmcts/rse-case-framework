@@ -1,0 +1,8 @@
+<section class="container">
+  <div [style.display]="selected ? 'block' : 'none'">
+    <ng-container *ngIf="selected" [ngTemplateOutlet]="selected.content"></ng-container>
+  </div>
+  <button (click)="onNext()" class="govuk-button" data-module="govuk-button" id="submit-button">
+    Continue
+  </button>
+</section>

@@ -1,7 +1,7 @@
 import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Location} from '@angular/common';
 import {FormControl, FormGroup, FormBuilder, FormArray, Validator, ValidatorFn} from '@angular/forms';
-import {StepComponent} from '../multi-step-form/multi-step-form.component';
+import {StepComponent} from "../components/stepper/form-stepper/types";
 
 export interface Question {
   id: string;
@@ -11,7 +11,7 @@ export interface Question {
 }
 
 @Component({
-  selector: 'dynamic-form',
+  selector: 'app-dynamic-form',
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss']
 })
@@ -21,6 +21,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   type = 'radio';
   @Input() questions: Question[];
   @Input() title: string;
+  @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
+  @Input() validate: boolean;
 
   constructor(
     private location: Location,
@@ -51,6 +53,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
     this.buildForm()
   }
 
-  @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
-  validate: boolean;
+
+  valid(): boolean {
+    return this.form.valid;
+  }
 }

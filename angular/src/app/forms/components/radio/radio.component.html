@@ -4,9 +4,9 @@
       {{ input.title }}
     </legend>
     <div [formGroup]="form" class="govuk-radios">
-      <div class="govuk-radios__item" *ngFor="let choice of input.choices; let i = index">
+      <div class="govuk-radios__item" *ngFor="let choice of input.choices">
         <input class="govuk-radios__input" id="location" type="radio" [formControl]="control"
-               [value]="choice[0]">
+               [value]="choice[0]" [name]="input.title">
         <label class="govuk-label govuk-radios__label" for="location">
           {{ choice[1]}}
         </label>

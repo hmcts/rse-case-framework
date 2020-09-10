@@ -18,11 +18,15 @@ import { TextInputComponent } from './forms/components/text-input/text-input.com
 import { RadioComponent } from './forms/components/radio/radio.component';
 import { CreateCaseComponent } from './components/create-case/create-case.component';
 import { CreateEventComponent } from './components/create-event/create-event.component';
-import { MultiStepFormComponent } from './forms/multi-step-form/multi-step-form.component';
-import {StepDirective} from './forms/step.directive';
 import { PartyDetailsComponent } from './forms/components/steps/party-details/party-details.component';
 import { ChooseCourtComponent } from './forms/components/steps/choose-court/choose-court.component';
 import { LoginComponent } from './components/login/login.component';
+import {CdkStepperModule} from "@angular/cdk/stepper";
+import {CommonModule} from "@angular/common";
+import {StepDirective} from "./forms/components/stepper/step.directive";
+import {StepperContainerComponent} from "./forms/components/stepper/stepper-container/stepper-container.component";
+import {StepperStepComponent} from "./forms/components/stepper/stepper-step/stepper-step.component";
+import {FormStepperComponent} from "./forms/components/stepper/form-stepper/form-stepper.component";
 
 @NgModule({
   declarations: [
@@ -38,11 +42,13 @@ import { LoginComponent } from './components/login/login.component';
     RadioComponent,
     CreateCaseComponent,
     CreateEventComponent,
-    MultiStepFormComponent,
     StepDirective,
     PartyDetailsComponent,
     ChooseCourtComponent,
     LoginComponent,
+    StepperContainerComponent,
+    StepperStepComponent,
+    FormStepperComponent,
       ],
   imports: [
     BrowserModule,
@@ -51,7 +57,9 @@ import { LoginComponent } from './components/login/login.component';
     FormsModule,
     NoopAnimationsModule,
     MatTabsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CdkStepperModule,
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -68,6 +68,8 @@ describe('workspace-project App', () => {
     browser.get(browser.baseUrl + '/cases/1');
     element(by.id('create-event-button')).click();
     element(by.id('submit-button')).click();
+    // Confirm answers
+    element(by.id('submit-button')).click();
     expect(browser.getCurrentUrl()).toEndWith('/cases/1');
   });
 

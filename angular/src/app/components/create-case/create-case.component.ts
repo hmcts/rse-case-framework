@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import { DynamicFormComponent } from 'src/app/forms/dynamic-form/dynamic-form.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import {PartyDetailsComponent} from '../../forms/components/steps/party-details/party-details.component';
 import {ChooseCourtComponent} from '../../forms/components/steps/choose-court/choose-court.component';
-import {StepBuilder} from '../../forms/multi-step-form/multi-step-form.component';
-import {FormControl, Validators} from "@angular/forms";
+import {Validators} from "@angular/forms";
+import {StepBuilder} from "../../forms/components/stepper/form-stepper/types";
 
 @Component({
   selector: 'app-create-case',
@@ -21,8 +20,8 @@ export class CreateCaseComponent implements OnInit {
       .question('defendantReference', 'text', "Defendant\'s legal representative\'s reference", [Validators.required])
       .build()
     .customPage(ChooseCourtComponent)
-    .customPage(PartyDetailsComponent, null, 'claimant')
-    .customPage(PartyDetailsComponent, (x) => x.partyType = 'Defendant', 'defendant')
+    .customPage(PartyDetailsComponent)
+    .customPage(PartyDetailsComponent, (x) => x.partyType = 'Defendant')
     .build();
 
   constructor(

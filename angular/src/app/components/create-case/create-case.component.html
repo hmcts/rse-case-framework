@@ -1,5 +1,6 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-one-half">
-    <app-multi-step-form [pages]="pages" (onSubmitted)="onSubmit($event)"></app-multi-step-form>
+    <app-form-stepper (onSubmit)="onSubmit($event)" [pages]="pages"></app-form-stepper>
   </div>
 </div>
+
