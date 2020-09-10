@@ -30,31 +30,33 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
 
   partyTypeQuestions:{ [key: string]: Question[]}
 
-  buildQuestions(): void {
-    this.partyTypeQuestions = {}
+  static buildQuestions(): { [key: string]: Question[]} {
+    let result = {}
 
-    this.partyTypeQuestions['Individual']  = [
+    result['Individual']  = [
       { id: 'title', type: 'text' , title: 'Title', validators: Validators.required},
       { id: 'firstName', type: 'text' , title: 'First name', validators: Validators.required},
       { id: 'lastName', type: 'text' , title: 'Last name', validators: Validators.required},
       { id: 'dateOfBirth', type: 'text' , title: 'Date of birth'},
     ];
 
-    this.partyTypeQuestions['Company'] = [
+    result['Company'] = [
       { id: 'name', type: 'text' , title: 'Company name', validators: Validators.required},
     ];
 
-    this.partyTypeQuestions['Organisation'] = [
+    result['Organisation'] = [
       { id: 'name', type: 'text' , title: 'Organisation name', validators: Validators.required},
     ];
 
-    this.partyTypeQuestions['SoleTrader'] = this.partyTypeQuestions['Individual'].concat([
+    result['SoleTrader'] = result['Individual'].concat([
       { id: 'tradingName', type: 'text' , title: 'Trading as'},
     ]);
+    result['a'] = 'b';
+    return result;
   }
 
   ngOnInit(): void {
-    this.buildQuestions();
+    this.partyTypeQuestions = PartyDetailsComponent.buildQuestions();
     let group = new FormGroup({});
     this.form.addControl(this.partyType.toLowerCase(), group)
     this.form = group;

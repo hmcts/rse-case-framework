@@ -1,15 +1,12 @@
-<app-stepper-container (nextEvent)="onNext($event)" [selectedIndex]="selected">
+<app-stepper-container (nextEvent)="onNext($event)">
     <cdk-step *ngFor="let page of pages; index as i">
       <app-stepper-step [form]="forms.at(i)" [validate]="validate" [step]="page"></app-stepper-step>
     </cdk-step>
   <cdk-step>
-    <div>
-      <h2 class="govuk-heading-m">Submit case</h2>
-
-      <p class="govuk-body">By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-
-    </div>
+    <h1 class="govuk-heading-l">Check your answers</h1>
+    <app-answer-section *ngFor="let page of pages; index as i"
+    [index]= "i" (onChange)="onChange($event)" [form]="forms.at(i)" [step]="page">
+    </app-answer-section>
   </cdk-step>
-
 </app-stepper-container>
 

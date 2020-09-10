@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StepperContainerComponent } from './stepper-container.component';
+import {RouterModule} from "@angular/router";
+import {HttpClientModule} from "@angular/common/http";
 
 describe('StepperContainerComponent', () => {
   let component: StepperContainerComponent;
@@ -8,6 +10,9 @@ describe('StepperContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        RouterModule.forRoot([]),
+      ],
       declarations: [ StepperContainerComponent ]
     })
     .compileComponents();

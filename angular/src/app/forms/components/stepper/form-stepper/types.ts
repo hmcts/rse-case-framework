@@ -1,6 +1,8 @@
 import {EventEmitter, Type} from "@angular/core";
 import {FormGroup, ValidatorFn} from "@angular/forms";
 import {DynamicFormComponent, Question} from "../../../dynamic-form/dynamic-form.component";
+import {CheckAnswerDirective, CheckAnswersComponent} from "../../check-answers/types";
+import {DynamicFormAnswersComponent} from "../../../dynamic-form/dynamic-form-answers.component";
 
 export interface StepComponent {
   onSubmitted: EventEmitter<any>;
@@ -12,6 +14,8 @@ export interface StepComponent {
 export interface StepType {
   type: Type<StepComponent>;
   initialise?: (component: StepComponent) => void;
+  answersType?: Type<CheckAnswersComponent>;
+  answerInitialise?: (component: CheckAnswersComponent) => void;
   formGroup?: string;
 }
 
@@ -24,8 +28,10 @@ export interface DynamicPageBuilder {
 
 export class StepBuilder {
   steps = new Array<StepType>();
-  customPage<T extends StepComponent>(component: Type<T>, initialiser?: (component: T) => void): StepBuilder {
-    this.steps.push({ type: component, initialise: initialiser});
+  customPage<Step extends StepComponent, Answer extends CheckAnswersComponent>
+  (component: Type<Step>, initialiser?: (component: Step) => void ,
+   answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void): StepBuilder {
+    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise });
     return this;
   }
 
@@ -50,9 +56,13 @@ export class StepBuilder {
 
       build(): StepBuilder {
         builder.customPage(DynamicFormComponent, (x) => {
-          x.title = title;
-          x.questions = questions;
-        });
+            x.title = title;
+            x.questions = questions;
+          }, DynamicFormAnswersComponent,
+          (x) => {
+            x.title = title;
+            x.questions = questions
+          });
         return builder;
       }
     }();
