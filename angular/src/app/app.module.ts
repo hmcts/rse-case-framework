@@ -13,6 +13,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { OverviewComponent } from './case-details/overview/overview.component';
 import { CaseHistoryComponent } from './case-details/case-history/case-history.component';
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
+import { DynamicFormAnswersComponent } from './forms/dynamic-form/dynamic-form-answers.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form-question/dynamic-form-question.component';
 import { TextInputComponent } from './forms/components/text-input/text-input.component';
 import { RadioComponent } from './forms/components/radio/radio.component';
@@ -27,6 +28,9 @@ import {StepDirective} from "./forms/components/stepper/step.directive";
 import {StepperContainerComponent} from "./forms/components/stepper/stepper-container/stepper-container.component";
 import {StepperStepComponent} from "./forms/components/stepper/stepper-step/stepper-step.component";
 import {FormStepperComponent} from "./forms/components/stepper/form-stepper/form-stepper.component";
+import { AnswerSectionComponent } from './forms/components/check-answers/answer-section/answer-section.component';
+import {CheckAnswerDirective} from "./forms/components/check-answers/types";
+import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-details/party-details-answers.component";
 
 @NgModule({
   declarations: [
@@ -37,6 +41,7 @@ import {FormStepperComponent} from "./forms/components/stepper/form-stepper/form
     OverviewComponent,
     CaseHistoryComponent,
     DynamicFormComponent,
+    DynamicFormAnswersComponent,
     DynamicFormQuestionComponent,
     TextInputComponent,
     RadioComponent,
@@ -44,11 +49,14 @@ import {FormStepperComponent} from "./forms/components/stepper/form-stepper/form
     CreateEventComponent,
     StepDirective,
     PartyDetailsComponent,
+    PartyDetailsAnswersComponent,
     ChooseCourtComponent,
     LoginComponent,
     StepperContainerComponent,
     StepperStepComponent,
     FormStepperComponent,
+    AnswerSectionComponent,
+    CheckAnswerDirective,
       ],
   imports: [
     BrowserModule,

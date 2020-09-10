@@ -6,6 +6,7 @@ import {StepComponent} from "../components/stepper/form-stepper/types";
 export interface Question {
   id: string;
   type: string;
+  title: string;
   validators?: ValidatorFn | ValidatorFn[]
   [key: string]: any;
 }

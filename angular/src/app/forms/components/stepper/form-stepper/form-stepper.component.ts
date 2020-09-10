@@ -24,9 +24,10 @@ export class FormStepperComponent implements OnInit {
   @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>
   @Input() pages: Array<StepType> = [];
   @Output() onSubmit = new EventEmitter<any>()
-  selected: number;
   validate = false;
   forms = new FormArray([]);
+  answers: any;
+  checkingAnswers = false;
 
   ngOnInit(): void {
     for (const page of this.pages) {
@@ -35,6 +36,7 @@ export class FormStepperComponent implements OnInit {
   }
 
   onNext(event:any) {
+    // If on the answer's page.
     if (this.stepper.selectedIndex > this.children.length - 1) {
       // Merge the pages into a single map
       let result = this.forms.controls.map(x => x.value)
@@ -44,10 +46,20 @@ export class FormStepperComponent implements OnInit {
       let page = this.children.toArray()[this.stepper.selectedIndex];
       if (page.valid()) {
         this.validate = false;
+        if (this.checkingAnswers) {
+          // Must skip to answer confirmation
+          this.stepper.selectedIndex = this.stepper.steps.length - 1;
+          return;
+        }
         this.stepper.next();
       } else {
         this.validate = true;
       }
     }
+  }
+
+  onChange(index: number) {
+    this.stepper.selectedIndex = index;
+    this.checkingAnswers = true;
   }
 }
