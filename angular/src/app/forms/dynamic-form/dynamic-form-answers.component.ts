@@ -1,4 +1,4 @@
-import {Component, Input, EventEmitter} from "@angular/core";
+import {Component, Input, EventEmitter, Output} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {CheckAnswersComponent} from "../components/check-answers/types";
 
@@ -19,7 +19,7 @@ export interface DynamicFormCheckAnswer {
           {{question.title}}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{form.controls[question.id].value}}
+          {{form.controls[question.id]?.value}}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a [routerLink]="" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
@@ -31,7 +31,7 @@ export interface DynamicFormCheckAnswer {
   `
 })
 export class DynamicFormAnswersComponent implements CheckAnswersComponent {
-  onChange = new EventEmitter<number>();
+  @Output() onChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
   @Input() questions: DynamicFormCheckAnswer[]
