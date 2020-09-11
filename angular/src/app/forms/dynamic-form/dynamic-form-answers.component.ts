@@ -14,7 +14,7 @@ export interface DynamicFormCheckAnswer {
     <h2 class="govuk-heading-m">{{ title }}</h2>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div *ngFor='let question of questions' class="govuk-summary-list__row">
+      <div *ngFor='let question of questions; let i = index' class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{question.title}}
         </dt>
@@ -22,7 +22,7 @@ export interface DynamicFormCheckAnswer {
           {{form.controls[question.id].value}}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" (click)="onChange.emit(index)" class="govuk-link" href="#">
+          <a [routerLink]="" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
             Change<span class="govuk-visually-hidden"> name</span>
           </a>
         </dd>

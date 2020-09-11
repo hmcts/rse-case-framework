@@ -5,10 +5,8 @@ import { CaseViewComponent } from './case-details/case-view/case-view.component'
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { CreateCaseComponent } from './components/create-case/create-case.component';
 import {CreateEventComponent} from './components/create-event/create-event.component';
-import {LoginComponent} from './components/login/login.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   { path: 'cases', component: SearchCasesComponent },
     { path: 'create-case', component: CreateCaseComponent },
   { path: 'cases/:id', component: CaseViewComponent },

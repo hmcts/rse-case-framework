@@ -19,6 +19,9 @@ export class CreateEventComponent implements OnInit {
     ['SubmitAppeal', [{id: 'reason', type: 'text', title: 'New evidence'}]],
   ]);
   questions: Array<Question>;
+  private caseId: string;
+  private eventId: string;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -27,9 +30,10 @@ export class CreateEventComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.queryParamMap.get('id');
-    if (null != id) {
-      this.questions = this.questionMap.get(id)
+    this.eventId = this.route.snapshot.queryParamMap.get('id');
+    this.caseId = this.route.snapshot.paramMap.get('id');
+    if (null != this.eventId) {
+      this.questions = this.questionMap.get(this.eventId)
     }
     this.pages = new StepBuilder()
       .dynamicPage('Event')
@@ -40,13 +44,11 @@ export class CreateEventComponent implements OnInit {
 
 
   onSubmit(data): void {
-    const caseId = this.route.snapshot.paramMap.get('id');
-    const eventId = this.route.snapshot.queryParamMap.get('id');
     const payload = {
-      id: eventId,
+      id: this.eventId,
       data: data,
     };
-    this.http.post(this.baseUrl + '/api/cases/' + caseId + '/events', payload, { observe: 'response' , withCredentials: true })
+    this.http.post(this.baseUrl + '/api/cases/' + this.caseId + '/events', payload, { observe: 'response' , withCredentials: true })
       .subscribe(resp => {
         this.router.navigateByUrl(resp.headers.get('location'), { replaceUrl: true })
       });
