@@ -21,7 +21,6 @@ import { CreateCaseComponent } from './components/create-case/create-case.compon
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { PartyDetailsComponent } from './forms/components/steps/party-details/party-details.component';
 import { ChooseCourtComponent } from './forms/components/steps/choose-court/choose-court.component';
-import { LoginComponent } from './components/login/login.component';
 import {CdkStepperModule} from "@angular/cdk/stepper";
 import {CommonModule} from "@angular/common";
 import {StepDirective} from "./forms/components/stepper/step.directive";
@@ -51,7 +50,6 @@ import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-detai
     PartyDetailsComponent,
     PartyDetailsAnswersComponent,
     ChooseCourtComponent,
-    LoginComponent,
     StepperContainerComponent,
     StepperStepComponent,
     FormStepperComponent,
