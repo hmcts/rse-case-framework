@@ -7,23 +7,7 @@ import {Question} from "../../../dynamic-form/dynamic-form.component";
 @Component({
   selector: 'app-party-details-answers',
   template: `
-
-    <h2 class="govuk-heading-m">{{ title }}</h2>
-    <dl *ngIf="form.controls[role]" class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div *ngFor="let question of details()" class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{question.title}}
-        </dt>
-        <dd *ngIf="formDetails" class="govuk-summary-list__value">
-          {{formDetails.value[question.id]}}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" (click)="onChange.emit(index)" class="govuk-link" href="#">
-            Change<span class="govuk-visually-hidden"> name</span>
-          </a>
-        </dd>
-      </div>
-    </dl>
+    <app-dynamic-form-answers [index]="index" (onChange)="onChange.emit($event)" [form]="form.controls[role]" [title]="title" [questions]="details()"></app-dynamic-form-answers>
   `
 })
 export class PartyDetailsAnswersComponent implements CheckAnswersComponent {
