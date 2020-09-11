@@ -62,4 +62,8 @@ export class FormStepperComponent implements OnInit {
     this.stepper.selectedIndex = index;
     this.checkingAnswers = true;
   }
+
+  onPrevious($event: any) {
+    this.stepper.previous();
+  }
 }

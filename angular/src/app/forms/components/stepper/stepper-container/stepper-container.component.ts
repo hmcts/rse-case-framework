@@ -22,11 +22,21 @@ export class StepperContainerComponent extends CdkStepper implements OnInit {
   }
 
   @Output() nextEvent = new EventEmitter<any>();
+  @Output() prevEvent = new EventEmitter<any>();
+  @Output() submitEvent = new EventEmitter<any>();
   ngOnInit(): void {
     this.selectedIndex = Number(this.route.snapshot.queryParamMap.get('step'))
   }
 
   onNext() {
-    this.nextEvent.emit('')
+    this.nextEvent.emit()
+  }
+
+  onPrevious() {
+    this.prevEvent.emit()
+  }
+
+  lastPage() : boolean {
+    return this.selectedIndex === this.steps.length - 1;
   }
 }
