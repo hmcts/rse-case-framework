@@ -2,7 +2,17 @@
   <div [style.display]="selected ? 'block' : 'none'">
     <ng-container *ngIf="selected" [ngTemplateOutlet]="selected.content"></ng-container>
   </div>
-  <button (click)="onNext()" class="govuk-button" data-module="govuk-button" id="submit-button">
-    Continue
-  </button>
+  <div class="hmcts-menu">
+    <div class="hmcts-menu__wrapper">
+
+      <button *ngIf="selectedIndex != 0" (click)="onPrevious()" id="previous-button" class="govuk-button hmcts-menu__item hmcts-button--secondary" data-module="govuk-button">
+        Previous
+      </button>
+
+      <button (click)="onNext()" id="submit-button" class="govuk-button hmcts-menu__item  " data-module="govuk-button">
+        {{ lastPage() ? 'Submit' : 'Continue' }}
+      </button>
+    </div>
+  </div>
 </section>
+
