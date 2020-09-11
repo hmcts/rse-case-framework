@@ -49,6 +49,11 @@ describe('workspace-project App', () => {
     element(by.id('firstName')).sendKeys('Foo');
     element(by.id('lastName')).sendKeys('Foo');
     element(by.id('submit-button')).click();
+
+    // Test previous button
+    element(by.id('previous-button')).click();
+    element(by.id('submit-button')).click();
+
     // Confirm answers
     element(by.id('submit-button')).click();
     expect(browser.getCurrentUrl()).toEndWith('/cases/3');
