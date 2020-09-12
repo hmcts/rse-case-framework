@@ -37,7 +37,7 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
       { id: 'title', type: 'text' , title: 'Title', validators: Validators.required},
       { id: 'firstName', type: 'text' , title: 'First name', validators: Validators.required},
       { id: 'lastName', type: 'text' , title: 'Last name', validators: Validators.required},
-      { id: 'dateOfBirth', type: 'text' , title: 'Date of birth'},
+      { id: 'dateOfBirth', type: 'date' , title: 'Date of birth'},
     ];
 
     result['Company'] = [

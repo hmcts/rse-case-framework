@@ -20,7 +20,7 @@ export class CreateCaseComponent implements OnInit {
     .dynamicPage('Claim references')
       .question('claimantReference', 'text', "Claimant\'s legal representative\'s reference", [Validators.required])
       .question('defendantReference', 'text', "Defendant\'s legal representative\'s reference", [Validators.required])
-      .build()
+    .build()
     .customPage(ChooseCourtComponent, null, DynamicFormAnswersComponent, (x) => {
       x.title = 'Court location'
       x.questions = [{ id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]

@@ -2,5 +2,6 @@
     <div [ngSwitch]="question.type">
         <app-text-input *ngSwitchCase="'text'" [validate]="validate" [form]="form" [input]="question"></app-text-input>
         <app-radio *ngSwitchCase="'radio'" [form]="form" [input]="question"></app-radio>
+        <app-date-input *ngSwitchCase="'date'" [validate]="validate" [form]="form" [input]="question"></app-date-input>
     </div>
 </div>
