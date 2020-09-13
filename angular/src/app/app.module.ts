@@ -30,6 +30,7 @@ import {FormStepperComponent} from "./forms/components/stepper/form-stepper/form
 import { AnswerSectionComponent } from './forms/components/check-answers/answer-section/answer-section.component';
 import {CheckAnswerDirective} from "./forms/components/check-answers/types";
 import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-details/party-details-answers.component";
+import { DateInputComponent } from './forms/components/date-input/date-input.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-detai
     FormStepperComponent,
     AnswerSectionComponent,
     CheckAnswerDirective,
+    DateInputComponent,
       ],
   imports: [
     BrowserModule,
