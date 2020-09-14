@@ -20,12 +20,9 @@
                   <mat-tab label="History" id="history-tab-button">
                     <app-case-history [events]="events"></app-case-history>
                   </mat-tab>
-                  <mat-tab label="Claimant" *ngIf="case">
-                        <app-overview [party]="case.data.claimant"></app-overview>
+                  <mat-tab label="Parties" *ngIf="case">
+                        <app-overview [parties]="case.data.parties"></app-overview>
                     </mat-tab>
-                  <mat-tab label="Defendant" *ngIf="case">
-                    <app-overview [party]="case.data.defendant"></app-overview>
-                  </mat-tab>
                 </mat-tab-group>
             </div>
         </div>
