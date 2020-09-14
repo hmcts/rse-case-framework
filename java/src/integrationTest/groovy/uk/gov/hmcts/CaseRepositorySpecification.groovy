@@ -33,7 +33,7 @@ class CaseRepositorySpecification extends Specification {
         parent.setDescription("Never going to happen");
         parent.store();
 
-        UnspecCase c = new UnspecCase(parent.getCaseId(), new Company(), new Company())
+        UnspecCase c = new UnspecCase(parent.getCaseId(), List.of(new Company()))
         c.setNotes(Lists.asList("Bar"))
         c.setName("Foo")
         repository.save(c)
@@ -50,7 +50,7 @@ class CaseRepositorySpecification extends Specification {
         parent.setDescription("Never going to happen");
         parent.store();
 
-        UnspecCase c = new UnspecCase(parent.getCaseId(), new Company(), new Company())
+        UnspecCase c = new UnspecCase(parent.getCaseId(),List.of(new Company(), new Company()))
         c.setNotes(Lists.asList("Bar"))
         c.setName("Foo")
         repository.save(c)
@@ -65,9 +65,9 @@ class CaseRepositorySpecification extends Specification {
     }
 
 
-    def "A claim must have defendant and claimant"() {
+    def "A claim must have a party list"() {
         when:
-        UnspecCase u = new UnspecCase(1, null, null)
+        UnspecCase u = new UnspecCase(1, null)
         repository.save(u)
 
         then:
