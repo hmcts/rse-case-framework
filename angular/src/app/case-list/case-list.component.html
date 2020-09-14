@@ -3,8 +3,7 @@
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">ID</th>
             <th scope="col" class="govuk-table__header">State</th>
-          <th scope="col" class="govuk-table__header">Claimant</th>
-          <th scope="col" class="govuk-table__header">Defendant</th>
+          <th scope="col" class="govuk-table__header">Number of parties</th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -14,10 +13,7 @@
             </th>
             <td class="govuk-table__cell">{{ case.state }}</td>
           <td class="govuk-table__cell">
-            {{ getPartyDisplayName(case.data.claimant) }}
-          </td>
-          <td class="govuk-table__cell">
-            {{ getPartyDisplayName(case.data.defendant) }}
+            {{ case.data.parties.length }}
           </td>
         </tr>
     </tbody>

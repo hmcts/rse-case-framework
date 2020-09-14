@@ -1,12 +1,15 @@
 package uk.gov.hmcts.unspec;
 
+import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.Individual;
+import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
 import uk.gov.hmcts.unspec.event.AddNotes;
@@ -15,6 +18,8 @@ import uk.gov.hmcts.unspec.event.CreateClaim;
 import uk.gov.hmcts.unspec.event.SubmitAppeal;
 import uk.gov.hmcts.unspec.model.UnspecCase;
 import uk.gov.hmcts.unspec.repository.CaseRepository;
+
+import java.util.List;
 
 @Validated
 @Configuration
@@ -25,6 +30,10 @@ public class StatemachineConfig {
 
     @Autowired
     CaseRepository repository;
+
+    @Autowired
+    public StatemachineConfig() {
+    }
 
     public StateMachine<State, Event> build() {
         StateMachine<State, Event> result = new StateMachine<>();
@@ -55,15 +64,11 @@ public class StatemachineConfig {
             }
         }
 
-        UnspecCase data = new UnspecCase(id,
-                request.getClaimant(), request.getDefendant());
+        List<Party> parties = Lists.newArrayList(request.getClaimant(), request.getDefendant());
+        UnspecCase data = new UnspecCase(id, parties);
         data.setCourtLocation(request.getApplicantPreferredCourt());
 
         repository.save(data);
-    }
-
-    private void reopenCase(String id, SubmitAppeal r) {
-
     }
 
     private void closeCase(Long id, CloseCase t) {

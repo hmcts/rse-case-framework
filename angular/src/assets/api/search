@@ -6,8 +6,8 @@
             "id": "1",
             "name": "A vs B",
             "localAuthority": "Kensington & Chelsea",
-            "claimant": {},
-            "defendant": {}
+            "parties": [
+            ]
         }
     },
     {
@@ -17,8 +17,8 @@
             "id": "2",
             "name": "X vs Y",
             "localAuthority": "Tower Hamlets",
-            "claimant": {},
-            "defendant": {}
+            "parties": [
+            ]
         }
     }
 ]

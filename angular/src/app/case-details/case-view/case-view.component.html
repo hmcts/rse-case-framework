@@ -16,19 +16,17 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <mat-tab-group >
+                <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
                   <mat-tab label="History" id="history-tab-button">
                     <app-case-history [events]="events"></app-case-history>
                   </mat-tab>
-                  <mat-tab label="Claimant" *ngIf="case">
-                        <app-overview [party]="case.data.claimant"></app-overview>
+                  <mat-tab label="Parties">
+                        <app-overview *ngIf="case" [parties]="case.data.parties"></app-overview>
                     </mat-tab>
-                  <mat-tab label="Defendant" *ngIf="case">
-                    <app-overview [party]="case.data.defendant"></app-overview>
-                  </mat-tab>
                 </mat-tab-group>
             </div>
         </div>
 
     </main>
 </div>
+

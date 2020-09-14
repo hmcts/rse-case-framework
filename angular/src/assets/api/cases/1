@@ -9,7 +9,8 @@
             "id": "1",
             "name": "A vs B",
             "localAuthority": "Kensington & Chelsea"
-            "claimant": {},
-            "defendant": {}
+            "parties": [
+
+            ]
         }
     }

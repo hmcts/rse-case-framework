@@ -18,8 +18,7 @@ public class UnspecCase {
     private String name;
     private String courtLocation;
     private List<String> notes = Lists.newArrayList();
+
     @NonNull
-    private Party claimant;
-    @NonNull
-    private Party defendant;
+    private List<Party> parties;
 }
