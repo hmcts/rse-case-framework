@@ -44,7 +44,7 @@ public class TestDataGenerator implements InitializingBean {
                 .defendant(new Organisation("Megacorp Inc"))
                 .build();
         ApiEventCreation e = new ApiEventCreation("Create", new ObjectMapper().valueToTree(o));
-        controller.createCase(e.getData());
+        controller.createCase(e);
 
         o = CreateClaim.builder()
                 .claimantReference("1111")
@@ -53,7 +53,7 @@ public class TestDataGenerator implements InitializingBean {
                 .defendant(new Organisation("Wiki"))
                 .build();
         e = new ApiEventCreation("Create", new ObjectMapper().valueToTree(o));
-        controller.createCase(e.getData());
+        controller.createCase(e);
     }
 
 }

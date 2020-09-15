@@ -10,14 +10,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CaseViewComponent } from './case-details/case-view/case-view.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from '@angular/material/tabs';
-import { OverviewComponent } from './case-details/overview/overview.component';
+import { PartiesTabComponent } from './case-details/overview/parties-tab.component';
 import { CaseHistoryComponent } from './case-details/case-history/case-history.component';
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { DynamicFormAnswersComponent } from './forms/dynamic-form/dynamic-form-answers.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form-question/dynamic-form-question.component';
 import { TextInputComponent } from './forms/components/text-input/text-input.component';
 import { RadioComponent } from './forms/components/radio/radio.component';
-import { CreateCaseComponent } from './components/create-case/create-case.component';
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { PartyDetailsComponent } from './forms/components/steps/party-details/party-details.component';
 import { ChooseCourtComponent } from './forms/components/steps/choose-court/choose-court.component';
@@ -38,14 +37,13 @@ import { DateInputComponent } from './forms/components/date-input/date-input.com
     CaseListComponent,
     SearchCasesComponent,
     CaseViewComponent,
-    OverviewComponent,
+    PartiesTabComponent,
     CaseHistoryComponent,
     DynamicFormComponent,
     DynamicFormAnswersComponent,
     DynamicFormQuestionComponent,
     TextInputComponent,
     RadioComponent,
-    CreateCaseComponent,
     CreateEventComponent,
     StepDirective,
     PartyDetailsComponent,
