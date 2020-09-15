@@ -1,4 +1,6 @@
-<dl *ngFor="let party of parties" class="govuk-summary-list">
+<div *ngFor="let party of parties">
+  <h2 class="govuk-heading-m">{{ party.name }}</h2>
+  <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
         Claimaint type
@@ -25,3 +27,9 @@
     </dd>
   </div>
 </dl>
+</div>
+<div class="hmcts-menu">
+  <div class="hmcts-menu__wrapper">
+    <button (click)="addParty()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add party</button>
+  </div>
+</div>

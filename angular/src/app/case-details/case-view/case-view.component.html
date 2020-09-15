@@ -21,7 +21,7 @@
                     <app-case-history [events]="events"></app-case-history>
                   </mat-tab>
                   <mat-tab label="Parties">
-                        <app-overview *ngIf="case" [parties]="case.data.parties"></app-overview>
+                        <app-parties-tab [caseId]="case.id" *ngIf="case" [parties]="case.data.parties"></app-parties-tab>
                     </mat-tab>
                 </mat-tab-group>
             </div>

@@ -26,13 +26,42 @@ export interface DynamicPageBuilder {
   build(): StepBuilder;
 }
 
+export class EventsBuilder {
+  result = new Map<string, StepBuilder>()
+  event(id: string): StepBuilder {
+    const builder = new StepBuilder(this);
+    this.result.set(id, builder)
+    return builder;
+  }
+
+  toMap(): Map<string, Array<StepType>> {
+    const result = new Map<string, Array<StepType>>()
+
+    for (const key of this.result.keys()) {
+      result.set(key, this.result.get(key).getSteps());
+    }
+    return result;
+  }
+}
+
 export class StepBuilder {
   steps = new Array<StepType>();
+  constructor(private parent: EventsBuilder) {
+  }
+
   customPage<Step extends StepComponent, Answer extends CheckAnswersComponent>
   (component: Type<Step>, initialiser?: (component: Step) => void ,
    answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void): StepBuilder {
     this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise });
     return this;
+  }
+
+  build(): EventsBuilder {
+    return this.parent;
+  }
+
+  getSteps(): Array<StepType> {
+    return this.steps;
   }
 
   dynamicPage(title: string): DynamicPageBuilder {
@@ -67,9 +96,5 @@ export class StepBuilder {
       }
     }();
     return result;
-  }
-
-  build(): Array<StepType> {
-    return this.steps;
   }
 }

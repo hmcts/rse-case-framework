@@ -47,7 +47,7 @@ public class WebController {
 
     @PostMapping(path = "/cases")
     @Transactional
-    public ResponseEntity<ApiCase> createCase(@RequestBody JsonNode event) {
+    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event) {
         CasesRecord c = create.newRecord(CASES);
         c.setDescription("Never going to happen");
         c.store();
@@ -58,7 +58,7 @@ public class WebController {
             .execute();
 
         StateMachine<State, Event> statemachine2 = stateMachineSupplier.build();
-        statemachine.onCreated(c.getCaseId(), event);
+        statemachine.onCreated(c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
                 .body(new ApiCase(c.getCaseId(), statemachine.getState().toString(), Sets.newHashSet(), null));

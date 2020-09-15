@@ -3,7 +3,12 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Question} from '../../forms/dynamic-form/dynamic-form.component';
-import {StepBuilder, StepType} from "../../forms/components/stepper/form-stepper/types";
+import {EventsBuilder, StepBuilder, StepType} from "../../forms/components/stepper/form-stepper/types";
+import {Validators} from "@angular/forms";
+import {ChooseCourtComponent} from "../../forms/components/steps/choose-court/choose-court.component";
+import {DynamicFormAnswersComponent} from "../../forms/dynamic-form/dynamic-form-answers.component";
+import {PartyDetailsComponent} from "../../forms/components/steps/party-details/party-details.component";
+import {PartyDetailsAnswersComponent} from "../../forms/components/steps/party-details/party-details-answers.component";
 
 @Component({
   selector: 'app-create-event',
@@ -13,15 +18,44 @@ import {StepBuilder, StepType} from "../../forms/components/stepper/form-stepper
 export class CreateEventComponent implements OnInit {
   baseUrl = environment.baseUrl;
   pages: Array<StepType>;
-  questionMap: Map<string, Array<Question>> = new Map([
-    ['AddNotes', [{id: 'notes', type: 'text', title: 'Enter notes'}]],
-    ['CloseCase', [{id: 'reason', type: 'text', title: 'Reason for closure'}]],
-    ['SubmitAppeal', [{id: 'reason', type: 'text', title: 'New evidence'}]],
-  ]);
-  questions: Array<Question>;
+  events = new EventsBuilder()
+    .event('AddNotes')
+      .dynamicPage('Add case notes')
+      .question('notes', 'text', 'Enter notes')
+      .build()
+    .build()
+    .event('CloseCase')
+      .dynamicPage('Close the case')
+      .question('reason', 'text', 'Reason for closure')
+      .build()
+    .build()
+    .event('SubmitAppeal')
+      .dynamicPage('Submit an appeal')
+      .question('reason', 'text', 'New evidence')
+      .build()
+    .build()
+    .event('CreateClaim')
+      .dynamicPage('Claim references')
+        .question('claimantReference', 'text', "Claimant\'s legal representative\'s reference", [Validators.required])
+        .question('defendantReference', 'text', "Defendant\'s legal representative\'s reference", [Validators.required])
+        .build()
+      .customPage(ChooseCourtComponent, null, DynamicFormAnswersComponent, (x) => {
+        x.title = 'Court location'
+        x.questions = [{ id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]
+      })
+      .customPage(PartyDetailsComponent, null, PartyDetailsAnswersComponent, (x) => {
+        x.title = "Applicant party details"
+        x.role = 'claimant'
+      })
+      .customPage(PartyDetailsComponent, (x) => x.partyType = 'Defendant', PartyDetailsAnswersComponent, (x) => {
+        x.title = 'Defendant party details'
+        x.role = 'defendant';
+      })
+    .build()
+    .toMap();
+
   private caseId: string;
   private eventId: string;
-
 
   constructor(
     private route: ActivatedRoute,
@@ -32,14 +66,10 @@ export class CreateEventComponent implements OnInit {
   ngOnInit(): void {
     this.eventId = this.route.snapshot.queryParamMap.get('id');
     this.caseId = this.route.snapshot.paramMap.get('id');
-    if (null != this.eventId) {
-      this.questions = this.questionMap.get(this.eventId)
+    if (null == this.eventId) {
+      this.eventId = "CreateClaim";
     }
-    this.pages = new StepBuilder()
-      .dynamicPage('Event')
-        .questions(this.questions)
-        .build()
-      .build();
+    this.pages = this.events.get(this.eventId)
   }
 
 
@@ -48,7 +78,11 @@ export class CreateEventComponent implements OnInit {
       id: this.eventId,
       data: data,
     };
-    this.http.post(this.baseUrl + '/api/cases/' + this.caseId + '/events', payload, { observe: 'response' , withCredentials: true })
+    let url = '/api/cases';
+    if (this.caseId) {
+      url += '/' + this.caseId + '/events'
+    }
+    this.http.post(this.baseUrl + url, payload, { observe: 'response' , withCredentials: true })
       .subscribe(resp => {
         this.router.navigateByUrl(resp.headers.get('location'), { replaceUrl: true })
       });
