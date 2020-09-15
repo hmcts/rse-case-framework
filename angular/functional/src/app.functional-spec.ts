@@ -70,8 +70,7 @@ describe('workspace-project App', () => {
   });
 
   it('can create a case event', () => {
-    browser.get(browser.baseUrl + '/cases/1');
-    element(by.id('create-event-button')).click();
+    browser.get(browser.baseUrl + '/cases/1/create-event?id=AddNotes');
     element(by.id('submit-button')).click();
     // Change answers
     element(by.id('change-0')).click();

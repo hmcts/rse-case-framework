@@ -1,9 +1,9 @@
 <div *ngFor="let party of parties">
-  <h2 class="govuk-heading-m">{{ party.name }}</h2>
+  <h2 class="govuk-heading-m">{{ partyName(party) }}</h2>
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">
-        Claimaint type
+        Claimant type
       </dt>
       <dd class="govuk-summary-list__value">
         {{ party.partyType }}
@@ -23,7 +23,7 @@
       Name
     </dt>
     <dd class="govuk-summary-list__value">
-      {{ party.firstName }}
+      {{ partyName(party) }}
     </dd>
   </div>
 </dl>

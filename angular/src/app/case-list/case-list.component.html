@@ -1,20 +1,22 @@
 <table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">ID</th>
-            <th scope="col" class="govuk-table__header">State</th>
-          <th scope="col" class="govuk-table__header">Number of parties</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        <tr class="govuk-table__row" *ngFor="let case of caseList | async">
-            <th scope="row" class="govuk-table__header">
-                <a routerLink="/cases/{{case.id}}" routerLinkActive="active">{{case.id}}</a>
-            </th>
-            <td class="govuk-table__cell">{{ case.state }}</td>
-          <td class="govuk-table__cell">
-            {{ case.data.parties.length }}
-          </td>
-        </tr>
-    </tbody>
+  <thead class="govuk-table__head">
+  <tr class="govuk-table__row">
+    <th scope="col" class="govuk-table__header">ID</th>
+    <th scope="col" class="govuk-table__header">State</th>
+    <th scope="col" class="govuk-table__header">Number of parties</th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row" *ngFor="let case of caseList | async">
+    <th scope="row" class="govuk-table__header">
+      <a routerLink="/cases/{{case.id}}" routerLinkActive="active">{{case.id}}</a>
+    </th>
+    <td class="govuk-table__cell">
+      <strong class="govuk-tag">{{ case.state }}</strong>
+    </td>
+    <td class="govuk-table__cell">
+      {{ case.data.parties.length }}
+    </td>
+  </tr>
+  </tbody>
 </table>

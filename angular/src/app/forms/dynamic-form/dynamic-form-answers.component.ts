@@ -1,4 +1,4 @@
-import {Component, Input, EventEmitter, Output} from "@angular/core";
+import {Component, Input, EventEmitter, Output, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {CheckAnswersComponent} from "../components/check-answers/types";
 
@@ -36,4 +36,5 @@ export class DynamicFormAnswersComponent implements CheckAnswersComponent {
   @Input() form: FormGroup;
   @Input() questions: DynamicFormCheckAnswer[]
   @Input() title: string;
+
 }

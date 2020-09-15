@@ -51,15 +51,11 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
     result['SoleTrader'] = result['Individual'].concat([
       { id: 'tradingName', type: 'text' , title: 'Trading as'},
     ]);
-    result['a'] = 'b';
     return result;
   }
 
   ngOnInit(): void {
     this.partyTypeQuestions = PartyDetailsComponent.buildQuestions();
-    let group = new FormGroup({});
-    this.form.addControl(this.partyType.toLowerCase(), group)
-    this.form = group;
     this.input.title = 'Select type of ' + this.partyType;
     this.partyTypeControl = new FormControl('Individual')
     this.form.addControl('partyType', this.partyTypeControl);

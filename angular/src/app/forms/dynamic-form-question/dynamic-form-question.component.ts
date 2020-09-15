@@ -6,15 +6,12 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './dynamic-form-question.component.html',
   styleUrls: ['./dynamic-form-question.component.scss']
 })
-export class DynamicFormQuestionComponent implements OnInit {
+export class DynamicFormQuestionComponent {
 
   @Input() question: any = {}
   @Input() form: FormGroup;
   @Input() validate: boolean;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

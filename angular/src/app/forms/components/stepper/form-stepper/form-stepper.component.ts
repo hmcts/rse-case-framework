@@ -31,7 +31,14 @@ export class FormStepperComponent implements OnInit {
 
   ngOnInit(): void {
     for (const page of this.pages) {
-      this.forms.push(new FormGroup({}));
+      let group = new FormGroup({})
+      this.forms.push(group);
+      if (page.formGroupName) {
+        let sub = new FormGroup({})
+        group.addControl(page.formGroupName, sub)
+        group = sub;
+      }
+      page['form'] = group;
     }
   }
 

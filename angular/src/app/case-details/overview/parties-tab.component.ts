@@ -20,4 +20,14 @@ export class PartiesTabComponent implements OnInit {
   addParty() {
     this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=AddParty');
   }
+
+  partyName(party: any) : string {
+    switch (party.partyType) {
+      case 'Company':
+      case 'Organisation':
+        return party.name
+      default:
+        return party.title + ' ' + party.firstName + ' ' + party.lastName
+    }
+  }
 }

@@ -16,43 +16,50 @@ export interface StepType {
   initialise?: (component: StepComponent) => void;
   answersType?: Type<CheckAnswersComponent>;
   answerInitialise?: (component: CheckAnswersComponent) => void;
-  formGroup?: string;
+  formGroupName?: string;
 }
 
 export interface DynamicPageBuilder {
   question(id: string, type: string, title: string, validators?: ValidatorFn[] ): DynamicPageBuilder;
   questions(question: Question | Question[]): DynamicPageBuilder;
 
-  build(): StepBuilder;
+  build(): EventBuilder;
+}
+
+export interface Event {
+  steps: Array<StepType>,
 }
 
 export class EventsBuilder {
-  result = new Map<string, StepBuilder>()
-  event(id: string): StepBuilder {
-    const builder = new StepBuilder(this);
+  result = new Map<string, EventBuilder>()
+  event(id: string): EventBuilder {
+    const builder = new EventBuilder(this);
     this.result.set(id, builder)
     return builder;
   }
 
-  toMap(): Map<string, Array<StepType>> {
-    const result = new Map<string, Array<StepType>>()
+  toMap(): Map<string, Event> {
+    const result = new Map<string, Event>()
 
     for (const key of this.result.keys()) {
-      result.set(key, this.result.get(key).getSteps());
+      result.set(key, this.result.get(key).get());
     }
     return result;
   }
 }
 
-export class StepBuilder {
+export class EventBuilder {
   steps = new Array<StepType>();
+  desc: string;
   constructor(private parent: EventsBuilder) {
   }
 
   customPage<Step extends StepComponent, Answer extends CheckAnswersComponent>
   (component: Type<Step>, initialiser?: (component: Step) => void ,
-   answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void): StepBuilder {
-    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise });
+   answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void,
+   formGroupName?: string
+   ): EventBuilder {
+    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise, formGroupName: formGroupName });
     return this;
   }
 
@@ -60,12 +67,14 @@ export class StepBuilder {
     return this.parent;
   }
 
-  getSteps(): Array<StepType> {
-    return this.steps;
+  get(): Event {
+    return {
+      steps: this.steps,
+    };
   }
 
   dynamicPage(title: string): DynamicPageBuilder {
-    const builder: StepBuilder = this;
+    const builder: EventBuilder = this;
     const questions = Array<Question>();
     const result = new class implements DynamicPageBuilder {
       question(id: string, type: string, title: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
@@ -83,7 +92,7 @@ export class StepBuilder {
         return result;
       }
 
-      build(): StepBuilder {
+      build(): EventBuilder {
         builder.customPage(DynamicFormComponent, (x) => {
             x.title = title;
             x.questions = questions;

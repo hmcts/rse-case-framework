@@ -39,9 +39,16 @@ public class StatemachineConfig {
         StateMachine<State, Event> result = new StateMachine<>();
         result.initialState(State.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
+                .addEvent(State.Created, Event.AddParty, this::addParty)
                 .addTransition(State.Created, State.Closed, Event.CloseCase, this::closeCase)
                 .addTransition(State.Closed, State.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
+    }
+
+    private void addParty(Long id, Party party) {
+        UnspecCase c = repository.load(id);
+        c.getParties().add(party);
+        repository.save(c);
     }
 
     private void addNotes(Long id, AddNotes notes) {

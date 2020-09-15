@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {Question} from '../../forms/dynamic-form/dynamic-form.component';
-import {EventsBuilder, StepBuilder, StepType} from "../../forms/components/stepper/form-stepper/types";
-import {Validators} from "@angular/forms";
+import {EventsBuilder, StepType} from "../../forms/components/stepper/form-stepper/types";
 import {ChooseCourtComponent} from "../../forms/components/steps/choose-court/choose-court.component";
-import {DynamicFormAnswersComponent} from "../../forms/dynamic-form/dynamic-form-answers.component";
 import {PartyDetailsComponent} from "../../forms/components/steps/party-details/party-details.component";
+import {DynamicFormAnswersComponent} from "../../forms/dynamic-form/dynamic-form-answers.component";
 import {PartyDetailsAnswersComponent} from "../../forms/components/steps/party-details/party-details-answers.component";
+import {Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-create-event',
@@ -21,19 +20,19 @@ export class CreateEventComponent implements OnInit {
   events = new EventsBuilder()
     .event('AddNotes')
       .dynamicPage('Add case notes')
-      .question('notes', 'text', 'Enter notes')
+        .question('notes', 'text', 'Enter notes')
+        .build()
       .build()
-    .build()
     .event('CloseCase')
       .dynamicPage('Close the case')
-      .question('reason', 'text', 'Reason for closure')
+        .question('reason', 'text', 'Reason for closure')
+        .build()
       .build()
-    .build()
     .event('SubmitAppeal')
       .dynamicPage('Submit an appeal')
-      .question('reason', 'text', 'New evidence')
+        .question('reason', 'text', 'New evidence')
+        .build()
       .build()
-    .build()
     .event('CreateClaim')
       .dynamicPage('Claim references')
         .question('claimantReference', 'text', "Claimant\'s legal representative\'s reference", [Validators.required])
@@ -45,13 +44,14 @@ export class CreateEventComponent implements OnInit {
       })
       .customPage(PartyDetailsComponent, null, PartyDetailsAnswersComponent, (x) => {
         x.title = "Applicant party details"
-        x.role = 'claimant'
-      })
+      }, 'claimant')
       .customPage(PartyDetailsComponent, (x) => x.partyType = 'Defendant', PartyDetailsAnswersComponent, (x) => {
         x.title = 'Defendant party details'
-        x.role = 'defendant';
-      })
+      }, 'defendant')
     .build()
+    .event('AddParty')
+      .customPage(PartyDetailsComponent, (x) => x.partyType = 'Party', PartyDetailsAnswersComponent)
+      .build()
     .toMap();
 
   private caseId: string;
@@ -69,7 +69,7 @@ export class CreateEventComponent implements OnInit {
     if (null == this.eventId) {
       this.eventId = "CreateClaim";
     }
-    this.pages = this.events.get(this.eventId)
+    this.pages = this.events.get(this.eventId).steps
   }
 
 

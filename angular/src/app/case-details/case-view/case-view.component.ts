@@ -16,7 +16,6 @@ export class CaseViewComponent implements OnInit {
   baseUrl = environment.baseUrl;
   case: any;
   events: any = [];
-  schema: any = Questions;
   selectedValue: any;
   selectedIndex: number;
   tabMap = {
@@ -24,6 +23,12 @@ export class CaseViewComponent implements OnInit {
     parties: 1,
   };
 
+  eventDescriptions = {
+    AddNotes: 'Add case notes',
+    CloseCase: 'Close the case',
+    AddParty: 'Add a party',
+    SubmitAppeal: 'Submit an appeal',
+  }
 
   constructor(
     private location: Location,
@@ -44,6 +49,10 @@ export class CaseViewComponent implements OnInit {
 
     const tab = this.route.snapshot.queryParamMap.get('tab');
     this.selectedIndex = this.tabMap[tab];
+  }
+
+  actions() {
+    return this.case.actions.sort()
   }
 
   onEvent() {

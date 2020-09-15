@@ -10,6 +10,7 @@ import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.controller.WebController;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
+import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import static org.jooq.generated.Tables.EVENTS;
@@ -43,7 +44,7 @@ public class TestDataGenerator implements InitializingBean {
                 .claimant(new Company("Acme Ltd"))
                 .defendant(new Organisation("Megacorp Inc"))
                 .build();
-        ApiEventCreation e = new ApiEventCreation("Create", new ObjectMapper().valueToTree(o));
+        ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         controller.createCase(e);
 
         o = CreateClaim.builder()
@@ -52,7 +53,7 @@ public class TestDataGenerator implements InitializingBean {
                 .claimant(new Company("Hooli"))
                 .defendant(new Organisation("Wiki"))
                 .build();
-        e = new ApiEventCreation("Create", new ObjectMapper().valueToTree(o));
+        e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         controller.createCase(e);
     }
 

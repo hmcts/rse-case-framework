@@ -2,8 +2,7 @@ package uk.gov.hmcts.unspec.enums;
 
 public enum Event {
     CreateClaim,
-    SubmitApplication,
-    EnterChildren,
+    AddParty,
     AddNotes,
     CloseCase,
     SubmitAppeal

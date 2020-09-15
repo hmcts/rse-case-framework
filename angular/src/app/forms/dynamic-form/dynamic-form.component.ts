@@ -1,6 +1,5 @@
 import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {Location} from '@angular/common';
-import {FormControl, FormGroup, FormBuilder, FormArray, Validator, ValidatorFn} from '@angular/forms';
+import {FormControl, FormGroup, ValidatorFn} from '@angular/forms';
 import {StepComponent} from "../components/stepper/form-stepper/types";
 
 export interface Question {
@@ -24,10 +23,6 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   @Input() title: string;
   @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
   @Input() validate: boolean;
-
-  constructor(
-    private location: Location,
-  ) { }
 
   ngOnInit(): void {
     this.buildForm()

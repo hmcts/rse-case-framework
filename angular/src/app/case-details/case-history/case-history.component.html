@@ -1,11 +1,11 @@
 <h1 class="govuk-heading-l">Case History</h1>
 <div class="hmcts-timeline">
 
-  <div *ngFor="let event of events" class="hmcts-timeline__item">
+  <div *ngFor="let event of history" class="hmcts-timeline__item">
 
     <div class="hmcts-timeline__header">
       <h2 class="hmcts-timeline__title">
-        {{ schema[event.id].description }}
+        {{ eventDescriptions[event.id]}}
       </h2>
 
       <p class="hmcts-timeline__by">by {{ event.userForename }} {{ event.userSurname }}</p>

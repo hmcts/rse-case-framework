@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import Questions from '../../../assets/schema/schema.json';
 
 @Component({
   selector: 'app-case-history',
@@ -8,8 +7,14 @@ import Questions from '../../../assets/schema/schema.json';
 })
 export class CaseHistoryComponent implements OnInit {
 
-  @Input() events: any;
-  schema: any = Questions;
+  @Input() history: any;
+  eventDescriptions = {
+    CreateClaim: 'Case opened',
+    AddNotes: 'Case notes added',
+    CloseCase: 'Case closed',
+    AddParty: 'Party added',
+    SubmitAppeal: 'Appeal submitted',
+  }
   constructor() { }
 
   ngOnInit(): void {
