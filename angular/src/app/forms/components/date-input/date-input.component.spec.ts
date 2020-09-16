@@ -38,10 +38,12 @@ describe('DateInputComponent', () => {
     expect(dob.value.getFullYear()).toBe(2000)
     expect(dob.value.getDate()).toBe(4)
     expect(dob.value.getMonth()).toBe(0)
-
+    expect(component.form.valid).toBeTrue()
   });
+
   it('does not build an invalid date', () => {
     component.patchDate(4,13,2000)
     expect(dob.value).toBeNull()
+    expect(component.form.valid).toBeFalse()
   });
 });

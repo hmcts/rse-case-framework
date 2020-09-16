@@ -40,7 +40,7 @@ export class CreateEventComponent implements OnInit {
         .build()
       .customPage(ChooseCourtComponent, null, DynamicFormAnswersComponent, (x) => {
         x.title = 'Court location'
-        x.questions = [{ id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]
+        x.questions = [{ type: 'text', id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]
       })
       .customPage(PartyDetailsComponent, null, PartyDetailsAnswersComponent, (x) => {
         x.title = "Applicant party details"
