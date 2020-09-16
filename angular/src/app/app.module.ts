@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CaseViewComponent } from './case-details/case-view/case-view.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from '@angular/material/tabs';
-import { PartiesTabComponent } from './case-details/overview/parties-tab.component';
 import { CaseHistoryComponent } from './case-details/case-history/case-history.component';
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { DynamicFormAnswersComponent } from './forms/dynamic-form/dynamic-form-answers.component';
@@ -30,6 +29,7 @@ import { AnswerSectionComponent } from './forms/components/check-answers/answer-
 import {CheckAnswerDirective} from "./forms/components/check-answers/types";
 import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-details/party-details-answers.component";
 import { DateInputComponent } from './forms/components/date-input/date-input.component';
+import {PartiesTabComponent} from "./case-details/tabs/parties/parties-tab.component";
 
 @NgModule({
   declarations: [
