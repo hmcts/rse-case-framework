@@ -48,6 +48,7 @@ public class CaseHandlerImpl implements CaseHandler {
         return create.select()
                 .from(UNSPEC_CASES)
                 .where(condition)
+                .orderBy(UNSPEC_CASES.CASE_ID.asc())
                 .fetch()
                 .stream()
                 // TODO

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.unspec.model;
 
 import lombok.Data;
+import uk.gov.hmcts.unspec.enums.ClaimState;
 
 import java.util.List;
 
@@ -8,4 +9,5 @@ import java.util.List;
 public class Claim {
     private List<Long> claimantIds;
     private List<Long> defendantIds;
+    private ClaimState state = ClaimState.Issued;
 }
