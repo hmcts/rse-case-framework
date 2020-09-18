@@ -15,5 +15,6 @@ import lombok.Data;
 })
 @Data
 public abstract class Party {
+    private long id;
     private String address;
 }

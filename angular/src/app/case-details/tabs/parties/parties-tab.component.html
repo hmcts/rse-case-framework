@@ -1,3 +1,12 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <h1 class="govuk-heading-l">Parties</h1>
+  </div>
+  <div class="govuk-grid-column-one-quarter">
+    <button (click)="addParty()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add party</button>
+  </div>
+</div>
+
 <div *ngFor="let party of parties">
   <h2 class="govuk-heading-m">{{ partyName(party) }}</h2>
   <dl class="govuk-summary-list">
@@ -27,9 +36,4 @@
     </dd>
   </div>
 </dl>
-</div>
-<div class="hmcts-menu">
-  <div class="hmcts-menu__wrapper">
-    <button (click)="addParty()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add party</button>
-  </div>
 </div>

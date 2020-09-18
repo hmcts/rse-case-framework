@@ -30,6 +30,9 @@ import {CheckAnswerDirective} from "./forms/components/check-answers/types";
 import {PartyDetailsAnswersComponent} from "./forms/components/steps/party-details/party-details-answers.component";
 import { DateInputComponent } from './forms/components/date-input/date-input.component';
 import {PartiesTabComponent} from "./case-details/tabs/parties/parties-tab.component";
+import { ChoosePartiesComponent } from './forms/components/steps/choose-parties/choose-parties.component';
+import {ChoosePartiesAnswersComponent} from "./forms/components/steps/choose-parties/choose-parties-answers.component";
+import { ClaimsTabComponent } from './case-details/tabs/claims-tab/claims-tab.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +58,9 @@ import {PartiesTabComponent} from "./case-details/tabs/parties/parties-tab.compo
     AnswerSectionComponent,
     CheckAnswerDirective,
     DateInputComponent,
+    ChoosePartiesComponent,
+    ChoosePartiesAnswersComponent,
+    ClaimsTabComponent,
       ],
   imports: [
     BrowserModule,

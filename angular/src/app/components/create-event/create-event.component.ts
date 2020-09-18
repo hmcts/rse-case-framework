@@ -8,6 +8,8 @@ import {PartyDetailsComponent} from "../../forms/components/steps/party-details/
 import {DynamicFormAnswersComponent} from "../../forms/dynamic-form/dynamic-form-answers.component";
 import {PartyDetailsAnswersComponent} from "../../forms/components/steps/party-details/party-details-answers.component";
 import {Validators} from "@angular/forms";
+import {ChoosePartiesComponent} from "../../forms/components/steps/choose-parties/choose-parties.component";
+import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose-parties/choose-parties-answers.component";
 
 @Component({
   selector: 'app-create-event',
@@ -51,6 +53,9 @@ export class CreateEventComponent implements OnInit {
     .build()
     .event('AddParty')
       .customPage(PartyDetailsComponent, (x) => x.partyType = 'Party', PartyDetailsAnswersComponent)
+      .build()
+    .event('AddClaim')
+      .customPage(ChoosePartiesComponent, null, ChoosePartiesAnswersComponent)
       .build()
     .toMap();
 
