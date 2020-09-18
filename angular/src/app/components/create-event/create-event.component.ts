@@ -10,6 +10,7 @@ import {PartyDetailsAnswersComponent} from "../../forms/components/steps/party-d
 import {Validators} from "@angular/forms";
 import {ChoosePartiesComponent} from "../../forms/components/steps/choose-parties/choose-parties.component";
 import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose-parties/choose-parties-answers.component";
+import {ClaimValueComponent} from "../../forms/components/steps/claim-value/claim-value.component";
 
 @Component({
   selector: 'app-create-event',
@@ -56,7 +57,13 @@ export class CreateEventComponent implements OnInit {
       .build()
     .event('AddClaim')
       .customPage(ChoosePartiesComponent, null, ChoosePartiesAnswersComponent)
-      .build()
+      .customPage(ClaimValueComponent, null, DynamicFormAnswersComponent, (x) => {
+        x.title = 'Claim value'
+        x.questions = [
+          { type: 'currency', id: 'lowerValue', title: 'Claim lower value' },
+        { type: 'currency', id: 'higherValue', title: 'Claim higher value' }
+      ]})
+    .build()
     .toMap();
 
   private caseId: string;

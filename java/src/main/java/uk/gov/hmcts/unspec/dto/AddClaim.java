@@ -8,4 +8,6 @@ import java.util.Map;
 public class AddClaim {
     private Map<Long, Boolean> claimants;
     private Map<Long, Boolean> defendants;
+    private long lowerValue;
+    private long higherValue;
 }

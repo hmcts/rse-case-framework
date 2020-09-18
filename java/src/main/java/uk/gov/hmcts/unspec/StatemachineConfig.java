@@ -67,6 +67,8 @@ public class StatemachineConfig {
         Claim c = new Claim();
         c.setClaimantIds(claimantIds);
         c.setDefendantIds(defendantIds);
+        c.setLowerValue(claim.getLowerValue());
+        c.setHigherValue(claim.getHigherValue());
 
         UnspecCase cse = repository.load(caseId);
         cse.getClaims().add(c);

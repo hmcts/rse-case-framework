@@ -33,6 +33,7 @@ import {PartiesTabComponent} from "./case-details/tabs/parties/parties-tab.compo
 import { ChoosePartiesComponent } from './forms/components/steps/choose-parties/choose-parties.component';
 import {ChoosePartiesAnswersComponent} from "./forms/components/steps/choose-parties/choose-parties-answers.component";
 import { ClaimsTabComponent } from './case-details/tabs/claims-tab/claims-tab.component';
+import { ClaimValueComponent } from './forms/components/steps/claim-value/claim-value.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { ClaimsTabComponent } from './case-details/tabs/claims-tab/claims-tab.co
     ChoosePartiesComponent,
     ChoosePartiesAnswersComponent,
     ClaimsTabComponent,
+    ClaimValueComponent,
       ],
   imports: [
     BrowserModule,

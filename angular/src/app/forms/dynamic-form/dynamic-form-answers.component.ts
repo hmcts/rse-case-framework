@@ -20,6 +20,7 @@ export interface DynamicFormCheckAnswer {
           {{question.title}}
         </dt>
         <dd class="govuk-summary-list__value">
+          {{ question.type == 'currency' ? '£' : ''}}
           {{
             question.type == 'date'
               ? (form.controls[question.id]?.value | date:'mediumDate')
