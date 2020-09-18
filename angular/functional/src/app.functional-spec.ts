@@ -42,12 +42,18 @@ describe('workspace-project App', () => {
     element(by.id('title')).sendKeys('Prof');
     element(by.id('firstName')).sendKeys('Foo');
     element(by.id('lastName')).sendKeys('Foo');
+    element(by.id('dateOfBirth-day')).sendKeys('01');
+    element(by.id('dateOfBirth-month')).sendKeys('01');
+    element(by.id('dateOfBirth-year')).sendKeys('1980');
     element(by.id('submit-button')).click();
 
     // Defendant details
     element(by.id('title')).sendKeys('Prof');
     element(by.id('firstName')).sendKeys('Foo');
     element(by.id('lastName')).sendKeys('Foo');
+    element(by.id('dateOfBirth-day')).sendKeys('01');
+    element(by.id('dateOfBirth-month')).sendKeys('01');
+    element(by.id('dateOfBirth-year')).sendKeys('1980');
     element(by.id('submit-button')).click();
 
     // Test previous button

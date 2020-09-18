@@ -3,7 +3,6 @@ import {Router, ActivatedRoute, ParamMap, Params} from '@angular/router';
 import {Location} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import Questions from '../../../assets/schema/schema.json';
 
 
 @Component({
@@ -21,12 +20,14 @@ export class CaseViewComponent implements OnInit {
   tabMap = {
     history: 0,
     parties: 1,
+    claims: 2,
   };
 
   eventDescriptions = {
     AddNotes: 'Add case notes',
     CloseCase: 'Close the case',
     AddParty: 'Add a party',
+    AddClaim: 'Create a new claim',
     SubmitAppeal: 'Submit an appeal',
   }
 

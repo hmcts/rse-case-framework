@@ -5,6 +5,7 @@ import {CheckAnswersComponent} from "../components/check-answers/types";
 export interface DynamicFormCheckAnswer {
   title: string;
   id: string;
+  type: string;
 }
 
 @Component({
@@ -19,7 +20,12 @@ export interface DynamicFormCheckAnswer {
           {{question.title}}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{form.controls[question.id]?.value}}
+          {{ question.type == 'currency' ? '£' : ''}}
+          {{
+            question.type == 'date'
+              ? (form.controls[question.id]?.value | date:'mediumDate')
+          : form.controls[question.id]?.value
+          }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a [routerLink]="" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">

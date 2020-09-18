@@ -21,4 +21,6 @@ public class UnspecCase {
 
     @NonNull
     private List<Party> parties;
+
+    private List<Claim> claims = Lists.newArrayList();
 }

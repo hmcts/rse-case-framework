@@ -7,6 +7,7 @@ import org.jooq.generated.tables.records.UnspecCasesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.model.UnspecCase;
 
 import static org.jooq.generated.Tables.UNSPEC_CASES;
@@ -23,6 +24,11 @@ public class CaseRepository {
 
         UnspecCasesRecord c = create.newRecord(UNSPEC_CASES);
         c.setCaseId(unspecCase.getId());
+        int i = 1;
+        for (Party party : unspecCase.getParties()) {
+            party.setId(i++);
+        }
+
         c.setData(JSONB.valueOf(new ObjectMapper().writeValueAsString(unspecCase)));
         if (create.fetchExists(select()
                 .from(UNSPEC_CASES)

@@ -1,0 +1,63 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+    <h1 class="govuk-heading-l">Parties</h1>
+  </div>
+  <div class="govuk-grid-column-one-quarter">
+    <button (click)="addParty()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add party</button>
+  </div>
+</div>
+
+<div class="party-container" *ngFor="let party of parties">
+  <h2 class="govuk-heading-m">{{ partyName(party) }}</h2>
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        Claimant type
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {{ party.partyType }}
+      </dd>
+
+    </div>
+    <div *ngIf="party.partyType == 'Company' || party.partyType == 'Organisation'" class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        {{ party.partyType }} name
+      </dt>
+      <dd class="govuk-summary-list__value">
+        {{ party.name }}
+      </dd>
+    </div>
+    <ng-container *ngIf="party.partyType == 'Individual' || party.partyType == 'SoleTrader'">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Title</dt>
+        <dd class="govuk-summary-list__value">
+          {{ party.title }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Forename
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ party.firstName }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Surname
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ party.lastName }}
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Date of birth
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ party.dateOfBirth | date:'mediumDate'}}
+        </dd>
+      </div>
+    </ng-container>
+  </dl>
+</div>

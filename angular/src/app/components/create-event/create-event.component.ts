@@ -8,6 +8,9 @@ import {PartyDetailsComponent} from "../../forms/components/steps/party-details/
 import {DynamicFormAnswersComponent} from "../../forms/dynamic-form/dynamic-form-answers.component";
 import {PartyDetailsAnswersComponent} from "../../forms/components/steps/party-details/party-details-answers.component";
 import {Validators} from "@angular/forms";
+import {ChoosePartiesComponent} from "../../forms/components/steps/choose-parties/choose-parties.component";
+import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose-parties/choose-parties-answers.component";
+import {ClaimValueComponent} from "../../forms/components/steps/claim-value/claim-value.component";
 
 @Component({
   selector: 'app-create-event',
@@ -40,7 +43,7 @@ export class CreateEventComponent implements OnInit {
         .build()
       .customPage(ChooseCourtComponent, null, DynamicFormAnswersComponent, (x) => {
         x.title = 'Court location'
-        x.questions = [{ id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]
+        x.questions = [{ type: 'text', id: 'applicantPreferredCourt', title: 'Applicant\'s preferred court' }]
       })
       .customPage(PartyDetailsComponent, null, PartyDetailsAnswersComponent, (x) => {
         x.title = "Applicant party details"
@@ -52,6 +55,15 @@ export class CreateEventComponent implements OnInit {
     .event('AddParty')
       .customPage(PartyDetailsComponent, (x) => x.partyType = 'Party', PartyDetailsAnswersComponent)
       .build()
+    .event('AddClaim')
+      .customPage(ChoosePartiesComponent, null, ChoosePartiesAnswersComponent)
+      .customPage(ClaimValueComponent, null, DynamicFormAnswersComponent, (x) => {
+        x.title = 'Claim value'
+        x.questions = [
+          { type: 'currency', id: 'lowerValue', title: 'Claim lower value' },
+        { type: 'currency', id: 'higherValue', title: 'Claim higher value' }
+      ]})
+    .build()
     .toMap();
 
   private caseId: string;

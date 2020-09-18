@@ -1,31 +1,34 @@
 <div class="govuk-width-container">
-    <main class="govuk-main-wrapper">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <a (click)="backClicked()" href="javascript:void(0)" class="govuk-back-link">Back</a>
-                <button (click)="onEvent()" class="govuk-button pull-right" data-module="govuk-button" id="create-event-button"
-                    style="float:right">
-                    Start
-                </button>
-                <span style="float: right;" *ngIf="case">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <a (click)="backClicked()" href="javascript:void(0)" class="govuk-back-link">Back</a>
+        <button (click)="onEvent()" class="govuk-button" data-module="govuk-button" id="create-event-button"
+                style="float:right">
+          Start
+        </button>
+        <span style="float: right;" *ngIf="case">
                     <select [(ngModel)]="selectedValue" class="govuk-select" id="sort" name="sort" >
                       <option *ngFor="let action of actions(); let i = index" [value]="action">{{ eventDescriptions[action] }}</option>
                     </select>
                   </span>
-            </div>
-        </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
-                  <mat-tab label="History" id="history-tab-button">
-                    <app-case-history [history]="events"></app-case-history>
-                  </mat-tab>
-                  <mat-tab label="Parties">
-                        <app-parties-tab [caseId]="case.id" *ngIf="case" [parties]="case.data.parties"></app-parties-tab>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-        </div>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
+          <mat-tab label="History" id="history-tab-button">
+            <app-case-history [history]="events"></app-case-history>
+          </mat-tab>
+          <mat-tab label="Parties">
+            <app-parties-tab [caseId]="case.id" *ngIf="case" [parties]="case.data.parties"></app-parties-tab>
+          </mat-tab>
+          <mat-tab label="Claims">
+            <app-claims-tab></app-claims-tab>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
 
     </main>
 </div>
