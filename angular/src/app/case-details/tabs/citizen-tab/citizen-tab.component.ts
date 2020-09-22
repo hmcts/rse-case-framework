@@ -17,6 +17,7 @@ export class CitizenTabComponent implements OnInit {
   page = 1;
   pageSize = 10;
   searchForm: FormGroup;
+  hasMore: any;
 
   constructor(
     private http: HttpClient,
@@ -45,7 +46,8 @@ export class CitizenTabComponent implements OnInit {
       },
       headers: new HttpHeaders({ 'search-query': query})
     }).subscribe(result => {
-      this.citizens = result
+      this.citizens = result['citizens'];
+      this.hasMore = result['hasMore'];
     });
   }
 

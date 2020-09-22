@@ -54,15 +54,15 @@
       <nav *ngIf="citizens.length" class="hmcts-pagination" id="pagination-label">
         <p class="govuk-visually-hidden" aria-labelledby="pagination-label">Pagination navigation</p>
         <ul class="hmcts-pagination__list">
-          <li class="hmcts-pagination__item  hmcts-pagination__item--prev">
+          <li [style.visibility]=" page == 1 ? 'hidden' : 'visible'" class="hmcts-pagination__item  hmcts-pagination__item--prev">
             <a (click)="previous()" class="hmcts-pagination__link" href="javascript:void(0);">Previous<span class="govuk-visually-hidden"> set of pages</span></a>
           </li>
-          <li class="hmcts-pagination__item  hmcts-pagination__item--next">
+          <li [style.visibility]=" hasMore ? 'visible' : 'hidden'" class="hmcts-pagination__item  hmcts-pagination__item--next">
             <a (click)="next()" class="hmcts-pagination__link" href="javascript:void(0);">Next<span class="govuk-visually-hidden"> set of pages</span></a>
           </li>
         </ul>
       </nav>
-      <p *ngIf="citizens.length" class="hmcts-pagination__results">Showing <b>{{ startIndex() }}</b> to <b>{{(page - 1) * 10 + 10}}</b> of <b>354,000</b> results</p>
+      <p *ngIf="citizens.length" class="hmcts-pagination__results">Showing <b>{{ startIndex() }}</b> to <b>{{(page - 1) * 10 + 10}}</b></p>
     </ng-container>
   </div>
 </div>

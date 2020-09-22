@@ -57,7 +57,7 @@ public class TestDataGenerator implements InitializingBean {
                 .claimantReference("1111")
                 .defendantReference("33333")
                 .claimant(new Company("Hooli"))
-                .defendant(new Organisation("Wiki"))
+                .defendant(new Organisation("Acme Inc"))
                 .build();
         e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         controller.createCase(e);

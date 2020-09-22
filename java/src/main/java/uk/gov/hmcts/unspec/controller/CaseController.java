@@ -2,6 +2,7 @@ package uk.gov.hmcts.unspec.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,9 @@ public class CaseController {
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens")
     @Transactional
-    public List<Citizen> getParties(@PathVariable("id") String id,
-                                    @RequestHeader("search-query") String base64JSONQuery,
-                                    @RequestParam("page") Integer page) {
+    public Map<String, Object> getCitizens(@PathVariable("id") String id,
+                                           @RequestHeader("search-query") String base64JSONQuery,
+                                           @RequestParam("page") Integer page) {
         byte[] bytes = Base64.getDecoder().decode(base64JSONQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
         Condition condition = DSL.trueCondition()
@@ -55,13 +56,17 @@ public class CaseController {
             condition = condition.and(lower(CITIZEN.SURNAME).like("%" + surname.toLowerCase() + "%"));
         }
         int offset = (page - 1) * 10;
-        return create.select(CITIZEN.asterisk())
+        List<Citizen> result = create.select(CITIZEN.asterisk())
                 .from(CITIZEN)
                 .where(condition)
                 .orderBy(CITIZEN.DATE_OF_BIRTH.desc())
-                .limit(10)
+                .limit(11)
                 .offset(offset)
                 .fetchInto(Citizen.class);
+        Map<String, Object> m = Maps.newHashMap();
+        m.put("citizens", result.subList(0, Math.min(10, result.size())));
+        m.put("hasMore", result.size() > 10);
+        return m;
     }
 
 }
