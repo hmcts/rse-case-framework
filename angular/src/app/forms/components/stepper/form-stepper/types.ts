@@ -9,6 +9,7 @@ export interface StepComponent {
   validate: boolean;
   valid: () => boolean;
   form: FormGroup;
+  files?: FormData;
 }
 
 export interface StepType {
@@ -27,7 +28,8 @@ export interface DynamicPageBuilder {
 }
 
 export interface Event {
-  steps: Array<StepType>,
+  steps: Array<StepType>;
+  redirectTo?: string;
 }
 
 export class EventsBuilder {
@@ -51,7 +53,13 @@ export class EventsBuilder {
 export class EventBuilder {
   steps = new Array<StepType>();
   desc: string;
+  private redirectTo: string;
   constructor(private parent: EventsBuilder) {
+  }
+
+  redirectToTab(tab: string): EventBuilder {
+    this.redirectTo = tab;
+    return this;
   }
 
   customPage<Step extends StepComponent, Answer extends CheckAnswersComponent>
@@ -59,7 +67,7 @@ export class EventBuilder {
    answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void,
    formGroupName?: string
    ): EventBuilder {
-    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise, formGroupName: formGroupName });
+    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise, formGroupName: formGroupName});
     return this;
   }
 
@@ -70,6 +78,7 @@ export class EventBuilder {
   get(): Event {
     return {
       steps: this.steps,
+      redirectTo: this.redirectTo,
     };
   }
 

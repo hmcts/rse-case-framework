@@ -11,6 +11,7 @@ import {Validators} from "@angular/forms";
 import {ChoosePartiesComponent} from "../../forms/components/steps/choose-parties/choose-parties.component";
 import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose-parties/choose-parties-answers.component";
 import {ClaimValueComponent} from "../../forms/components/steps/claim-value/claim-value.component";
+import {ImportCitizensComponent} from "../../forms/components/steps/import-citizens/import-citizens.component";
 
 @Component({
   selector: 'app-create-event',
@@ -20,6 +21,7 @@ import {ClaimValueComponent} from "../../forms/components/steps/claim-value/clai
 export class CreateEventComponent implements OnInit {
   baseUrl = environment.baseUrl;
   pages: Array<StepType>;
+  files = new FormData()
   events = new EventsBuilder()
     .event('AddNotes')
       .dynamicPage('Add case notes')
@@ -53,9 +55,11 @@ export class CreateEventComponent implements OnInit {
       }, 'defendant')
     .build()
     .event('AddParty')
+      .redirectToTab('parties')
       .customPage(PartyDetailsComponent, (x) => x.partyType = 'Party', PartyDetailsAnswersComponent)
       .build()
     .event('AddClaim')
+      .redirectToTab('claims')
       .customPage(ChoosePartiesComponent, null, ChoosePartiesAnswersComponent)
       .customPage(ClaimValueComponent, null, DynamicFormAnswersComponent, (x) => {
         x.title = 'Claim value'
@@ -63,6 +67,16 @@ export class CreateEventComponent implements OnInit {
           { type: 'currency', id: 'lowerValue', title: 'Claim lower value' },
         { type: 'currency', id: 'higherValue', title: 'Claim higher value' }
       ]})
+    .build()
+    .event('ImportCitizens')
+      .redirectToTab('citizens')
+      .customPage(ImportCitizensComponent, null, DynamicFormAnswersComponent, (x) => {
+        x.title = 'Bulk import citizen details'
+        x.questions = [
+          { type: 'text', id: 'fileName', title: 'File name' },
+          { type: 'text', id: 'fileSize', title: 'File size' },
+          ]
+      }, null)
     .build()
     .toMap();
 
@@ -78,6 +92,7 @@ export class CreateEventComponent implements OnInit {
   ngOnInit(): void {
     this.eventId = this.route.snapshot.queryParamMap.get('id');
     this.caseId = this.route.snapshot.paramMap.get('id');
+    this.route.paramMap.subscribe(x => this.caseId = x.get('id'))
     if (null == this.eventId) {
       this.eventId = "CreateClaim";
     }
@@ -86,17 +101,30 @@ export class CreateEventComponent implements OnInit {
 
 
   onSubmit(data): void {
-    const payload = {
-      id: this.eventId,
-      data: data,
-    };
+    const isFile = this.files.has('file')
+    const payload = isFile
+      ? this.files
+      : {
+        id: this.eventId,
+        data: data,
+      };
     let url = '/api/cases';
     if (this.caseId) {
-      url += '/' + this.caseId + '/events'
+      url += '/' + this.caseId + (isFile
+        ? '/files'
+        : '/events')
     }
     this.http.post(this.baseUrl + url, payload, { observe: 'response' , withCredentials: true })
       .subscribe(resp => {
-        this.router.navigateByUrl(resp.headers.get('location'), { replaceUrl: true })
+        const redirectTo = this.events.get(this.eventId).redirectTo;
+        console.warn(redirectTo)
+        console.warn(this.eventId)
+
+        if (redirectTo) {
+          this.router.navigateByUrl(`/cases/${this.caseId}?tab=${redirectTo}`, {replaceUrl: true})
+        } else {
+          this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true})
+        }
       });
   }
 

@@ -1,5 +1,5 @@
 create table cases(
-  case_id bigserial primary key,
+  case_id bigserial not null primary key,
   description varchar
 );
 
@@ -18,3 +18,14 @@ create table unspec_cases(
     case_id bigint references cases(case_id) not null primary key,
     data jsonb not null
 );
+
+create table citizen(
+--     id serial not null primary key,
+    case_id bigint not null references cases(case_id),
+    title varchar,
+    forename varchar,
+    surname varchar,
+    date_of_birth date
+);
+
+
