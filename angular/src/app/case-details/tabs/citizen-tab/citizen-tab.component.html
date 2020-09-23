@@ -62,7 +62,7 @@
           </li>
         </ul>
       </nav>
-      <p *ngIf="citizens.length" class="hmcts-pagination__results">Showing <b>{{ startIndex() }}</b> to <b>{{(page - 1) * 10 + 10}}</b></p>
+      <p *ngIf="citizens.length" class="hmcts-pagination__results">Showing <b>{{ startIndex() }}</b> to <b>{{(page - 1) * 10 + 10}}</b> of <b>{{ citizens[0].count | number:'1.0':'en-UK' }}</b></p>
     </ng-container>
   </div>
 </div>

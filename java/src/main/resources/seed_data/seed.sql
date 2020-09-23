@@ -40,6 +40,7 @@ insert into citizen select
                                 forename.column1 as forname,
                                 surname.column1 as surname,
                                 date(to_timestamp(random() * 2000000001 -1000000001))
-from forenames forename, surnames surname, surnames x, surnames y, surnames z;
+from forenames forename, surnames surname, surnames x, surnames y, surnames z
+limit 120000;
 
 analyze;

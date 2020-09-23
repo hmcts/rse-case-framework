@@ -56,7 +56,7 @@ public class CaseController {
             condition = condition.and(lower(CITIZEN.SURNAME).like("%" + surname.toLowerCase() + "%"));
         }
         int offset = (page - 1) * 10;
-        List<Citizen> result = create.select(CITIZEN.asterisk())
+        List<Citizen> result = create.select(count().over(), CITIZEN.asterisk())
                 .from(CITIZEN)
                 .where(condition)
                 .orderBy(CITIZEN.DATE_OF_BIRTH.desc())
