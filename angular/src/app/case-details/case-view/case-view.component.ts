@@ -65,7 +65,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   backClicked() {
-    this.location.back();
+    this.router.navigateByUrl('/cases')
   }
 
   // Update the address bar URL to track the active tab.

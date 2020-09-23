@@ -16,6 +16,7 @@ export class CaseHistoryComponent implements OnInit {
     AddParty: 'Party added',
     SubmitAppeal: 'Appeal submitted',
     ImportCitizens: 'Citizen details bulk imported',
+    PurgeInactiveCitizens: 'Inactive citizen accounts removed',
   }
   constructor() { }
 

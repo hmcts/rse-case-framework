@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.controller.WebController;
+import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
 import uk.gov.hmcts.unspec.enums.Event;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.impl.DSL.count;
@@ -52,6 +54,15 @@ public class TestDataGenerator implements InitializingBean {
                 .build();
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         controller.createCase(e);
+
+        AddClaim a = AddClaim.builder()
+                .claimants(Map.of((long) 1, Boolean.TRUE))
+                .defendants(Map.of((long) 2, Boolean.TRUE))
+                .lowerValue(10000)
+                .higherValue(100000)
+                .build();
+        e = new ApiEventCreation(Event.AddClaim, new ObjectMapper().valueToTree(a));
+        controller.createEvent((long) 1, e);
 
         o = CreateClaim.builder()
                 .claimantReference("1111")
