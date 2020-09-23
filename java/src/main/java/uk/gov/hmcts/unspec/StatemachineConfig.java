@@ -34,7 +34,7 @@ import static org.jooq.generated.tables.Citizen.CITIZEN;
 public class StatemachineConfig {
 
     @Autowired
-    DefaultDSLContext create;
+    DefaultDSLContext jooq;
 
     @Autowired
     CaseRepository repository;
@@ -47,6 +47,7 @@ public class StatemachineConfig {
         StateMachine<State, Event> result = new StateMachine<>();
         result.initialState(State.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
+                .addUniversalEvent(Event.PurgeInactiveCitizens, this::purgeInactive)
                 .addFileUploadEvent(State.Created, Event.ImportCitizens, this::bulkImport)
                 .addEvent(State.Created, Event.AddParty, this::addParty)
                 .addEvent(State.Created, Event.AddClaim, this::addClaim)
@@ -55,17 +56,23 @@ public class StatemachineConfig {
         return result;
     }
 
+    private void purgeInactive(Long caseId, Object o) {
+        jooq.delete(CITIZEN)
+                .where(CITIZEN.STATUS.eq("Inactive"))
+                .execute();
+    }
+
     @SneakyThrows
     private void bulkImport(Long caseId, MultipartFile f) {
         try (InputStream is = f.getInputStream()) {
             CSVParser records = CSVFormat.DEFAULT.parse(new InputStreamReader(is));
             // Add the caseId column
             List<Object[]> rows = records.getRecords().stream().map(x -> {
-                return new Object[]{caseId, x.get(0), x.get(1), x.get(2), x.get(3)};
+                return new Object[]{caseId, x.get(0), x.get(1), x.get(2), x.get(3), x.get(4)};
             }).collect(Collectors.toList());
-            create.loadInto(CITIZEN)
+            jooq.loadInto(CITIZEN)
                     .loadArrays(rows)
-                    .fields(CITIZEN.CASE_ID, CITIZEN.TITLE, CITIZEN.FORENAME, CITIZEN.SURNAME, CITIZEN.DATE_OF_BIRTH)
+                    .fields(CITIZEN.CASE_ID, CITIZEN.TITLE, CITIZEN.FORENAME, CITIZEN.SURNAME, CITIZEN.DATE_OF_BIRTH, CITIZEN.STATUS)
                     .execute();
         }
     }

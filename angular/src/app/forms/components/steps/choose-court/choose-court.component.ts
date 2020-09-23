@@ -10,7 +10,6 @@ import {StepComponent} from "../../stepper/form-stepper/types";
 export class ChooseCourtComponent implements OnInit, StepComponent {
 
   @Input() form: FormGroup = new FormGroup({});
-  onSubmitted: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() { }
 

@@ -69,4 +69,16 @@ public class CaseController {
         return m;
     }
 
+    @SneakyThrows
+    @GetMapping(path = "/cases/{id}/citizens/inactive")
+    @Transactional
+    public Map<String, Object> countInactive(@PathVariable("id") String caseId) {
+        Map<String, Object> result = Maps.newHashMap();
+        int count = create.select(count())
+                .from(CITIZEN)
+                .where(CITIZEN.STATUS.eq("Inactive"))
+                .fetch().get(0).value1();
+        result.put("inactive_count", count);
+        return result;
+    }
 }

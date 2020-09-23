@@ -15,7 +15,6 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   @Input() form: FormGroup = new FormGroup({})
   defendants = new FormGroup({})
   claimants = new FormGroup({})
-  onSubmitted: EventEmitter<any>;
 
   constructor(
     private caseService: CaseService,

@@ -31,6 +31,7 @@ export class CaseViewComponent implements OnInit {
     AddClaim: 'Create a new claim',
     SubmitAppeal: 'Submit an appeal',
     ImportCitizens: 'Import citizens',
+    PurgeInactiveCitizens: 'Purge inactive citizens',
   }
 
   constructor(
