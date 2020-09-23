@@ -21,6 +21,7 @@ export class CaseViewComponent implements OnInit {
     history: 0,
     parties: 1,
     claims: 2,
+    citizens:3,
   };
 
   eventDescriptions = {
@@ -29,6 +30,7 @@ export class CaseViewComponent implements OnInit {
     AddParty: 'Add a party',
     AddClaim: 'Create a new claim',
     SubmitAppeal: 'Submit an appeal',
+    ImportCitizens: 'Import citizens',
   }
 
   constructor(

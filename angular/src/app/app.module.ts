@@ -34,6 +34,8 @@ import { ChoosePartiesComponent } from './forms/components/steps/choose-parties/
 import {ChoosePartiesAnswersComponent} from "./forms/components/steps/choose-parties/choose-parties-answers.component";
 import { ClaimsTabComponent } from './case-details/tabs/claims-tab/claims-tab.component';
 import { ClaimValueComponent } from './forms/components/steps/claim-value/claim-value.component';
+import { CitizenTabComponent } from './case-details/tabs/citizen-tab/citizen-tab.component';
+import { ImportCitizensComponent } from './forms/components/steps/import-citizens/import-citizens.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { ClaimValueComponent } from './forms/components/steps/claim-value/claim-
     ChoosePartiesAnswersComponent,
     ClaimsTabComponent,
     ClaimValueComponent,
+    CitizenTabComponent,
+    ImportCitizensComponent,
       ],
   imports: [
     BrowserModule,

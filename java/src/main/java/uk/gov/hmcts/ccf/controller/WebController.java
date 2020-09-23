@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccf.Case;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
@@ -118,6 +119,28 @@ public class WebController {
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP, EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
             .values(event.getId(), caseId, statemachine.getState().toString(), record.value1() + 1, LocalDateTime.now(), "Alex", "M")
             .execute();
+        return ResponseEntity.created(URI.create("/cases/" + caseId))
+                .body("");
+    }
+
+    @PostMapping( path = "/cases/{caseId}/files")
+    @Transactional
+    public ResponseEntity<String> fileUpload(@PathVariable("caseId") Long caseId,
+                                             @RequestParam("eventId") String eventId,
+                                             @RequestParam("file") MultipartFile file) {
+        Record2<Integer, String> record = create.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
+                .from(EVENTS)
+                .where(EVENTS.CASE_ID.eq(caseId))
+                .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
+                .limit(1)
+                .fetchSingle();
+
+        StateMachine<State, Event> statemachine = getStatemachine(record.component2());
+        statemachine.handleFileUpload(record.component2(), caseId, Event.valueOf(eventId), file);
+        create.insertInto(EVENTS)
+                .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP, EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
+                .values(eventId, caseId, statemachine.getState().toString(), record.value1() + 1, LocalDateTime.now(), "Alex", "M")
+                .execute();
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }

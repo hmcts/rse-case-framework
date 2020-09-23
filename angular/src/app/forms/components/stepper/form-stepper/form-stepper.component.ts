@@ -23,6 +23,7 @@ export class FormStepperComponent implements OnInit {
   @ViewChild(StepperContainerComponent, { static: true}) stepper: StepperContainerComponent
   @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>
   @Input() pages: Array<StepType> = [];
+  @Input() files: FormData;
   @Output() onSubmit = new EventEmitter<any>()
   validate = false;
   forms = new FormArray([]);

@@ -6,5 +6,6 @@ public enum Event {
     AddClaim,
     AddNotes,
     CloseCase,
+    ImportCitizens,
     SubmitAppeal
 }

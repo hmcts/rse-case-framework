@@ -1,5 +1,6 @@
 import {AppPage} from './app.po';
 import {browser, by, element, logging, protractor} from 'protractor';
+import path from "path";
 
 describe('workspace-project App', () => {
   let page: AppPage;
@@ -94,6 +95,22 @@ describe('workspace-project App', () => {
     element(by.id('search-button')).click();
     let count = element.all(by.css('.govuk-table__row')).count();
     expect(count).toEqual(2); // Header and single row
+  });
+
+  it('supports bulk upload of citizens', () => {
+    browser.get(browser.baseUrl + '/cases/2?tab=citizens');
+    element(by.id('bulk-add-citizens')).click();
+    var fileToUpload = 'src/assets/citizens.csv',
+      absolutePath = path.resolve(process.cwd(), fileToUpload);
+    element(by.id('file')).sendKeys(absolutePath);
+    element(by.id('submit-button')).click();
+    // Check answers
+    element(by.id('submit-button')).click();
+
+    expect(browser.getCurrentUrl()).toEndWith('/cases/2?tab=citizens');
+    let count = element.all(by.css('.govuk-table__row')).count();
+    // 10 rows should be displayed plus the header
+    expect(count).toEqual(11);
   });
 
   afterEach(async () => {

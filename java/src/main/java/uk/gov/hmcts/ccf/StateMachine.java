@@ -2,15 +2,14 @@ package uk.gov.hmcts.ccf;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Set;
@@ -21,6 +20,7 @@ public class StateMachine<State, Event> {
     private State state;
     private Multimap<String, Transition> transitions = HashMultimap.create();
     private Collection<Transition> universalEvents = Lists.newArrayList();
+    private Table<String, String, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
 
     private Class clazz;
     private BiConsumer initialHandler;
@@ -43,6 +43,15 @@ public class StateMachine<State, Event> {
         Object instance = new ObjectMapper().treeToValue(data, clazz);
         initialHandler.accept(caseId, instance);
         state = initialState;
+    }
+
+    public void handleFileUpload(String state, Long caseId, Event event, MultipartFile file) {
+        BiConsumer<Long, MultipartFile> handler = this.uploadHandlers.get(state, event.toString());
+        if (handler != null) {
+            handler.accept(caseId, file);
+        } else {
+            throw new RuntimeException("No file upload handler for " + event);
+        }
     }
 
     @SneakyThrows
@@ -87,6 +96,11 @@ public class StateMachine<State, Event> {
         return this;
     }
 
+    public <T> StateMachine<State, Event> addFileUploadEvent(State state, Event event, BiConsumer<Long, MultipartFile> consumer) {
+        uploadHandlers.put(state.toString(), event.toString(), consumer);
+        return this;
+    }
+
     public Set<String> getAvailableActions(State state) {
         return getAvailableActions(state.toString());
     }
@@ -99,6 +113,8 @@ public class StateMachine<State, Event> {
         for (Transition universalEvent : universalEvents) {
             result.add(universalEvent.getEvent().toString());
         }
+
+        result.addAll(this.uploadHandlers.columnKeySet());
 
         return result;
     }
