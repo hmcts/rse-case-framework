@@ -7,5 +7,6 @@ public enum Event {
     AddNotes,
     CloseCase,
     ImportCitizens,
+    PurgeInactiveCitizens,
     SubmitAppeal
 }

@@ -19,7 +19,6 @@ export class ImportCitizensComponent implements OnInit, StepComponent {
 
   @Input() files = new FormData()
   form: FormGroup = new FormGroup({})
-  onSubmitted: EventEmitter<any>;
   fileToUpload: File = null;
 
   valid(): boolean {

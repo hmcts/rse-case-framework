@@ -27,7 +27,6 @@ import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal
 
-import javax.persistence.EntityManager
 import javax.sql.DataSource
 import java.time.LocalDate
 
@@ -46,9 +45,6 @@ class WebControllerSpecification extends Specification {
 
     @Autowired
     private DataSource dataSource
-
-    @Autowired
-    private EntityManager entityManager
 
     @Autowired
     private MockMvc mockMvc

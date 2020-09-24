@@ -11,4 +11,5 @@ public class Citizen {
     private String forename;
     private String surname;
     private Date date_of_birth;
+    private String status;
 }

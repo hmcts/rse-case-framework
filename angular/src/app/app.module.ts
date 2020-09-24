@@ -36,6 +36,7 @@ import { ClaimsTabComponent } from './case-details/tabs/claims-tab/claims-tab.co
 import { ClaimValueComponent } from './forms/components/steps/claim-value/claim-value.component';
 import { CitizenTabComponent } from './case-details/tabs/citizen-tab/citizen-tab.component';
 import { ImportCitizensComponent } from './forms/components/steps/import-citizens/import-citizens.component';
+import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/purge-inactive.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { ImportCitizensComponent } from './forms/components/steps/import-citizen
     ClaimValueComponent,
     CitizenTabComponent,
     ImportCitizensComponent,
+    PurgeInactiveComponent,
       ],
   imports: [
     BrowserModule,
@@ -83,3 +85,4 @@ import { ImportCitizensComponent } from './forms/components/steps/import-citizen
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

@@ -12,7 +12,6 @@ import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.unspec.model.UnspecCase;
 import uk.gov.hmcts.unspec.repository.CaseRepository;
 
-import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,9 +20,6 @@ import static org.jooq.generated.Tables.UNSPEC_CASES;
 
 @Service
 public class CaseHandlerImpl implements CaseHandler {
-
-    @Autowired
-    EntityManager em;
 
     @Autowired
     DefaultDSLContext create;

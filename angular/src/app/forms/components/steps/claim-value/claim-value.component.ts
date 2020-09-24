@@ -10,7 +10,6 @@ import {FormControl, FormGroup} from "@angular/forms";
 export class ClaimValueComponent implements OnInit, StepComponent {
 
   @Input() form: FormGroup = new FormGroup({})
-  onSubmitted: EventEmitter<any>;
   constructor() { }
 
   ngOnInit(): void {

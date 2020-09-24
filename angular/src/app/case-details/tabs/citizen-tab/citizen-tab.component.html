@@ -40,6 +40,7 @@
           <th scope="col" class="govuk-table__header">Forename</th>
           <th scope="col" class="govuk-table__header">Surname</th>
           <th scope="col" class="govuk-table__header">Date of birth</th>
+          <th scope="col" class="govuk-table__header">Status</th>
         </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -48,6 +49,11 @@
           <td class="govuk-table__cell">{{citizen.forename}}</td>
           <td class="govuk-table__cell">{{citizen.surname}}</td>
           <td class="govuk-table__cell">{{citizen.date_of_birth | date:'mediumDate'}}</td>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag" [class.govuk-tag--grey]="citizen.status == 'Inactive'">
+              {{citizen.status}}
+            </strong>
+          </td>
         </tr>
         </tbody>
       </table>

@@ -21,7 +21,6 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   type = 'radio';
   @Input() questions: Question[];
   @Input() title: string;
-  @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
   @Input() validate: boolean;
 
   ngOnInit(): void {
@@ -34,14 +33,6 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
         let c = new FormControl('', question.validators);
         this.form.addControl(question.id, c);
       }
-    }
-  }
-
-  onSubmit() {
-    // Show any validation errors
-    this.validate = true;
-    if (this.form.valid) {
-      this.onSubmitted.emit(this.form.value)
     }
   }
 

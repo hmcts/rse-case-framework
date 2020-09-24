@@ -61,12 +61,6 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
     this.form.addControl('partyType', this.partyTypeControl);
   }
 
-  @Output() onSubmitted: EventEmitter<any> = new EventEmitter<any>();
-
-  onSubmit(data: any) {
-    this.onSubmitted.emit(data);
-  }
-
   validate: boolean;
 
   valid(): boolean {

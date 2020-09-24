@@ -20,12 +20,12 @@ create table unspec_cases(
 );
 
 create table citizen(
---     id serial not null primary key,
     case_id bigint not null references cases(case_id),
     title varchar,
     forename varchar,
     surname varchar,
-    date_of_birth date
+    date_of_birth date,
+        status varchar not null
 );
 
 

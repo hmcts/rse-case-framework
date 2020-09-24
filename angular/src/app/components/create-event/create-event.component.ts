@@ -12,6 +12,7 @@ import {ChoosePartiesComponent} from "../../forms/components/steps/choose-partie
 import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose-parties/choose-parties-answers.component";
 import {ClaimValueComponent} from "../../forms/components/steps/claim-value/claim-value.component";
 import {ImportCitizensComponent} from "../../forms/components/steps/import-citizens/import-citizens.component";
+import {PurgeInactiveComponent} from "../../forms/components/steps/purge-inactive/purge-inactive.component";
 
 @Component({
   selector: 'app-create-event',
@@ -76,8 +77,17 @@ export class CreateEventComponent implements OnInit {
           { type: 'text', id: 'fileName', title: 'File name' },
           { type: 'text', id: 'fileSize', title: 'File size' },
           ]
-      }, null)
+      })
     .build()
+    .event('PurgeInactiveCitizens')
+      .redirectToTab('citizens')
+      .customPage(PurgeInactiveComponent, null, DynamicFormAnswersComponent, (x) => {
+        x.title = 'Purge inactive citizen accounts'
+        x.questions = [
+          { type: 'text', id: 'inactive_count', title: 'Number of inactive accounts' },
+        ]
+      })
+      .build()
     .toMap();
 
   private caseId: string;

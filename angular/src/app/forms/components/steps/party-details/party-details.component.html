@@ -1,8 +1,8 @@
 <h1 class="govuk-heading-l">Enter {{ partyType }}'s details</h1>
 <app-radio [form]="form" [input]="input" [control]="partyTypeControl"></app-radio>
 <div [ngSwitch]="partyTypeControl.value">
-  <app-dynamic-form [validate]="validate" (onSubmitted)="onSubmit($event)" [form]="form" [questions]="partyTypeQuestions['Individual']" *ngSwitchCase="'Individual'"></app-dynamic-form>
-  <app-dynamic-form [validate]="validate" (onSubmitted)="onSubmit($event)" [form]="form" [questions]="partyTypeQuestions['Company']" *ngSwitchCase="'Company'"></app-dynamic-form>
-  <app-dynamic-form [validate]="validate" (onSubmitted)="onSubmit($event)" [form]="form" [questions]="partyTypeQuestions['Organisation']" *ngSwitchCase="'Organisation'"></app-dynamic-form>
-  <app-dynamic-form [validate]="validate" (onSubmitted)="onSubmit($event)" [form]="form" [questions]="partyTypeQuestions['SoleTrader']" *ngSwitchCase="'SoleTrader'"></app-dynamic-form>
+  <app-dynamic-form [validate]="validate" [form]="form" [questions]="partyTypeQuestions['Individual']" *ngSwitchCase="'Individual'"></app-dynamic-form>
+  <app-dynamic-form [validate]="validate" [form]="form" [questions]="partyTypeQuestions['Company']" *ngSwitchCase="'Company'"></app-dynamic-form>
+  <app-dynamic-form [validate]="validate" [form]="form" [questions]="partyTypeQuestions['Organisation']" *ngSwitchCase="'Organisation'"></app-dynamic-form>
+  <app-dynamic-form [validate]="validate" [form]="form" [questions]="partyTypeQuestions['SoleTrader']" *ngSwitchCase="'SoleTrader'"></app-dynamic-form>
 </div>

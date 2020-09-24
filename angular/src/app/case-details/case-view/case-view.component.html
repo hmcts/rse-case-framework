@@ -16,7 +16,7 @@
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
+        <mat-tab-group animationDuration="0ms" [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
           <mat-tab label="History" id="history-tab-button">
             <app-case-history [history]="events"></app-case-history>
           </mat-tab>

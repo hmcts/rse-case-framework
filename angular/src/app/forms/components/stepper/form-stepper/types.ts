@@ -5,7 +5,6 @@ import {CheckAnswerDirective, CheckAnswersComponent} from "../../check-answers/t
 import {DynamicFormAnswersComponent} from "../../../dynamic-form/dynamic-form-answers.component";
 
 export interface StepComponent {
-  onSubmitted: EventEmitter<any>;
   validate: boolean;
   valid: () => boolean;
   form: FormGroup;

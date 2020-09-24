@@ -35,11 +35,14 @@ with surnames as (
          ('Arthur')
      )
 insert into citizen select
-                                1,
-                                'Mr',
-                                forename.column1 as forname,
-                                surname.column1 as surname,
-                                date(to_timestamp(random() * 2000000001 -1000000001))
+                        1,
+                        'Mr',
+                        forename.column1 as forname,
+                        surname.column1 as surname,
+                        date(to_timestamp(random() * 2000000001 -1000000001)),
+                        case when round(random()*100) + 1 between 0 and 75 then 'Active'
+                             else 'Inactive'
+                            end
 from forenames forename, surnames surname, surnames x, surnames y, surnames z
 limit 120000;
 
