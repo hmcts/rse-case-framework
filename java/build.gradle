@@ -83,5 +83,3 @@ bootRun {
 	}
 }
 
-task generateSchema(type: uk.gov.hmcts.ccf.build.JsonSchemaGenerator)
-

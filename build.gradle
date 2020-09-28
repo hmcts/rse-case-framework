@@ -1,4 +1,4 @@
-task build(dependsOn: ['java:bootJar', 'java:generateSchema'])
+task build(dependsOn: ['java:bootJar'])
 
 task functionalTest(type: Exec, dependsOn: [build]) {
     environment 'NG_COMMAND', 'ng e2e --configuration docker-compose --protractor-config functional/protractor.conf.js'
