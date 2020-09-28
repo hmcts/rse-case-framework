@@ -1,14 +1,9 @@
-// We depend on tasks in the java project.
-evaluationDependsOn(":java")
-
-task build(dependsOn: ':java:generateSchema')
-
-task test(type:Exec, dependsOn: build) {
+task test(type:Exec) {
   workingDir rootProject.projectDir
   commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'test', '--watch=false'
 }
 
-task e2e(type:Exec, dependsOn: build) {
+task e2e(type:Exec) {
   workingDir rootProject.projectDir
   commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'e2e'
 }
