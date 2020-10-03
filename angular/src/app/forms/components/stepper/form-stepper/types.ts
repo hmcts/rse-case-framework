@@ -23,7 +23,7 @@ export interface DynamicPageBuilder {
   question(id: string, type: string, title: string, validators?: ValidatorFn[] ): DynamicPageBuilder;
   questions(question: Question | Question[]): DynamicPageBuilder;
 
-  build(): EventBuilder;
+  buildPage(): EventBuilder;
 }
 
 export interface Event {
@@ -49,6 +49,15 @@ export class EventsBuilder {
   }
 }
 
+export interface CustomStepBuilder<Step extends StepComponent> {
+  buildPage(): EventBuilder;
+  withInitializer(initialiser: (component: Step) => void): CustomStepBuilder<Step>;
+  withAnswers<Answers extends CheckAnswersComponent>(answersComponent: Type<Answers>,
+                                                     initialiser?: (component: Answers) => void)
+                                                     : CustomStepBuilder<Step>;
+  withFormGroupName(name: string): CustomStepBuilder<Step>;
+}
+
 export class EventBuilder {
   steps = new Array<StepType>();
   desc: string;
@@ -61,16 +70,34 @@ export class EventBuilder {
     return this;
   }
 
-  customPage<Step extends StepComponent, Answer extends CheckAnswersComponent>
-  (component: Type<Step>, initialiser?: (component: Step) => void ,
-   answersType?: Type<Answer>, answerInitialise?: (component: Answer) => void,
-   formGroupName?: string
-   ): EventBuilder {
-    this.steps.push({ type: component, initialise: initialiser, answersType, answerInitialise, formGroupName: formGroupName});
-    return this;
+  customPage<Step extends StepComponent>(component: Type<Step>) : CustomStepBuilder<Step> {
+    const parent = this;
+    const step: StepType = {type: component}
+    parent.steps.push(step);
+    return new class implements CustomStepBuilder<Step> {
+      withInitializer(initialiser: (component: Step) => void): CustomStepBuilder<Step> {
+        step.initialise = initialiser;
+        return this;
+      }
+
+      withAnswers<Answers extends CheckAnswersComponent>(answersComponent: Type<Answers>, initialiser?: (component: Answers) => void) {
+        step.answersType = answersComponent;
+        step.answerInitialise = initialiser;
+        return this;
+      }
+
+      withFormGroupName(name: string): CustomStepBuilder<Step> {
+        step.formGroupName = name;
+        return this;
+      }
+
+      buildPage(): EventBuilder {
+        return parent;
+      }
+    }
   }
 
-  build(): EventsBuilder {
+  buildEvent(): EventsBuilder {
     return this.parent;
   }
 
@@ -100,15 +127,17 @@ export class EventBuilder {
         return result;
       }
 
-      build(): EventBuilder {
-        builder.customPage(DynamicFormComponent, (x) => {
+      buildPage(): EventBuilder {
+        builder.customPage(DynamicFormComponent)
+          .withInitializer((x) => {
             x.title = title;
             x.questions = questions;
-          }, DynamicFormAnswersComponent,
-          (x) => {
-            x.title = title;
-            x.questions = questions
-          });
+          })
+          .withAnswers(DynamicFormAnswersComponent,
+            (x) => {
+              x.title = title;
+              x.questions = questions
+            });
         return builder;
       }
     }();
