@@ -22,7 +22,7 @@ sourceSets {
 
 dependencies {
 	implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-	compileOnly 'org.projectlombok:lombok:1.18.12'
+	compileOnly 'org.projectlombok:lombok:1.18.14'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
