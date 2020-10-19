@@ -35,7 +35,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-jdbc")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 
-	implementation group: 'com.google.guava', name: 'guava', version: '29.0-jre'
+	implementation group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
