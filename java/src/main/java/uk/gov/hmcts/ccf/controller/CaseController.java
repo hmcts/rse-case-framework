@@ -147,7 +147,7 @@ public class CaseController {
 
     @GetMapping(path = "/case_count")
     public int caseCount() {
-        return jooq.select(count()).from(EVENTS).fetchSingle().value1();
+        return jooq.select(count()).from(CASES).fetchSingle().value1();
     }
 
     private StateMachine getStatemachine(String state) {

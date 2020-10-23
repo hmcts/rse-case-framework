@@ -30,6 +30,7 @@ import uk.gov.hmcts.unspec.event.SubmitAppeal
 import javax.sql.DataSource
 import java.time.LocalDate
 
+import static org.jooq.generated.Tables.CASES
 import static org.jooq.generated.Tables.EVENTS
 import static org.jooq.impl.DSL.count
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -151,6 +152,6 @@ class CaseControllerSpecification extends Specification {
     private int caseCount() {
         // Read in a new transaction.
         DSLContext create = DSL.using(dataSource, SQLDialect.DEFAULT);
-        return create.select(count()).from(EVENTS).fetchSingle().value1();
+        return create.select(count()).from(CASES).fetchSingle().value1();
     }
 }
