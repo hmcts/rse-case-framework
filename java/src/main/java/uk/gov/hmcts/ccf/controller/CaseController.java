@@ -54,12 +54,12 @@ public class CaseController {
     CaseHandler caseHandler;
 
     @Autowired
-    DefaultDSLContext create;
+    DefaultDSLContext jooq;
 
     @PostMapping(path = "/cases")
     @Transactional
     public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event) {
-        CasesRecord c = create.newRecord(CASES);
+        CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<State, Event> statemachine = stateMachineSupplier.build();
         insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1);
@@ -83,7 +83,7 @@ public class CaseController {
 
     @GetMapping(path = "/cases/{caseId}")
     public ApiCase getCase(@PathVariable("caseId") Long caseId) {
-        Record result = create.select(EVENTS.STATE)
+        Record result = jooq.select(EVENTS.STATE)
             .from(EVENTS)
             .where(EVENTS.CASE_ID.eq(Long.valueOf(caseId)))
             .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
@@ -98,7 +98,7 @@ public class CaseController {
 
     @GetMapping(path = "/cases/{caseId}/events")
     public List<ApiEventHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
-        List<ApiEventHistory> result = create.select()
+        List<ApiEventHistory> result = jooq.select()
             .from(EVENTS)
             .where(EVENTS.CASE_ID.eq(caseId))
             .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
@@ -112,7 +112,7 @@ public class CaseController {
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event) {
-        Record2<Integer, String> record = create.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
+        Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
                 .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
@@ -131,7 +131,7 @@ public class CaseController {
     public ResponseEntity<String> fileUpload(@PathVariable("caseId") Long caseId,
                                              @RequestParam("eventId") String eventId,
                                              @RequestParam("file") MultipartFile file) {
-        Record2<Integer, String> record = create.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
+        Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
                 .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
@@ -147,7 +147,7 @@ public class CaseController {
 
     @GetMapping(path = "/case_count")
     public int caseCount() {
-        return create.select(count()).from(EVENTS).fetchSingle().value1();
+        return jooq.select(count()).from(EVENTS).fetchSingle().value1();
     }
 
     private StateMachine getStatemachine(String state) {
@@ -157,7 +157,7 @@ public class CaseController {
     }
 
     private void insertEvent(String eventId, Long caseId, State state, int sequence) {
-        create.insertInto(EVENTS)
+        jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
                 EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
             .values(eventId, caseId, state.toString(), sequence,
