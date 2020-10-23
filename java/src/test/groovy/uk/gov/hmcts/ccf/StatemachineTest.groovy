@@ -2,15 +2,15 @@ package uk.gov.hmcts.ccf
 
 
 import spock.lang.Specification
+import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.enums.Event
 import uk.gov.hmcts.unspec.enums.State
-import uk.gov.hmcts.unspec.StatemachineConfig
 
 class StatemachineTest extends Specification {
 
     def "no state transition"() {
         given:
-        def machine = new StatemachineConfig().build()
+        def machine = new CaseHandlerImpl().build()
 
         when:
         machine.handleEvent(1, Event.SubmitAppeal, null)
@@ -21,7 +21,7 @@ class StatemachineTest extends Specification {
 
     def "returns available actions"() {
         given:
-        def machine = new StatemachineConfig().build()
+        def machine = new CaseHandlerImpl().build()
 
         when:
         def actions = machine.getAvailableActions(State.Created)

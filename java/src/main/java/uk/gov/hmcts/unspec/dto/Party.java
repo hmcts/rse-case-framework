@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property="partyType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "partyType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Individual.class, name = "Individual"),
         @JsonSubTypes.Type(value = Company.class, name = "Company"),

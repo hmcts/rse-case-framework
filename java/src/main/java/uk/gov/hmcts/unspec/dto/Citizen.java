@@ -1,5 +1,6 @@
 package uk.gov.hmcts.unspec.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ public class Citizen {
     private String title;
     private String forename;
     private String surname;
-    private Date date_of_birth;
+    @JsonProperty("date_of_birth")
+    private Date dateOfBirth;
     private String status;
 }

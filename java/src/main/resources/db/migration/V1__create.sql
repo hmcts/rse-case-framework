@@ -1,6 +1,5 @@
 create table cases(
-  case_id bigserial not null primary key,
-  description varchar
+  case_id bigserial not null primary key
 );
 
 create table events(

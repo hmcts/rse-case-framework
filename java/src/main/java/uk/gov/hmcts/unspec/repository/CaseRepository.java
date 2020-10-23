@@ -41,7 +41,7 @@ public class CaseRepository {
 
     @SneakyThrows
     public UnspecCase load(Long l) {
-        String data =create.select(UNSPEC_CASES.DATA)
+        String data = create.select(UNSPEC_CASES.DATA)
                 .from(UNSPEC_CASES)
                 .where(UNSPEC_CASES.CASE_ID.eq(l))
                 .fetchSingle(UNSPEC_CASES.DATA).data();

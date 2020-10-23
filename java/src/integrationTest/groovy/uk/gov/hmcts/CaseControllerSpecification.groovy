@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import uk.gov.hmcts.ccf.api.ApiCase
 import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.WebController
+import uk.gov.hmcts.ccf.controller.CaseController
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.enums.Event
@@ -30,6 +30,7 @@ import uk.gov.hmcts.unspec.event.SubmitAppeal
 import javax.sql.DataSource
 import java.time.LocalDate
 
+import static org.jooq.generated.Tables.CASES
 import static org.jooq.generated.Tables.EVENTS
 import static org.jooq.impl.DSL.count
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -38,10 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
-class WebControllerSpecification extends Specification {
+class CaseControllerSpecification extends Specification {
 
     @Autowired
-    private WebController controller
+    private CaseController controller
 
     @Autowired
     private DataSource dataSource
@@ -151,6 +152,6 @@ class WebControllerSpecification extends Specification {
     private int caseCount() {
         // Read in a new transaction.
         DSLContext create = DSL.using(dataSource, SQLDialect.DEFAULT);
-        return create.select(count()).from(EVENTS).fetchSingle().value1();
+        return create.select(count()).from(CASES).fetchSingle().value1();
     }
 }

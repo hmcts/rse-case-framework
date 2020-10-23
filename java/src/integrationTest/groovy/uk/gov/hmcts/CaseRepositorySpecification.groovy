@@ -30,7 +30,6 @@ class CaseRepositorySpecification extends Specification {
     def "Saves and loads the case"() {
         given:
         CasesRecord parent = create.newRecord(CASES);
-        parent.setDescription("Never going to happen");
         parent.store();
 
         UnspecCase c = new UnspecCase(parent.getCaseId(), List.of(new Company()))
@@ -47,7 +46,6 @@ class CaseRepositorySpecification extends Specification {
     def "Updates a case"() {
         given:
         CasesRecord parent = create.newRecord(CASES);
-        parent.setDescription("Never going to happen");
         parent.store();
 
         UnspecCase c = new UnspecCase(parent.getCaseId(),List.of(new Company(), new Company()))
