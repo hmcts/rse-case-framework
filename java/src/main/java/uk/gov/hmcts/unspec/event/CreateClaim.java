@@ -1,7 +1,12 @@
 package uk.gov.hmcts.unspec.event;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import uk.gov.hmcts.unspec.dto.LegalRepresentative;
 import uk.gov.hmcts.unspec.dto.Party;
 

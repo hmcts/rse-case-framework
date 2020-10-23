@@ -101,7 +101,8 @@ public class CaseHandlerImpl implements CaseHandler {
             }).collect(Collectors.toList());
             jooq.loadInto(CITIZEN)
                     .loadArrays(rows)
-                    .fields(CITIZEN.CASE_ID, CITIZEN.TITLE, CITIZEN.FORENAME, CITIZEN.SURNAME, CITIZEN.DATE_OF_BIRTH, CITIZEN.STATUS)
+                    .fields(CITIZEN.CASE_ID, CITIZEN.TITLE, CITIZEN.FORENAME, CITIZEN.SURNAME, CITIZEN.DATE_OF_BIRTH,
+                            CITIZEN.STATUS)
                     .execute();
         }
     }

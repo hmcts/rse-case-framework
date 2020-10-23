@@ -47,11 +47,11 @@ public class TestDataGenerator implements InitializingBean {
         }
 
         CreateClaim o = CreateClaim.builder()
-        .claimantReference("666")
-                .defendantReference("999")
-                .claimant(new Company("Acme Ltd"))
-                .defendant(new Organisation("Megacorp Inc"))
-                .build();
+            .claimantReference("666")
+            .defendantReference("999")
+            .claimant(new Company("Acme Ltd"))
+            .defendant(new Organisation("Megacorp Inc"))
+            .build();
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         controller.createCase(e);
 

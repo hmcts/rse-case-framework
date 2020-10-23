@@ -9,7 +9,13 @@ import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.dto.Citizen;
@@ -41,9 +47,9 @@ public class CaseController {
     @GetMapping(path = "/cases/{id}/citizens")
     @Transactional
     public Map<String, Object> getCitizens(@PathVariable("id") String id,
-                                           @RequestHeader("search-query") String base64JSONQuery,
+                                           @RequestHeader("search-query") String base64JsonQuery,
                                            @RequestParam("page") Integer page) {
-        byte[] bytes = Base64.getDecoder().decode(base64JSONQuery.getBytes());
+        byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
         Condition condition = DSL.trueCondition()
                 .and(CITIZEN.CASE_ID.eq(Long.valueOf(id)));
