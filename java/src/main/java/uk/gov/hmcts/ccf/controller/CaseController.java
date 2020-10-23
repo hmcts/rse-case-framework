@@ -60,21 +60,16 @@ public class CaseController {
     @Transactional
     public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event) {
         CasesRecord c = create.newRecord(CASES);
-        c.setDescription("Never going to happen");
         c.store();
         StateMachine<State, Event> statemachine = stateMachineSupplier.build();
-        create.insertInto(EVENTS)
-            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
-                EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-            .values(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState().toString(), 1,
-                LocalDateTime.now(), "Alex", "M")
-            .execute();
+        insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1);
 
         statemachine.onCreated(c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
                 .body(new ApiCase(c.getCaseId(), statemachine.getState().toString(), Sets.newHashSet(), null));
     }
+
 
     @SneakyThrows
     @GetMapping(path = "/search")
@@ -126,12 +121,7 @@ public class CaseController {
 
         StateMachine<State, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
-        create.insertInto(EVENTS)
-            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
-                EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-            .values(event.getId(), caseId, statemachine.getState().toString(), record.value1() + 1, LocalDateTime.now(),
-                "Alex", "M")
-            .execute();
+        insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -150,12 +140,7 @@ public class CaseController {
 
         StateMachine<State, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleFileUpload(record.component2(), caseId, Event.valueOf(eventId), file);
-        create.insertInto(EVENTS)
-                .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
-                    EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-                .values(eventId, caseId, statemachine.getState().toString(), record.value1() + 1, LocalDateTime.now(),
-                    "Alex", "M")
-                .execute();
+        insertEvent(eventId, caseId, statemachine.getState(), record.value1() + 1);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -169,5 +154,14 @@ public class CaseController {
         StateMachine<State, Event> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;
+    }
+
+    private void insertEvent(String eventId, Long caseId, State state, int sequence) {
+        create.insertInto(EVENTS)
+            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
+                EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
+            .values(eventId, caseId, state.toString(), sequence,
+                LocalDateTime.now(), "Alex", "M")
+            .execute();
     }
 }
