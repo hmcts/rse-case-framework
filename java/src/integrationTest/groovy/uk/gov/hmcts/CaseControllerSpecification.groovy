@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import uk.gov.hmcts.ccf.api.ApiCase
 import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.WebController
+import uk.gov.hmcts.ccf.controller.CaseController
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.enums.Event
@@ -38,10 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
-class WebControllerSpecification extends Specification {
+class CaseControllerSpecification extends Specification {
 
     @Autowired
-    private WebController controller
+    private CaseController controller
 
     @Autowired
     private DataSource dataSource

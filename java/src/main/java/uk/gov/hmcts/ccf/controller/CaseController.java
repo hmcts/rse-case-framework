@@ -45,7 +45,7 @@ import static org.jooq.impl.DSL.count;
 
 @RestController
 @RequestMapping("/api")
-public class WebController {
+public class CaseController {
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;

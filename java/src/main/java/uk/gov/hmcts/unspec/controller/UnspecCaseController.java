@@ -32,7 +32,7 @@ import static org.jooq.impl.DSL.lower;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = {"Location"})
-public class CaseController {
+public class UnspecCaseController {
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;
