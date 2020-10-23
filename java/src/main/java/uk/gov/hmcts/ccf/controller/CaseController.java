@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 
 import static org.jooq.generated.Tables.CASES;
 import static org.jooq.generated.Tables.EVENTS;
-import static org.jooq.impl.DSL.count;
 
 @RestController
 @RequestMapping("/api")
@@ -143,11 +142,6 @@ public class CaseController {
         insertEvent(eventId, caseId, statemachine.getState(), record.value1() + 1);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
-    }
-
-    @GetMapping(path = "/case_count")
-    public int caseCount() {
-        return jooq.select(count()).from(CASES).fetchSingle().value1();
     }
 
     private StateMachine getStatemachine(String state) {
