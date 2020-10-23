@@ -34,7 +34,6 @@ import static org.jooq.impl.DSL.count;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200", exposedHeaders = {"Location"})
 public class WebController {
 
     @Autowired
@@ -58,7 +57,6 @@ public class WebController {
             .values(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState().toString(), 1, LocalDateTime.now(), "Alex", "M")
             .execute();
 
-        StateMachine<State, Event> statemachine2 = stateMachineSupplier.build();
         statemachine.onCreated(c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
