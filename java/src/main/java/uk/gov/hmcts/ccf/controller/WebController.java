@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccf.Case;
 import uk.gov.hmcts.ccf.CaseHandler;
-import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.unspec.StatemachineConfig;
 import uk.gov.hmcts.ccf.api.ApiCase;
+import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
+import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
 
@@ -37,7 +37,7 @@ import static org.jooq.impl.DSL.count;
 public class WebController {
 
     @Autowired
-    StatemachineConfig stateMachineSupplier;
+    CaseHandlerImpl stateMachineSupplier;
 
     @Autowired
     CaseHandler caseHandler;

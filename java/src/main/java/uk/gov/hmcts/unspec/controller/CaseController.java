@@ -1,27 +1,27 @@
 package uk.gov.hmcts.unspec.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccf.CaseHandler;
-import uk.gov.hmcts.ccf.api.ApiCase;
-import uk.gov.hmcts.unspec.StatemachineConfig;
+import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.dto.Citizen;
-import static org.jooq.impl.DSL.*;
-import org.jooq.*;
-import org.jooq.impl.*;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.jooq.generated.tables.Citizen.CITIZEN;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.lower;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +29,7 @@ import static org.jooq.generated.tables.Citizen.CITIZEN;
 public class CaseController {
 
     @Autowired
-    StatemachineConfig stateMachineSupplier;
+    CaseHandlerImpl stateMachineSupplier;
 
     @Autowired
     CaseHandler caseHandler;
