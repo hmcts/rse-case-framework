@@ -18,15 +18,4 @@ class StatemachineTest extends Specification {
         then:
         machine.getState() == State.Created
     }
-
-    def "returns available actions"() {
-        given:
-        def machine = new CaseHandlerImpl().build()
-
-        when:
-        def actions = machine.getAvailableActions(State.Created)
-
-        then:
-        actions.size() == 7
-    }
 }
