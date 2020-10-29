@@ -48,4 +48,8 @@ export class ClaimsTabComponent implements OnInit {
       + this.partyName(claim.defendantIds[0])
       + (claim.defendantIds.length > 1 ? " et al" : "")
   }
+
+  confirmService(claimId: any) {
+    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=ConfirmService&claimId=' + claimId);
+  }
 }

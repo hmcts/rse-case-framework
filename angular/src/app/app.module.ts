@@ -37,6 +37,8 @@ import { ClaimValueComponent } from './forms/components/steps/claim-value/claim-
 import { CitizenTabComponent } from './case-details/tabs/citizen-tab/citizen-tab.component';
 import { ImportCitizensComponent } from './forms/components/steps/import-citizens/import-citizens.component';
 import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/purge-inactive.component';
+import { ConfirmServiceComponent } from './forms/components/steps/confirm-service/confirm-service.component';
+import { HumanisePipe } from './humanise.pipe';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/
     CitizenTabComponent,
     ImportCitizensComponent,
     PurgeInactiveComponent,
+    ConfirmServiceComponent,
+    HumanisePipe,
       ],
   imports: [
     BrowserModule,

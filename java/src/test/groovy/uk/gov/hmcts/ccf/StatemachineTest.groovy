@@ -27,6 +27,6 @@ class StatemachineTest extends Specification {
         def actions = machine.getAvailableActions(State.Created)
 
         then:
-        actions.size() == 6
+        actions.size() == 7
     }
 }

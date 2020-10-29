@@ -13,6 +13,7 @@ import {ChoosePartiesAnswersComponent} from "../../forms/components/steps/choose
 import {ClaimValueComponent} from "../../forms/components/steps/claim-value/claim-value.component";
 import {ImportCitizensComponent} from "../../forms/components/steps/import-citizens/import-citizens.component";
 import {PurgeInactiveComponent} from "../../forms/components/steps/purge-inactive/purge-inactive.component";
+import {ConfirmServiceComponent} from "../../forms/components/steps/confirm-service/confirm-service.component";
 
 @Component({
   selector: 'app-create-event',
@@ -107,6 +108,18 @@ export class CreateEventComponent implements OnInit {
           ]
         })
       .buildPage()
+    .buildEvent()
+    .event('ConfirmService')
+      .redirectToTab('claims')
+      .customPage(ConfirmServiceComponent)
+      .withAnswers(DynamicFormAnswersComponent, (x) => {
+        x.title = 'Confirm service'
+        x.questions = [
+          { type: 'text', id: 'name', title: 'Name' },
+          { type: 'text', id: 'role', title: 'Role' },
+        ]
+    })
+    .buildPage()
     .buildEvent()
     .toMap();
 
