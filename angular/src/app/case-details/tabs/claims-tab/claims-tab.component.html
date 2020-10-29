@@ -10,11 +10,16 @@
 <div class="claim" *ngFor="let claim of claims;let i = index">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <h2 class="govuk-heading-m">Claim {{ i + 1 }}</h2>
+        <h2 class="govuk-heading-m">{{ claimName(claim)}}</h2>
         <strong class="govuk-tag">{{claim.state}}</strong>
       </div>
     </div>
 
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h4 class="govuk-heading-s">£{{claim.lowerValue | number}} - £{{claim.higherValue | number}}</h4>
+    </div>
+  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
       <table class="govuk-table">
