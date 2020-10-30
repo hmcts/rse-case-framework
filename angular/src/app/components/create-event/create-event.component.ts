@@ -47,7 +47,7 @@ export class CreateEventComponent implements OnInit {
     if (this.caseId) {
       url += '/' + this.caseId + (isFile
         ? '/files'
-        : '/EVENTS')
+        : '/events')
     }
     this.http.post(this.baseUrl + url, payload, { observe: 'response' , withCredentials: true })
       .subscribe(resp => {

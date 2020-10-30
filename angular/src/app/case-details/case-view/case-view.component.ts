@@ -48,7 +48,7 @@ export class CaseViewComponent implements OnInit {
         this.case = result
         this.selectedValue = this.case.actions[0]
       });
-      this.http.get(this.baseUrl + '/api/cases/' + id + '/EVENTS', { withCredentials: true }).subscribe(result => this.events = result);
+      this.http.get(this.baseUrl + '/api/cases/' + id + '/events', { withCredentials: true }).subscribe(result => this.events = result);
     }
 
     const tab = this.route.snapshot.queryParamMap.get('tab');
