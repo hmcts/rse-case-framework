@@ -8,7 +8,7 @@ plugins {
 
 group = 'uk.gov.hmcts.ccf'
 version = '0.0.1-SNAPSHOT'
-def springBootVersion = '2.3.4.RELEASE'
+def springBootVersion = '2.3.5.RELEASE'
 
 repositories {
     jcenter()
