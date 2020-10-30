@@ -39,6 +39,7 @@ import { ImportCitizensComponent } from './forms/components/steps/import-citizen
 import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/purge-inactive.component';
 import { ConfirmServiceComponent } from './forms/components/steps/confirm-service/confirm-service.component';
 import { HumanisePipe } from './humanise.pipe';
+import { ConfirmServiceAnswersComponent } from './forms/components/steps/confirm-service/confirm-service-answers.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { HumanisePipe } from './humanise.pipe';
     PurgeInactiveComponent,
     ConfirmServiceComponent,
     HumanisePipe,
+    ConfirmServiceAnswersComponent,
       ],
   imports: [
     BrowserModule,

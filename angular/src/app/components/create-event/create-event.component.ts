@@ -14,6 +14,7 @@ import {ClaimValueComponent} from "../../forms/components/steps/claim-value/clai
 import {ImportCitizensComponent} from "../../forms/components/steps/import-citizens/import-citizens.component";
 import {PurgeInactiveComponent} from "../../forms/components/steps/purge-inactive/purge-inactive.component";
 import {ConfirmServiceComponent} from "../../forms/components/steps/confirm-service/confirm-service.component";
+import {ConfirmServiceAnswersComponent} from "../../forms/components/steps/confirm-service/confirm-service-answers.component";
 
 @Component({
   selector: 'app-create-event',
@@ -112,14 +113,8 @@ export class CreateEventComponent implements OnInit {
     .event('ConfirmService')
       .redirectToTab('claims')
       .customPage(ConfirmServiceComponent)
-      .withAnswers(DynamicFormAnswersComponent, (x) => {
-        x.title = 'Confirm service'
-        x.questions = [
-          { type: 'text', id: 'name', title: 'Name' },
-          { type: 'text', id: 'role', title: 'Role' },
-        ]
-    })
-    .buildPage()
+      .withAnswers(ConfirmServiceAnswersComponent)
+      .buildPage()
     .buildEvent()
     .toMap();
 
