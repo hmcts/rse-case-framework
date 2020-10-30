@@ -25,7 +25,6 @@ import {environment} from "../../../../../environments/environment";
       </div>
     </dl>
   `,
-  styleUrls: ['./confirm-service-answers.component.scss']
 })
 export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersComponent {
 
