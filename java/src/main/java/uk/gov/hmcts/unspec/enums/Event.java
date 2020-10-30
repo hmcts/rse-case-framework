@@ -8,5 +8,6 @@ public enum Event {
     CloseCase,
     ImportCitizens,
     PurgeInactiveCitizens,
+    ConfirmService,
     SubmitAppeal
 }

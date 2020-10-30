@@ -9,12 +9,20 @@
 
 <div class="claim" *ngFor="let claim of claims;let i = index">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <h2 class="govuk-heading-m">Claim {{ i + 1 }}</h2>
-        <strong class="govuk-tag">{{claim.state}}</strong>
+      <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">{{ claimName(claim)}}</h2>
+        <strong class="govuk-tag">{{claim.state | humanise}}</strong>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <button *ngIf="claim.state == 'Issued'" (click)="confirmService(i)" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Confirm service</button>
       </div>
     </div>
 
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h4 class="govuk-heading-s">£{{claim.lowerValue | number}} - £{{claim.higherValue | number}}</h4>
+    </div>
+  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
       <table class="govuk-table">

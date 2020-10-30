@@ -16,8 +16,10 @@ import uk.gov.hmcts.ccf.Case;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
+import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
+import uk.gov.hmcts.unspec.enums.ClaimState;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
 import uk.gov.hmcts.unspec.event.AddNotes;
@@ -77,12 +79,20 @@ public class CaseHandlerImpl implements CaseHandler {
         result.initialState(State.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
                 .addUniversalEvent(Event.PurgeInactiveCitizens, this::purgeInactive)
+                .addUniversalEvent(Event.ConfirmService, this::confirmService)
                 .addFileUploadEvent(State.Created, Event.ImportCitizens, this::bulkImport)
                 .addEvent(State.Created, Event.AddParty, this::addParty)
                 .addEvent(State.Created, Event.AddClaim, this::addClaim)
                 .addTransition(State.Created, State.Closed, Event.CloseCase, this::closeCase)
                 .addTransition(State.Closed, State.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
+    }
+
+    private void confirmService(Long caseId, ConfirmService service) {
+        UnspecCase c = repository.load(caseId);
+        Claim claim = c.getClaims().get(service.getClaimId());
+        claim.setState(ClaimState.ServiceConfirmed);
+        repository.save(c);
     }
 
     private void purgeInactive(Long caseId, Object o) {
