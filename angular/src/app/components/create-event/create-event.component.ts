@@ -15,7 +15,7 @@ export class CreateEventComponent implements OnInit {
   pages: Array<StepType>;
   files = new FormData()
 
-  private caseId: string;
+  caseId: string;
   private eventId: string;
 
   constructor(
@@ -26,7 +26,6 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.queryParamMap.get('id');
-    this.caseId = this.route.snapshot.paramMap.get('id');
     this.route.paramMap.subscribe(x => this.caseId = x.get('id'))
     if (null == this.eventId) {
       this.eventId = "CreateClaim";

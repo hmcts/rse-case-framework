@@ -10,7 +10,7 @@ import {CaseService} from "../../../services/case-service.service";
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
   parties: Array<any>;
-  caseId: string;
+  @Input() caseId: string = '1';
 
   constructor(
     private caseService: CaseService,
@@ -19,7 +19,6 @@ export class ClaimsTabComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.caseId = this.route.snapshot.paramMap.get('id') ?? '1'
     this.caseService.getCase(this.caseId).subscribe(x => {
       this.claims = x.data.claims
       this.parties = x.data.parties

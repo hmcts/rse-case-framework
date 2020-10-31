@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CaseViewComponent } from './case-view.component';
-import { RouterModule } from '@angular/router';
+import {ActivatedRoute, RouterModule} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import {Observable, of} from "rxjs";
 
 describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
@@ -14,7 +15,16 @@ describe('CaseViewComponent', () => {
         RouterModule.forRoot([]),
         HttpClientModule,
       ],
-      declarations: [ CaseViewComponent ]
+      declarations: [ CaseViewComponent ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({ get: (key) => '1' }),
+            queryParamMap: of({ get: (key) => '1' })
+          }
+        }
+      ]
     })
     .compileComponents();
   }));

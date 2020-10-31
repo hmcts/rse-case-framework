@@ -8,6 +8,7 @@ export interface StepComponent {
   validate: boolean;
   valid: () => boolean;
   form: FormGroup;
+  caseId?: string;
   files?: FormData;
 }
 

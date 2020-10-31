@@ -24,7 +24,7 @@
             <app-parties-tab [caseId]="case.id" *ngIf="case" [parties]="case.data.parties"></app-parties-tab>
           </mat-tab>
           <mat-tab label="Claims">
-            <app-claims-tab></app-claims-tab>
+            <app-claims-tab [caseId]="caseId"></app-claims-tab>
           </mat-tab>
           <mat-tab label="Citizens">
             <app-citizen-tab></app-citizen-tab>

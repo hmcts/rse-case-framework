@@ -10,6 +10,7 @@ import {CaseService} from "../../services/case-service.service";
   encapsulation: ViewEncapsulation.None
 })
 export class CaseViewComponent implements OnInit {
+  caseId: string;
   case: any;
   events: any = [];
   selectedValue: any;
@@ -39,18 +40,20 @@ export class CaseViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
-      const id = x.get('id');
-      this.caseService.getCase(id).subscribe(result => {
+      this.caseId = x.get('id');
+      this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
       });
-      this.caseService.getCaseEvents(id).subscribe(result => {
+      this.caseService.getCaseEvents(this.caseId).subscribe(result => {
         this.events = result;
       });
     });
 
-    const tab = this.route.snapshot.queryParamMap.get('tab');
-    this.selectedIndex = this.tabMap[tab];
+    this.route.queryParamMap.subscribe(q => {
+      const tab = q.get('tab');
+      this.selectedIndex = this.tabMap[tab];
+    });
   }
 
   actions() {

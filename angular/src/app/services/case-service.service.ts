@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -30,6 +30,10 @@ export class CaseService {
   }
 
   public getCaseEvents(caseId: string): Observable<any> {
+    // TODO - find alternative to assets folder that supports nesting.
+    if (environment.baseUrl == '/assets') {
+      return of([])
+    }
     return this.http.get(this.baseUrl + '/api/cases/' + caseId + '/events', {
       withCredentials: true,
     });

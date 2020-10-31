@@ -21,6 +21,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
   @Input() validate: boolean = false;
   @Input() form: FormGroup;
   @Input() files: FormData;
+  @Input() caseId: string;
   component: StepComponent;
 
 
@@ -44,6 +45,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
     }
     step.instance.form = this.form;
     step.instance.files = this.files;
+    step.instance.caseId = this.caseId;
   }
 
   valid(): boolean {
