@@ -2,11 +2,11 @@
   <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <a (click)="backClicked()" href="javascript:void(0)" class="govuk-back-link">Back</a>
-        <button (click)="onEvent()" class="govuk-button" data-module="govuk-button" id="create-event-button"
-                style="float:right">
-          Start
-        </button>
+        <a routerLink="/cases" class="govuk-back-link">Back</a>
+        <a routerLink="/cases/{{caseId}}/create-event"
+           [queryParams]="{id: selectedValue }">
+          <button class="govuk-button hmcts-menu__item" id="create-event-button"  style="float:right">Start</button>
+        </a>
         <span style="float: right;" *ngIf="case">
                     <select [(ngModel)]="selectedValue" class="govuk-select" id="sort" name="sort" >
                       <option *ngFor="let action of actions(); let i = index" [value]="action">{{ eventDescriptions[action] }}</option>

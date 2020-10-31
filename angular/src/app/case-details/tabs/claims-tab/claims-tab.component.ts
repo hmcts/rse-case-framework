@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
 import {CaseService} from "../../../services/case-service.service";
 
 @Component({
@@ -14,8 +13,6 @@ export class ClaimsTabComponent implements OnInit {
 
   constructor(
     private caseService: CaseService,
-    private route: ActivatedRoute,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {

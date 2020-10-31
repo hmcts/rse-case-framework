@@ -60,15 +60,6 @@ export class CaseViewComponent implements OnInit {
     return this.case.actions.sort()
   }
 
-  onEvent() {
-    let id = this.route.snapshot.paramMap.get('id');
-    this.router.navigateByUrl('/cases/' + id + '/create-event?id=' + this.selectedValue);
-  }
-
-  backClicked() {
-    this.router.navigateByUrl('/cases')
-  }
-
   // Update the address bar URL to track the active tab.
   onTabChange($event) {
     let value = 'history';
