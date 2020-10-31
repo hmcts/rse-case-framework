@@ -3,7 +3,7 @@
     <h1 class="govuk-heading-l">Parties</h1>
   </div>
   <div class="govuk-grid-column-one-quarter">
-    <button (click)="addParty()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add party</button>
+    <a routerLink="/cases/{{caseId}}/create-event" [queryParams]="{id: 'AddParty'}"><button class="govuk-button hmcts-menu__item" >Add party</button></a>
   </div>
 </div>
 

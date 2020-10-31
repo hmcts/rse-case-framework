@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PartiesTabComponent } from './parties-tab.component';
-import {RouterModule} from "@angular/router";
 
 describe('Parties tab', () => {
   let component: PartiesTabComponent;
@@ -10,7 +9,6 @@ describe('Parties tab', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         imports: [
-          RouterModule.forRoot([]),
         ],
       declarations: [ PartiesTabComponent ]
     })
