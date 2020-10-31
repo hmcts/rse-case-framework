@@ -36,19 +36,11 @@ export class ClaimsTabComponent implements OnInit {
     }
   }
 
-  addClaim() {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=AddClaim');
-  }
-
   claimName(claim: any) {
     return this.partyName(claim.claimantIds[0])
       + (claim.claimantIds.length > 1 ? " et al" : "")
       + " vs "
       + this.partyName(claim.defendantIds[0])
       + (claim.defendantIds.length > 1 ? " et al" : "")
-  }
-
-  confirmService(claimId: any) {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=ConfirmService&claimId=' + claimId);
   }
 }
