@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { environment } from '../environments/environment';
 import {Observable} from "rxjs";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +23,16 @@ export class CaseService {
 
   }
 
-  public getCase(id: any): Observable<any> {
-    return this.http.get(this.baseUrl + '/api/cases/' + id, {
+  public getCase(caseId: string): Observable<any> {
+    return this.http.get(this.baseUrl + '/api/cases/' + caseId, {
       withCredentials: true,
     });
   }
+
+  public getCaseEvents(caseId: string): Observable<any> {
+    return this.http.get(this.baseUrl + '/api/cases/' + caseId + '/events', {
+      withCredentials: true,
+    });
+  }
+
 }

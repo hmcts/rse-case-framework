@@ -1,8 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import {Router, ActivatedRoute, ParamMap, Params} from '@angular/router';
-import {Location} from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import {Router, ActivatedRoute, Params} from '@angular/router';
+import {CaseService} from "../../services/case-service.service";
 
 
 @Component({
@@ -12,7 +10,6 @@ import { environment } from 'src/environments/environment';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseViewComponent implements OnInit {
-  baseUrl = environment.baseUrl;
   case: any;
   events: any = [];
   selectedValue: any;
@@ -35,21 +32,22 @@ export class CaseViewComponent implements OnInit {
   }
 
   constructor(
-    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
+    private caseService: CaseService,
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
-    if (null != id) {
-      this.http.get(this.baseUrl + '/api/cases/' + id, { withCredentials: true }).subscribe(result => {
+    this.route.paramMap.subscribe(x => {
+      const id = x.get('id');
+      this.caseService.getCase(id).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
       });
-      this.http.get(this.baseUrl + '/api/cases/' + id + '/events', { withCredentials: true }).subscribe(result => this.events = result);
-    }
+      this.caseService.getCaseEvents(id).subscribe(result => {
+        this.events = result;
+      });
+    });
 
     const tab = this.route.snapshot.queryParamMap.get('tab');
     this.selectedIndex = this.tabMap[tab];

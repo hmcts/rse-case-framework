@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router'
-import { CaseService } from '../case-service.service'
+import {CaseService} from "../services/case-service.service";
 
 @Component({
   selector: 'search-cases',

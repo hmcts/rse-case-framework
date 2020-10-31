@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {StepComponent} from "../../stepper/form-stepper/types";
 import {FormControl, FormGroup} from "@angular/forms";
-import {CaseService} from "../../../../case-service.service";
 import {ActivatedRoute} from "@angular/router";
+import {CaseService} from "../../../../services/case-service.service";
 
 @Component({
   selector: 'app-choose-parties',

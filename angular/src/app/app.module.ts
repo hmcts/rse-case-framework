@@ -38,8 +38,8 @@ import { CitizenTabComponent } from './case-details/tabs/citizen-tab/citizen-tab
 import { ImportCitizensComponent } from './forms/components/steps/import-citizens/import-citizens.component';
 import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/purge-inactive.component';
 import { ConfirmServiceComponent } from './forms/components/steps/confirm-service/confirm-service.component';
-import { HumanisePipe } from './humanise.pipe';
 import { ConfirmServiceAnswersComponent } from './forms/components/steps/confirm-service/confirm-service-answers.component';
+import {HumanisePipe} from "./services/humanise.pipe";
 
 @NgModule({
   declarations: [
