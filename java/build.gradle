@@ -50,7 +50,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    integrationTestCompile "org.testcontainers:postgresql:1.15.0-rc2"
+    integrationTestCompile "org.testcontainers:postgresql:1.15.0"
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.18.0'
     testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
     testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
