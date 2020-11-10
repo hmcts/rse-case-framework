@@ -11,14 +11,9 @@ export class PartiesTabComponent implements OnInit {
   @Input() caseId: any;
   @Input() parties: any = [];
   constructor(
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
-  }
-
-  addParty() {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=AddParty');
   }
 
   partyName(party: any) : string {

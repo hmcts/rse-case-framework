@@ -3,7 +3,10 @@
     <h1 class="govuk-heading-l">Search citizens</h1>
   </div>
   <div class="govuk-grid-column-one-quarter">
-    <button (click)="addCitizens()" id="bulk-add-citizens" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Add citizens</button>
+    <a routerLink="/cases/{{caseId}}/create-event"
+       [queryParams]="{id: 'ImportCitizens' }">
+      <button class="govuk-button hmcts-menu__item" id="bulk-add-citizens"  style="float:right">Import Citizens</button>
+    </a>
   </div>
 </div>
 

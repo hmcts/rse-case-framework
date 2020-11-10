@@ -1,13 +1,14 @@
-import {EventEmitter, Type} from "@angular/core";
+import {Type} from "@angular/core";
 import {FormGroup, ValidatorFn} from "@angular/forms";
 import {DynamicFormComponent, Question} from "../../../dynamic-form/dynamic-form.component";
-import {CheckAnswerDirective, CheckAnswersComponent} from "../../check-answers/types";
+import {CheckAnswersComponent} from "../../check-answers/types";
 import {DynamicFormAnswersComponent} from "../../../dynamic-form/dynamic-form-answers.component";
 
 export interface StepComponent {
   validate: boolean;
   valid: () => boolean;
   form: FormGroup;
+  caseId?: string;
   files?: FormData;
 }
 

@@ -24,6 +24,7 @@ export class FormStepperComponent implements OnInit {
   @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>
   @Input() pages: Array<StepType> = [];
   @Input() files: FormData;
+  @Input() caseId: string;
   @Output() onSubmit = new EventEmitter<any>()
   validate = false;
   forms = new FormArray([]);

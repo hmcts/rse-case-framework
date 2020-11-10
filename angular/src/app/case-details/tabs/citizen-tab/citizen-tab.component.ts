@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {environment} from "../../../../environments/environment";
 import {FormControl, FormGroup} from "@angular/forms";
 
@@ -22,7 +22,6 @@ export class CitizenTabComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -68,9 +67,5 @@ export class CitizenTabComponent implements OnInit {
   onSubmit() {
     this.page = 1;
     this.fetch();
-  }
-
-  addCitizens() {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=ImportCitizens');
   }
 }

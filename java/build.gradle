@@ -75,6 +75,10 @@ check {
     dependsOn(tasks.integrationTest)
 }
 
+bootJar {
+    archiveFileName = 'backend.jar'
+}
+
 bootRun {
     args '--generate-data=true', '--database-host=localhost'
     if (project.hasProperty('args')) {

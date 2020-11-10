@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {StepComponent} from "../../stepper/form-stepper/types";
 import {FormControl, FormGroup} from "@angular/forms";
-import {CaseService} from "../../../../case-service.service";
-import {ActivatedRoute} from "@angular/router";
+import {CaseService} from "../../../../services/case-service.service";
 
 @Component({
   selector: 'app-choose-parties',
@@ -11,6 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ChoosePartiesComponent implements OnInit, StepComponent {
   caseParties: any = []
+  @Input() caseId: string = "1";
   @Input() parties: any;
   @Input() form: FormGroup = new FormGroup({})
   defendants = new FormGroup({})
@@ -18,12 +18,10 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
 
   constructor(
     private caseService: CaseService,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    const caseId = this.route.snapshot.paramMap.get('id') ?? "1"
-    this.caseService.getCase(caseId).subscribe( c => {
+    this.caseService.getCase(this.caseId).subscribe( c => {
       this.caseParties = c.data.parties
       this.claimants.reset()
       this.defendants.reset()

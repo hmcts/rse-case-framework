@@ -1,8 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import {Router, ActivatedRoute, ParamMap, Params} from '@angular/router';
-import {Location} from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import {Router, ActivatedRoute, Params} from '@angular/router';
+import {CaseService} from "../../services/case-service.service";
 
 
 @Component({
@@ -12,7 +10,7 @@ import { environment } from 'src/environments/environment';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseViewComponent implements OnInit {
-  baseUrl = environment.baseUrl;
+  caseId: string;
   case: any;
   events: any = [];
   selectedValue: any;
@@ -35,37 +33,31 @@ export class CaseViewComponent implements OnInit {
   }
 
   constructor(
-    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
+    private caseService: CaseService,
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
-    if (null != id) {
-      this.http.get(this.baseUrl + '/api/cases/' + id, { withCredentials: true }).subscribe(result => {
+    this.route.paramMap.subscribe(x => {
+      this.caseId = x.get('id');
+      this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
       });
-      this.http.get(this.baseUrl + '/api/cases/' + id + '/events', { withCredentials: true }).subscribe(result => this.events = result);
-    }
+      this.caseService.getCaseEvents(this.caseId).subscribe(result => {
+        this.events = result;
+      });
+    });
 
-    const tab = this.route.snapshot.queryParamMap.get('tab');
-    this.selectedIndex = this.tabMap[tab];
+    this.route.queryParamMap.subscribe(q => {
+      const tab = q.get('tab');
+      this.selectedIndex = this.tabMap[tab];
+    });
   }
 
   actions() {
     return this.case.actions.sort()
-  }
-
-  onEvent() {
-    let id = this.route.snapshot.paramMap.get('id');
-    this.router.navigateByUrl('/cases/' + id + '/create-event?id=' + this.selectedValue);
-  }
-
-  backClicked() {
-    this.router.navigateByUrl('/cases')
   }
 
   // Update the address bar URL to track the active tab.

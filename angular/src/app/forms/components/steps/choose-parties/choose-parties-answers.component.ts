@@ -1,8 +1,8 @@
 import {Component, Input, EventEmitter, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {CheckAnswersComponent} from "../../check-answers/types";
-import {CaseService} from "../../../../case-service.service";
 import {ActivatedRoute} from "@angular/router";
+import {CaseService} from "../../../../services/case-service.service";
 
 @Component({
   selector: 'app-party-details-answers',

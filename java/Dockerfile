@@ -1,4 +1,5 @@
-FROM openjdk:11
+FROM hmctspublic.azurecr.io/base/java:openjdk-11-distroless-1.2
+
 WORKDIR /app
-COPY build/libs/java-0.0.1-SNAPSHOT.jar ./
-ENTRYPOINT ["java","-jar", "java-0.0.1-SNAPSHOT.jar"]
+COPY build/libs/backend.jar ./
+ENTRYPOINT ["java","-jar", "backend.jar"]

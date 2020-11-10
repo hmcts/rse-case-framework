@@ -3,7 +3,7 @@
     <h1 class="govuk-heading-l">Claims</h1>
   </div>
   <div class="govuk-grid-column-one-quarter">
-    <button (click)="addClaim()" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Create claim</button>
+    <a routerLink="/cases/{{caseId}}/create-event" [queryParams]="{id: 'AddClaim'}"><button class="govuk-button hmcts-menu__item" >Create claim</button></a>
   </div>
 </div>
 
@@ -14,7 +14,10 @@
         <strong class="govuk-tag">{{claim.state | humanise}}</strong>
       </div>
       <div class="govuk-grid-column-one-third">
-        <button *ngIf="claim.state == 'Issued'" (click)="confirmService(i)" class="govuk-button hmcts-menu__item  " data-module="govuk-button">Confirm service</button>
+        <a *ngIf="claim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
+           [queryParams]="{id: 'ConfirmService', claimId: i}">
+          <button class="govuk-button hmcts-menu__item" >Confirm service</button>
+        </a>
       </div>
     </div>
 

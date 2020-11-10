@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CaseService} from "../../../case-service.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {CaseService} from "../../../services/case-service.service";
 
 @Component({
   selector: 'app-claims-tab',
@@ -10,16 +9,13 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
   parties: Array<any>;
-  caseId: string;
+  @Input() caseId: string = '1';
 
   constructor(
     private caseService: CaseService,
-    private route: ActivatedRoute,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.caseId = this.route.snapshot.paramMap.get('id') ?? '1'
     this.caseService.getCase(this.caseId).subscribe(x => {
       this.claims = x.data.claims
       this.parties = x.data.parties
@@ -37,19 +33,11 @@ export class ClaimsTabComponent implements OnInit {
     }
   }
 
-  addClaim() {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=AddClaim');
-  }
-
   claimName(claim: any) {
     return this.partyName(claim.claimantIds[0])
       + (claim.claimantIds.length > 1 ? " et al" : "")
       + " vs "
       + this.partyName(claim.defendantIds[0])
       + (claim.defendantIds.length > 1 ? " et al" : "")
-  }
-
-  confirmService(claimId: any) {
-    this.router.navigateByUrl('/cases/' + this.caseId + '/create-event?id=ConfirmService&claimId=' + claimId);
   }
 }
