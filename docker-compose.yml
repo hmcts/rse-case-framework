@@ -14,10 +14,13 @@ services:
     build:
       context: java
       dockerfile: Dockerfile
+    environment:
+      IDAM_URI: http://keycloak:8080/auth/realms/rse
     command:
       - --generate-data=true
     depends_on:
       - db
+      - keycloak
     ports:
       - "8080:8080"
     volumes:

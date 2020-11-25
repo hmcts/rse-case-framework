@@ -1,7 +1,8 @@
 set -e
 trap "kill 0" EXIT
 
-export NG_COMMAND='ng serve --host 0.0.0.0 --configuration local'
+export IDAM_URI='http://localhost:8090/auth/realms/rse'
+export NG_COMMAND='ng serve --host 0.0.0.0 --disable-host-check --configuration local --proxy-config proxy.conf.dev.json'
 docker-compose up -V --no-deps --build --abort-on-container-exit db frontend keycloak \
-  & ./wait-for-it.sh localhost:8090/auth/realms/rse && ./gradlew java:bootRun -i
+  & ./gradlew java:bootRun -i
 wait

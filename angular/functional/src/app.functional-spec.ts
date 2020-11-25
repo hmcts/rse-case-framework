@@ -1,5 +1,5 @@
 import {AppPage} from './app.po';
-import {browser, by, element, logging, protractor} from 'protractor';
+import {$, browser, by, element, ElementFinder, logging, protractor} from 'protractor';
 import path from "path";
 
 describe('workspace-project App', () => {
@@ -9,11 +9,28 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should login via OIDC', () => {
+    browser.waitForAngularEnabled(false);
+    // Should direct to keycloak login.
     page.navigateTo();
+
+    browser.wait(protractor.ExpectedConditions.presenceOf($('#username')), 10000);
+    // Clear browser logs since a 401 error will be there from page load of logged out user.
+    browser.manage().logs().get(logging.Type.BROWSER)
+
+    element(by.id('username')).sendKeys('john');
+    element(by.id('password')).sendKeys('password');
+    element(by.id('kc-login')).click();
+    browser.wait(protractor.ExpectedConditions.presenceOf($('#title-header')), 10000);
     expect(page.getTitleText()).toEqual('Unspecified Claims');
   });
 
+  it('should display welcome message', () => {
+    browser.waitForAngularEnabled(true);
+    page.navigateTo();
+    expect(page.getTitleText()).toEqual('Unspecified Claims');
+  });
+  //
   it('displays the case list', () => {
     page.navigateTo();
     let count = element.all(by.css('.govuk-table__row')).count();

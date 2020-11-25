@@ -1,0 +1,12 @@
+[
+  {
+    "context": [
+      "/login",
+      "/logout",
+      "/oauth2",
+      "/api"
+    ],
+    "target": "http://host.docker.internal:8080",
+    "secure": false
+  }
+]

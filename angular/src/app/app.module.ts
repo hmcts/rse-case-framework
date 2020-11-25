@@ -40,6 +40,8 @@ import { PurgeInactiveComponent } from './forms/components/steps/purge-inactive/
 import { ConfirmServiceComponent } from './forms/components/steps/confirm-service/confirm-service.component';
 import { ConfirmServiceAnswersComponent } from './forms/components/steps/confirm-service/confirm-service-answers.component';
 import {HumanisePipe} from "./services/humanise.pipe";
+import {AuthGuardService} from "./services/auth-guard.service";
+import {AuthService} from "./services/auth.service";
 
 @NgModule({
   declarations: [
@@ -87,7 +89,7 @@ import {HumanisePipe} from "./services/humanise.pipe";
     CdkStepperModule,
     CommonModule,
   ],
-  providers: [],
+  providers: [AuthGuardService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

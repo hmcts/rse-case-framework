@@ -17,10 +17,7 @@ COPY package-lock.json /app/package-lock.json
 RUN npm install
 RUN npm install -g @angular/cli@7.3.9
 
-# add app
 COPY . /app
 EXPOSE 9222
 
-# start app
-CMD ng e2e --host 0.0.0.0 --configuration local --protractor-config functional/protractor.conf.js
-# CMD ng test
+CMD ng serve --host 0.0.0.0 --configuration local --proxy-config proxy.conf.docker.json

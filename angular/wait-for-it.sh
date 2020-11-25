@@ -11,7 +11,6 @@ fi
 echo "Waiting ${TIMEOUT}s for command: $COMMAND"
 
 for i in `seq $TIMEOUT` ; do
-  # see: https://unix.stackexchange.com/questions/444946/how-can-we-run-a-command-stored-in-a-variable
   eval "$COMMAND"
   if [ $? -eq 0 ]; then
     exit 0

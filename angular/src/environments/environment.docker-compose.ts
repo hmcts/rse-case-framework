@@ -1,5 +1,5 @@
 
 export const environment = {
     production: false,
-    baseUrl: 'http://backend:8080'
+    baseUrl: 'http://localhost:4200'
 };

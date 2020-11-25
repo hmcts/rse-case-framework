@@ -1,0 +1,44 @@
+logging:
+  level:
+    org:
+      jooq:
+        tools:
+          LoggerListener: DEBUG
+spring:
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  datasource:
+    continue-on-error: true
+    driverClassName: org.postgresql.Driver
+    hikari:
+      initialization-fail-timeout: 600000
+    password: postgres
+    url: jdbc:postgresql://${database-host:db}:5432/ccf
+    username: postgres
+  flyway:
+    connectRetries: 600000
+    locations: classpath:/db/migration
+    password: postgres
+    url: jdbc:postgresql://${database-host:db}:5432/ccf
+    user: postgres
+  security:
+    enabled: true
+    oauth2:
+      client:
+        registration:
+          idam:
+            provider: idam
+            client-id: rse
+            client-secret: bar
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - roles
+              - profile
+        provider:
+          idam:
+            issuer-uri: ${IDAM_URI:https://hmcts-access.service.gov.uk/o}
+
