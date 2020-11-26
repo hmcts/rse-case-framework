@@ -24,7 +24,7 @@ export class PurgeInactiveComponent implements OnInit, StepComponent {
     this.form.addControl('inactive_count', new FormControl());
     const id = this.route.snapshot.paramMap.get('id');
     if (null != id) {
-      this.http.get(this.baseUrl + `/api/cases/${id}/citizens/inactive`).subscribe(result => {
+      this.http.get(this.baseUrl + `cases/${id}/citizens/inactive`).subscribe(result => {
         this.inactiveCount = result['inactive_count'];
         this.form.patchValue({
           inactive_count: this.inactiveCount

@@ -42,7 +42,7 @@ export class CreateEventComponent implements OnInit {
         id: this.eventId,
         data: data,
       };
-    let url = '/api/cases';
+    let url = 'cases';
     if (this.caseId) {
       url += '/' + this.caseId + (isFile
         ? '/files'

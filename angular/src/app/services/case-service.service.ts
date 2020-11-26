@@ -16,7 +16,7 @@ export class CaseService {
 
   searchCases(data) {
     const query = btoa(JSON.stringify(data));
-    return this.http.get(this.baseUrl + '/api/search', {
+    return this.http.get(this.baseUrl + 'search', {
       withCredentials: true,
       headers: new HttpHeaders({ 'search-query': query})
     });
@@ -24,17 +24,17 @@ export class CaseService {
   }
 
   public getCase(caseId: string): Observable<any> {
-    return this.http.get(this.baseUrl + '/api/cases/' + caseId, {
+    return this.http.get(this.baseUrl + 'cases/' + caseId, {
       withCredentials: true,
     });
   }
 
   public getCaseEvents(caseId: string): Observable<any> {
     // TODO - find alternative to assets folder that supports nesting.
-    if (environment.baseUrl == '/assets') {
+    if (environment.baseUrl == '/assets/web/') {
       return of([])
     }
-    return this.http.get(this.baseUrl + '/api/cases/' + caseId + '/events', {
+    return this.http.get(this.baseUrl + 'cases/' + caseId + '/events', {
       withCredentials: true,
     });
   }

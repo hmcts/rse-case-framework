@@ -41,7 +41,7 @@ export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersCompo
     let id = this.route.snapshot.paramMap.get('id');
     let claimId = this.route.snapshot.queryParamMap.get('claimId')
     if (null != id) {
-      this.http.get(this.baseUrl + '/api/cases/' + id, { withCredentials: true }).subscribe(result => {
+      this.http.get(this.baseUrl + 'cases/' + id, { withCredentials: true }).subscribe(result => {
         this.case = result
         this.parties = this.case.data.parties;
         const claim = this.case.data.claims[claimId]

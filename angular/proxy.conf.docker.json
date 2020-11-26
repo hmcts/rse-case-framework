@@ -1,0 +1,12 @@
+[
+  {
+    "context": [
+      "/login",
+      "/logout",
+      "/oauth2",
+      "/web"
+    ],
+    "target": "http://backend:8080",
+    "secure": false
+  }
+]

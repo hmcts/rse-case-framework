@@ -31,7 +31,6 @@ import javax.sql.DataSource
 import java.time.LocalDate
 
 import static org.jooq.generated.Tables.CASES
-import static org.jooq.generated.Tables.EVENTS
 import static org.jooq.impl.DSL.count
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -113,7 +112,7 @@ class CaseControllerSpecification extends Specification {
     def "get a case"() {
         given:
         def result = CreateCase().getBody()
-        def json = mockMvc.perform(get("/api/cases/" + result.getId()))
+        def json = mockMvc.perform(get("/web/cases/" + result.getId()))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString()
         ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
