@@ -10,6 +10,8 @@ import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.api.ApiCase;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
+import uk.gov.hmcts.ccf.api.UserInfo;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
@@ -54,6 +57,12 @@ public class CaseController {
 
     @Autowired
     DefaultDSLContext jooq;
+
+    @GetMapping("/userInfo")
+    public UserInfo getUserInfo(
+            @AuthenticationPrincipal OidcUser principal) {
+        return new UserInfo(principal.getName());
+    }
 
     @PostMapping(path = "/cases")
     @Transactional

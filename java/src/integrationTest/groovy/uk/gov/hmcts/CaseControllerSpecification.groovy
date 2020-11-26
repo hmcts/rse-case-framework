@@ -11,13 +11,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 import uk.gov.hmcts.ccf.api.ApiCase
 import uk.gov.hmcts.ccf.api.ApiEventCreation
+import uk.gov.hmcts.ccf.api.UserInfo
 import uk.gov.hmcts.ccf.controller.CaseController
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
@@ -32,10 +34,11 @@ import java.time.LocalDate
 
 import static org.jooq.generated.Tables.CASES
 import static org.jooq.impl.DSL.count
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
 class CaseControllerSpecification extends Specification {
@@ -47,7 +50,27 @@ class CaseControllerSpecification extends Specification {
     private DataSource dataSource
 
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc
+
+    def setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
+
+    def "User info is provided"() {
+        given:
+        def json = mockMvc.perform(get("/web/userInfo").with(oidcLogin()))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+        UserInfo o = new ObjectMapper().readValue(json, UserInfo)
+
+        expect:
+        o.getUsername() == 'user'
+    }
 
     def "A case can be created"() {
         given:
@@ -108,11 +131,10 @@ class CaseControllerSpecification extends Specification {
     }
 
     @Rollback(false)
-    @WithUserDetails("user")
     def "get a case"() {
         given:
         def result = CreateCase().getBody()
-        def json = mockMvc.perform(get("/web/cases/" + result.getId()))
+        def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString()
         ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
