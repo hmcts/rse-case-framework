@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~10.0.4",
     "@angular/router": "~10.0.4",
     "@hmcts/frontend": "0.0.41-alpha",
-    "govuk-frontend": "^3.9.1",
+    "govuk-frontend": "^3.10.0",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.3",
     "zone.js": "~0.10.3"
@@ -33,7 +33,7 @@
     "@angular/compiler-cli": "~10.0.4",
     "@types/jasmine": "~3.6.2",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^14.14.9",
+    "@types/node": "^14.14.10",
     "codelyzer": "^6.0.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~6.0.0",
