@@ -44,7 +44,7 @@ class CaseControllerSpecification extends Specification {
     private CaseController controller
 
     @Autowired
-    DataSource dataSource
+    private DataSource dataSource
 
     @Autowired
     private MockMvc mockMvc

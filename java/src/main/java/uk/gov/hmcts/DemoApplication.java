@@ -9,8 +9,8 @@ import uk.gov.hmcts.ccf.OidcWaiter;
 public class DemoApplication {
 
     public static void main(String[] args) {
+        // TODO - make OIDC auto config retry without this.
         OidcWaiter.waitForOidcServer();
         SpringApplication.run(DemoApplication.class, args);
     }
-
 }

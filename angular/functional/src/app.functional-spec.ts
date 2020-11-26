@@ -9,7 +9,7 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should login via OIDC', () => {
+  it('should login via OIDC and display welcome message', () => {
     browser.waitForAngularEnabled(false);
     // Should direct to keycloak login.
     page.navigateTo();
@@ -25,12 +25,6 @@ describe('workspace-project App', () => {
     expect(page.getTitleText()).toEqual('Unspecified Claims');
   });
 
-  it('should display welcome message', () => {
-    browser.waitForAngularEnabled(true);
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('Unspecified Claims');
-  });
-  //
   it('displays the case list', () => {
     page.navigateTo();
     let count = element.all(by.css('.govuk-table__row')).count();

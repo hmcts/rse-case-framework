@@ -6,7 +6,6 @@ import {CreateEventComponent} from './components/create-event/create-event.compo
 import {AuthGuardService} from "./services/auth-guard.service";
 
 const routes: Routes = [
-  // {path: 'auth-callback', component: AuthCallbackComponent },
   {
     path: '', canActivate:[AuthGuardService], children: [
       { path: 'cases', component: SearchCasesComponent },
