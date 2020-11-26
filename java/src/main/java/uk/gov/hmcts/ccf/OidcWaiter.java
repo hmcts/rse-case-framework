@@ -15,7 +15,7 @@ public class OidcWaiter {
     @SneakyThrows
     public static void waitForOidcServer() {
         RetryTemplate template = RetryTemplate.builder()
-                .maxAttempts(60)
+                .maxAttempts(600)
                 .fixedBackoff(1000)
                 .retryOn(IOException.class)
                 .build();
