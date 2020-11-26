@@ -26,6 +26,7 @@ describe('workspace-project App', () => {
   });
 
   it('displays the case list', () => {
+    browser.waitForAngularEnabled(true);
     page.navigateTo();
     let count = element.all(by.css('.govuk-table__row')).count();
     expect(count).toEqual(3);
