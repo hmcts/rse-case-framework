@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~10.0.4",
     "@angular/router": "~10.0.4",
     "@hmcts/frontend": "0.0.41-alpha",
-    "govuk-frontend": "^3.9.1",
+    "govuk-frontend": "^3.10.0",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.3",
     "zone.js": "~0.10.3"
