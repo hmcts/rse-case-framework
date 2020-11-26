@@ -7,11 +7,9 @@ import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
@@ -61,7 +59,7 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
-    def "User info is provided"() {
+    def "info of logged in user is provided"() {
         given:
         def json = mockMvc.perform(get("/web/userInfo").with(oidcLogin()))
                 .andExpect(status().isOk())
@@ -79,6 +77,26 @@ class CaseControllerSpecification extends Specification {
         expect: "Status is 201 and the response is the case ID"
         response.getStatusCode() == HttpStatus.CREATED
         response.getHeaders().getLocation().toString().contains("/cases")
+    }
+
+    def "a case can be retrieved when logged in"() {
+        given:
+        def result = CreateCase().getBody()
+        def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+        ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
+
+        expect:
+        a.getState() == State.Created.toString()
+        a.getActions().isEmpty() == false
+    }
+
+    def "a case cannot be retrieved when not logged in"() {
+        given:
+        def result = CreateCase().getBody()
+        mockMvc.perform(get("/web/cases/" + result.getId()))
+                .andExpect(status().is(401))
     }
 
     def "an invalid case is not created"() {
@@ -130,19 +148,6 @@ class CaseControllerSpecification extends Specification {
         controller.getCase(id).state == State.Stayed.toString()
     }
 
-    @Rollback(false)
-    def "get a case"() {
-        given:
-        def result = CreateCase().getBody()
-        def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
-            .andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsString()
-        ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
-
-        expect:
-        a.getState() == State.Created.toString()
-        a.getActions().isEmpty() == false
-    }
 
     def "search for cases by id"() {
         given:
