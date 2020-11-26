@@ -31,7 +31,7 @@ export class CaseService {
 
   public getCaseEvents(caseId: string): Observable<any> {
     // TODO - find alternative to assets folder that supports nesting.
-    if (environment.baseUrl == 'assets/web/') {
+    if (environment.baseUrl == '/assets/web/') {
       return of([])
     }
     return this.http.get(this.baseUrl + 'cases/' + caseId + '/events', {
