@@ -16,7 +16,7 @@ export class AuthService {
 
   getUser(): Promise<any> {
     return new Promise((resolve) => {
-      this.http.get(environment.baseUrl + '/api/userInfo', {
+      this.http.get(environment.baseUrl + 'userInfo', {
       }).subscribe(
         result => { this.user = result; resolve(this.user) } ,
         error => { resolve(null) })

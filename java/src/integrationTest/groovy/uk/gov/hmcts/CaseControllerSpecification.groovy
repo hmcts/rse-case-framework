@@ -112,7 +112,7 @@ class CaseControllerSpecification extends Specification {
     def "get a case"() {
         given:
         def result = CreateCase().getBody()
-        def json = mockMvc.perform(get("/api/cases/" + result.getId()))
+        def json = mockMvc.perform(get("/web/cases/" + result.getId()))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString()
         ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)

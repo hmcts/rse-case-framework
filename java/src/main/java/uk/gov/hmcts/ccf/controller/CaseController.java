@@ -43,7 +43,7 @@ import static org.jooq.generated.Tables.CASES;
 import static org.jooq.generated.Tables.EVENTS;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/web")
 public class CaseController {
 
     @Autowired

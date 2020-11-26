@@ -29,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout(l -> l.logoutSuccessHandler(oidcLogoutSuccessHandler()))
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                        new AntPathRequestMatcher("/api/**"));
+                        new AntPathRequestMatcher("/web/**"));
     }
 
     @Autowired

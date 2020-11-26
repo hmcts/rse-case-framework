@@ -38,7 +38,7 @@ export class CitizenTabComponent implements OnInit {
       return;
     }
     const query = btoa(JSON.stringify(this.searchForm.value));
-    const url = this.baseUrl + '/api/cases/' + this.caseId + '/citizens';
+    const url = this.baseUrl + 'cases/' + this.caseId + '/citizens';
     this.http.get(url, {
       params: {
         page: this.page.toString()
