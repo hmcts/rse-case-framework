@@ -8,8 +8,11 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @Transactional
+@Import(TestUsers)
 class CaseControllerSpecification extends Specification {
 
     @Autowired
@@ -67,7 +71,8 @@ class CaseControllerSpecification extends Specification {
         UserInfo o = new ObjectMapper().readValue(json, UserInfo)
 
         expect:
-        o.getUsername() == 'user'
+        o.getUsername() == 'mary'
+        o.getRoles() == ['judge'].toSet()
     }
 
     def "A case can be created"() {

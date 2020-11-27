@@ -10,8 +10,9 @@ import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,7 @@ import static org.jooq.generated.Tables.EVENTS;
 
 @RestController
 @RequestMapping("/web")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CaseController {
 
     @Autowired
@@ -60,8 +62,11 @@ public class CaseController {
 
     @GetMapping("/userInfo")
     public UserInfo getUserInfo(
-            @AuthenticationPrincipal OidcUser principal) {
-        return new UserInfo(principal.getName());
+            @AuthenticationPrincipal Authentication principal) {
+        return new UserInfo(principal.getName(),
+                principal.getAuthorities().stream()
+                        .map(x -> x.getAuthority())
+                        .collect(Collectors.toSet()));
     }
 
     @PostMapping(path = "/cases")
