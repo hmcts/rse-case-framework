@@ -71,8 +71,8 @@ class CaseControllerSpecification extends Specification {
         UserInfo o = new ObjectMapper().readValue(json, UserInfo)
 
         expect:
-        o.getUsername() == 'mary'
-        o.getRoles() == ['judge'].toSet()
+        o.getUsername() == 'user'
+        o.getRoles() == ['ROLE_USER', 'SCOPE_read'].toSet()
     }
 
     def "A case can be created"() {
