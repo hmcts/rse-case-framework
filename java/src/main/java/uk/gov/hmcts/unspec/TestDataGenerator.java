@@ -53,7 +53,7 @@ public class TestDataGenerator implements InitializingBean {
             .defendant(new Organisation("Megacorp Inc"))
             .build();
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e);
+        controller.createCase(e, "Alex", "M");
 
         AddClaim a = AddClaim.builder()
                 .claimants(Map.of((long) 1, Boolean.TRUE))
@@ -62,7 +62,7 @@ public class TestDataGenerator implements InitializingBean {
                 .higherValue(100000)
                 .build();
         e = new ApiEventCreation(Event.AddClaim, new ObjectMapper().valueToTree(a));
-        controller.createEvent((long) 1, e);
+        controller.createEvent((long) 1, e, "Alex", "M");
 
         o = CreateClaim.builder()
                 .claimantReference("1111")
@@ -71,7 +71,7 @@ public class TestDataGenerator implements InitializingBean {
                 .defendant(new Organisation("Acme Inc"))
                 .build();
         e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e);
+        controller.createCase(e, "Alex", "M");
 
         URL url = Resources.getResource("seed_data/seed.sql");
         String sql = Resources.toString(url, StandardCharsets.UTF_8);

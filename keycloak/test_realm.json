@@ -352,8 +352,8 @@
     "enabled" : true,
     "totp" : false,
     "emailVerified" : false,
-    "firstName" : "john",
-    "lastName" : "smith",
+    "firstName" : "John",
+    "lastName" : "Smith",
     "credentials" : [ {
       "id" : "15be05bb-65ac-4ad1-ac6e-5bed8ece99e5",
       "type" : "password",
