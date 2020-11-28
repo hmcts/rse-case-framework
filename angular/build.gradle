@@ -4,11 +4,16 @@ task test(type: AngularExec) {
   ngCommand 'ng', 'test', '--watch=false'
   outputs.dir file('build/test')
 }
+//
+//task e2e(type: AngularExec) {
+//  ngCommand 'ng', 'e2e'
+//  inputs.dir file('e2e')
+//  outputs.dir file('build/e2e')
+//}
 
-task e2e(type: AngularExec) {
-  ngCommand 'ng', 'e2e'
-  inputs.dir file('e2e')
-  outputs.dir file('build/e2e')
+task e2e(type:Exec) {
+  workingDir rootProject.projectDir
+  commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'e2e'
 }
 
 task check(dependsOn: ['test', 'e2e'])
