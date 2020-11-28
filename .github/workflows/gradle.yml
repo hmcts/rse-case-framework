@@ -16,4 +16,4 @@ jobs:
       with:
         java-version: 11
     - name: Check
-      run: ./gradlew check -is
+      run: ./gradlew goat -is
