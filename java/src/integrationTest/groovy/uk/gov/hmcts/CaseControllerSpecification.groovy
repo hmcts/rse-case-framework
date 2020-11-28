@@ -108,7 +108,7 @@ class CaseControllerSpecification extends Specification {
         when:
         CreateClaim sol = CreateClaim.builder().defendantReference("@!").claimantReference("@").build()
         JsonNode j = new ObjectMapper().valueToTree(sol)
-        controller.createCase(new ApiEventCreation('Create', j))
+        controller.createCase(new ApiEventCreation('Create', j), "A", "User")
 
         then:
         thrown IllegalArgumentException
@@ -177,7 +177,7 @@ class CaseControllerSpecification extends Specification {
                 .defendant(new Organisation("Wiki"))
                 .build()
         def request = new ApiEventCreation("Create", new ObjectMapper().valueToTree(event))
-        return controller.createCase(request)
+        return controller.createCase(request, "A", "User")
     }
 
     private int caseCount() {
