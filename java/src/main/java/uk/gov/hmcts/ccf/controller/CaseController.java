@@ -63,13 +63,11 @@ public class CaseController {
     @GetMapping("/userInfo")
     public UserInfo getUserInfo(
             @AuthenticationPrincipal OidcUser principal) {
-        return new UserInfo(principal.getGivenName(),
+        return new UserInfo(principal.getName(),
                 principal.getAuthorities().stream()
                         .map(x -> x.getAuthority())
                         .collect(Collectors.toSet()));
     }
-
-
 
     @SneakyThrows
     @GetMapping(path = "/search")

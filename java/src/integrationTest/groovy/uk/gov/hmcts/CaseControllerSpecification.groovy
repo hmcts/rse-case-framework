@@ -63,6 +63,7 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
+    @WithMockUser
     def "info of logged in user is provided"() {
         given:
         def json = mockMvc.perform(get("/web/userInfo").with(oidcLogin()))
@@ -125,8 +126,8 @@ class CaseControllerSpecification extends Specification {
         events.size() == 1
         event.getState() == State.Created.toString()
         LocalDate.now() == event.getTimestamp().toLocalDate()
-        event.userForename == "Alex"
-        event.userSurname == "M"
+        event.userForename == "A"
+        event.userSurname == "User"
     }
 
     def "An event can change a case's state"() {
@@ -134,7 +135,7 @@ class CaseControllerSpecification extends Specification {
         def response = CreateCase()
         def id = response.getBody().id
         ApiEventCreation event = new ApiEventCreation(Event.CloseCase, new CloseCase("Case withdrawn"))
-        controller.createEvent(id, event)
+        controller.createEvent(id, event, "A", "User")
 
         expect:
         controller.getCase(id).state == State.Closed.toString()
@@ -145,9 +146,9 @@ class CaseControllerSpecification extends Specification {
         def response = CreateCase()
         def id = response.getBody().id
         ApiEventCreation event = new ApiEventCreation(Event.CloseCase, new CloseCase("Case withdrawn"))
-        controller.createEvent(id, event)
+        controller.createEvent(id, event, "A", "User")
         event = new ApiEventCreation(Event.SubmitAppeal, new SubmitAppeal("New evidence"))
-        controller.createEvent(id, event)
+        controller.createEvent(id, event, "A", "User")
 
         expect:
         controller.getCase(id).state == State.Stayed.toString()
