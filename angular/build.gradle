@@ -2,7 +2,7 @@ import uk.gov.hmcts.AngularExec
 
 task test(type: AngularExec) {
   ngCommand 'ng', 'test', '--watch=false'
-  outputs.dir file('build/cheese')
+  outputs.dir project.file('build/cheese')
 }
 //
 //task e2e(type: AngularExec) {

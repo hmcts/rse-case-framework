@@ -1,6 +1,5 @@
 package uk.gov.hmcts
 
-
 import org.gradle.api.tasks.Exec
 
 class AngularExec extends Exec {
