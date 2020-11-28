@@ -31,7 +31,7 @@ public class OidcWaiter {
         // TODO - make the OIDC client retry nicely.
         String oidcUrl = System.getenv("IDAM_URI");
         if (Strings.isNullOrEmpty(oidcUrl)) {
-            oidcUrl = "https://hmcts-access.service.gov.uk/o";
+            oidcUrl = "http://localhost:8090/auth/realms/rse";
         }
         URL u = new URL(oidcUrl);
         System.out.println("Waiting for " + oidcUrl);

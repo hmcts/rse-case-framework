@@ -40,5 +40,5 @@ spring:
               - profile
         provider:
           idam:
-            issuer-uri: ${IDAM_URI:https://hmcts-access.service.gov.uk/o}
+            issuer-uri: ${IDAM_URI:http://localhost:8090/auth/realms/rse}
 

@@ -10,6 +10,9 @@ import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,7 @@ import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.api.ApiCase;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
+import uk.gov.hmcts.ccf.api.UserInfo;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
@@ -44,6 +48,7 @@ import static org.jooq.generated.Tables.EVENTS;
 
 @RestController
 @RequestMapping("/web")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CaseController {
 
     @Autowired
@@ -55,20 +60,14 @@ public class CaseController {
     @Autowired
     DefaultDSLContext jooq;
 
-    @PostMapping(path = "/cases")
-    @Transactional
-    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event) {
-        CasesRecord c = jooq.newRecord(CASES);
-        c.store();
-        StateMachine<State, Event> statemachine = stateMachineSupplier.build();
-        insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1);
-
-        statemachine.onCreated(c.getCaseId(), event.getData());
-
-        return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
-                .body(new ApiCase(c.getCaseId(), statemachine.getState().toString(), Sets.newHashSet(), null));
+    @GetMapping("/userInfo")
+    public UserInfo getUserInfo(
+            @AuthenticationPrincipal OidcUser principal) {
+        return new UserInfo(principal.getName(),
+                principal.getAuthorities().stream()
+                        .map(x -> x.getAuthority())
+                        .collect(Collectors.toSet()));
     }
-
 
     @SneakyThrows
     @GetMapping(path = "/search")
@@ -110,7 +109,14 @@ public class CaseController {
     @PostMapping(path = "/cases/{caseId}/events")
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
-                                              @RequestBody ApiEventCreation event) {
+                                              @RequestBody ApiEventCreation event,
+                                              @AuthenticationPrincipal OidcUser user) {
+        return createEvent(caseId, event, user.getGivenName(), user.getFamilyName());
+    }
+
+    public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
+                                              @RequestBody ApiEventCreation event,
+                                              String user, String surname) {
         Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
@@ -120,7 +126,7 @@ public class CaseController {
 
         StateMachine<State, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
-        insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1);
+        insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1, user, surname);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -129,7 +135,8 @@ public class CaseController {
     @Transactional
     public ResponseEntity<String> fileUpload(@PathVariable("caseId") Long caseId,
                                              @RequestParam("eventId") String eventId,
-                                             @RequestParam("file") MultipartFile file) {
+                                             @RequestParam("file") MultipartFile file,
+                                             @AuthenticationPrincipal OidcUser user) {
         Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
@@ -139,10 +146,31 @@ public class CaseController {
 
         StateMachine<State, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleFileUpload(record.component2(), caseId, Event.valueOf(eventId), file);
-        insertEvent(eventId, caseId, statemachine.getState(), record.value1() + 1);
+        insertEvent(eventId, caseId, statemachine.getState(), record.value1() + 1, user.getGivenName(),
+                user.getFamilyName());
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
+
+    @PostMapping(path = "/cases")
+    @Transactional
+    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event,
+                                              @AuthenticationPrincipal OidcUser user) {
+        return createCase(event, user.getGivenName(), user.getFamilyName());
+    }
+
+    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event, String user, String surname) {
+        CasesRecord c = jooq.newRecord(CASES);
+        c.store();
+        StateMachine<State, Event> statemachine = stateMachineSupplier.build();
+        insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1, user, surname);
+
+        statemachine.onCreated(c.getCaseId(), event.getData());
+
+        return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
+                .body(new ApiCase(c.getCaseId(), statemachine.getState().toString(), Sets.newHashSet(), null));
+    }
+
 
     private StateMachine getStatemachine(String state) {
         StateMachine<State, Event> result = stateMachineSupplier.build();
@@ -150,12 +178,12 @@ public class CaseController {
         return result;
     }
 
-    private void insertEvent(String eventId, Long caseId, State state, int sequence) {
+    private void insertEvent(String eventId, Long caseId, State state, int sequence, String forename, String surname) {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
                 EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
             .values(eventId, caseId, state.toString(), sequence,
-                LocalDateTime.now(), "Alex", "M")
+                LocalDateTime.now(), forename, surname)
             .execute();
     }
 }

@@ -19,7 +19,7 @@ describe('workspace-project App', () => {
     browser.manage().logs().get(logging.Type.BROWSER)
 
     element(by.id('username')).sendKeys('john');
-    element(by.id('password')).sendKeys('password');
+    element(by.id('password')).sendKeys('p');
     element(by.id('kc-login')).click();
     browser.wait(protractor.ExpectedConditions.presenceOf($('#title-header')), 10000);
     expect(page.getTitleText()).toEqual('Unspecified Claims');
