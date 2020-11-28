@@ -2,8 +2,9 @@ import uk.gov.hmcts.AngularExec
 
 task test(type: AngularExec) {
   ngCommand 'ng', 'test', '--watch=false'
-  outputs.dir project.file('build/cheese')
+//  outputs.dir project.file('build/cheese')
 }
+
 //
 //task e2e(type: AngularExec) {
 //  ngCommand 'ng', 'e2e'
@@ -14,6 +15,7 @@ task test(type: AngularExec) {
 task e2e(type:Exec) {
   workingDir rootProject.projectDir
   commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'e2e'
+  outputs.dir project.file('build/e2e')
 }
 
 task check(dependsOn: ['test', 'e2e'])
