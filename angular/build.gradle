@@ -12,11 +12,14 @@ import uk.gov.hmcts.AngularExec
 //  outputs.dir file('build/e2e')
 //}
 
+project.mkdir('build/e2e')
+
 task e2e(type:Exec) {
   workingDir rootProject.projectDir
   commandLine 'docker-compose', 'run', '--no-deps', 'frontend', 'ng', 'e2e'
-  outputs.dir rootProject.file('angular/build/e2e')
+  outputs.dir project.file('build/e2e')
 }
+
 println e2e.workingDir
 println rootProject.file('angular/build/e2e')
 
