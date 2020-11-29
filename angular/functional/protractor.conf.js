@@ -2,6 +2,7 @@
 // Protractor configuration file, see link for more information
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
+
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 
 /**
@@ -28,7 +29,7 @@ exports.config = {
     print: function() {}
   },
   async onPrepare() {
-    var fs = require('fs')
+    const fs = require('fs');
     fs.mkdirSync('build/functional', { recursive: true })
     require('jasmine-expect');
     require('ts-node').register({
@@ -39,7 +40,20 @@ exports.config = {
         displayStacktrace: StacktraceOption.PRETTY
       }
     }));
-    // TODO: check backend availability.
-    await new Promise(resolve => setTimeout(resolve, 15000));
+    await browser.waitForAngularEnabled(false);
+    while (true) {
+      try {
+        console.log("Waiting for login screen...")
+        await browser.get('http://localhost:4200');
+        await browser.sleep(2000)
+        await browser.driver.findElement(by.id('username'));
+        console.log("login page loaded")
+        break;
+      } catch (error) {
+        console.log("Login page not ready")
+        await browser.sleep(1000)
+      }
+    }
+    await browser.waitForAngularEnabled(true);
   }
 };
