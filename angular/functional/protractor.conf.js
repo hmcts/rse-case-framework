@@ -43,7 +43,7 @@ exports.config = {
     await browser.waitForAngularEnabled(false);
     while (true) {
       try {
-        console.log("Starting wait")
+        console.log("Waiting for login screen...")
         await browser.get('http://localhost:4200');
         await browser.sleep(2000)
         await browser.driver.findElement(by.id('username'));
@@ -51,9 +51,8 @@ exports.config = {
         break;
       } catch (error) {
         console.log(error)
-        console.log("Waiting for login page load...")
+        console.log("Login page not ready")
         await browser.sleep(1000)
-        browser.refresh()
       }
     }
     await browser.waitForAngularEnabled(true);
