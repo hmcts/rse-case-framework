@@ -50,12 +50,10 @@ exports.config = {
         console.log("login page loaded")
         break;
       } catch (error) {
-        console.log(error)
         console.log("Login page not ready")
         await browser.sleep(1000)
       }
     }
     await browser.waitForAngularEnabled(true);
-    console.log('yarg')
   }
 };
