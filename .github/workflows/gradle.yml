@@ -15,9 +15,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: BootJar
-      run: ./gradlew java:bootJar
-    - name: Build
-      run: docker-compose build --parallel
     - name: Check
       run: ./gradlew check -is
