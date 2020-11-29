@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: postgres:12.4
+    image: postgres:13.1-alpine
     environment:
       POSTGRES_DB: ccf
       POSTGRES_PASSWORD: postgres
