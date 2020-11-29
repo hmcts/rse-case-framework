@@ -15,9 +15,9 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 RUN npm install
-RUN npm install -g @angular/cli@7.3.9
-
+RUN npm install -g @angular/cli@11.0.2
 COPY . /app
+RUN ng build
 EXPOSE 9222
 
 CMD ng serve --host 0.0.0.0 --configuration local --proxy-config proxy.conf.docker.json
