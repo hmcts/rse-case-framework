@@ -16,7 +16,7 @@ EXPOSE 9222
 # install and cache app dependencies
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
-RUN npm install
+RUN npm ci
 RUN npm install -g @angular/cli@11.0.2
 RUN ngcc
 COPY . /app
