@@ -9,12 +9,10 @@ class AngularExec extends Exec {
         });
         getInputs().dir(project.file('src'))
         workingDir project.getRootProject().projectDir
-        commandLine "docker-compose", "run", "--no-deps", "frontend"
+        commandLine "docker-compose", "up", "--build", "--no-deps", "frontend"
     }
 
-    void ngCommand(String... arguments) {
-        def c = getCommandLine()
-        c.addAll(arguments)
-        setCommandLine(c);
+    void ngCommand(String command) {
+        environment("NG_COMMAND", command)
     }
 }

@@ -11,13 +11,9 @@ export class AuthGuardService implements CanActivate {
 
   canActivate(): Promise<boolean> {
     return new Promise((resolve) => {
-      this.authService.getUser()
-        .then(function (user) {
-          resolve(user != null)
-          if (user == null) {
-            window.location.href = "/oauth2/authorization/idam"
-          }
-        })
-    });
+      this.authService.getUser().subscribe(
+        user => resolve(user != null),
+        error => window.location.href = "/oauth2/authorization/idam");
+    })
   }
 }
