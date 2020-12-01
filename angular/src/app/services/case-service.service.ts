@@ -14,7 +14,7 @@ export class CaseService {
     private http: HttpClient
   ) {}
 
-  searchCases(data) {
+  searchCases(data): Observable<object> {
     const query = btoa(JSON.stringify(data));
     return this.http.get(this.baseUrl + 'search', {
       withCredentials: true,

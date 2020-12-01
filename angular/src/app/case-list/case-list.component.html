@@ -7,15 +7,15 @@
   </tr>
   </thead>
   <tbody class="govuk-table__body">
-  <tr class="govuk-table__row" *ngFor="let case of caseList | async">
+  <tr class="govuk-table__row" *ngFor="let case of caseList">
     <th scope="row" class="govuk-table__header">
-      <a routerLink="/cases/{{case.id}}" routerLinkActive="active">{{case.id}}</a>
+      <a routerLink="/cases/{{case.case_id}}" routerLinkActive="active">{{case.case_id}}</a>
     </th>
     <td class="govuk-table__cell">
       <strong class="govuk-tag">{{ case.state }}</strong>
     </td>
     <td class="govuk-table__cell">
-      {{ case.data.parties.length }}
+      {{ case.party_count }}
     </td>
   </tr>
   </tbody>

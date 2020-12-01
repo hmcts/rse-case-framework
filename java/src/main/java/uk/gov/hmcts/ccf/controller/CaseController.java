@@ -73,12 +73,11 @@ public class CaseController {
 
     @SneakyThrows
     @GetMapping(path = "/search")
-    public Collection<ApiCase> searchCases(@RequestHeader("search-query") String base64JsonQuery) {
+    public String searchCases(@RequestHeader("search-query") String base64JsonQuery) {
         byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
 
-        Collection<Case> cases = caseHandler.search(query);
-        return cases.stream().map(x -> getCase(x.getId())).collect(Collectors.toUnmodifiableList());
+        return caseHandler.search(query);
     }
 
     @GetMapping(path = "/cases/{caseId}")

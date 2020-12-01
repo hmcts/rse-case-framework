@@ -21,11 +21,11 @@ export class SearchCasesComponent implements OnInit {
       caseName: '',
       id: '',
     });
-    this.caseList = this.caseService.searchCases({});
+    this.onSubmit({})
   }
 
   onSubmit(data) {
-    this.caseList = this.caseService.searchCases(data)
+    this.caseService.searchCases(data).subscribe(x => this.caseList = x);
   }
 
   createClicked() {

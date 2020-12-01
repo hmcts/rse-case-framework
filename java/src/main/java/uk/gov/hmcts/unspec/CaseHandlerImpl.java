@@ -2,17 +2,17 @@ package uk.gov.hmcts.unspec;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.jooq.Condition;
+import org.jooq.JSONB;
+import org.jooq.JSONFormat;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.ccf.Case;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
@@ -31,13 +31,13 @@ import uk.gov.hmcts.unspec.repository.CaseRepository;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.jooq.generated.Tables.UNSPEC_CASES;
+import static org.jooq.generated.Tables.*;
 import static org.jooq.generated.tables.Citizen.CITIZEN;
+import static org.jooq.impl.DSL.*;
 
 @Service
 public class CaseHandlerImpl implements CaseHandler {
@@ -54,24 +54,27 @@ public class CaseHandlerImpl implements CaseHandler {
         return new ObjectMapper().valueToTree(c);
     }
 
+    @SneakyThrows
     @Override
-    public Collection<Case> search(Map<String, String> params) {
+    public String search(Map<String, String> params) {
         Object id = params.get("id");
         Condition condition = DSL.trueCondition();
         if (id != null && id.toString().length() > 0) {
-            condition = condition.and(UNSPEC_CASES.CASE_ID.equal(Long.valueOf(id.toString())));
+            condition = condition.and(CASES_WITH_STATES.CASE_ID.equal(Long.valueOf(id.toString())));
         }
 
-        return jooq.select()
-                .from(UNSPEC_CASES)
+        return jooq.with("party_counts").as(
+                        select(PARTIES.CASE_ID, count().as("party_count"))
+                        .from(PARTIES)
+                        .groupBy(PARTIES.CASE_ID)
+                )
+                .select()
+                .from(CASES_WITH_STATES)
+                .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
                 .where(condition)
-                .orderBy(UNSPEC_CASES.CASE_ID.asc())
+                .orderBy(CASES_WITH_STATES.CASE_ID.asc())
                 .fetch()
-                .stream()
-                // TODO
-                .map(x -> new Case(x.get(UNSPEC_CASES.CASE_ID), null))
-                .collect(Collectors.toUnmodifiableList());
-
+                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
     }
 
     public StateMachine<State, Event> build() {
@@ -143,10 +146,11 @@ public class CaseHandlerImpl implements CaseHandler {
         repository.save(cse);
     }
 
+    @SneakyThrows
     private void addParty(Long id, Party party) {
-        UnspecCase c = repository.load(id);
-        c.getParties().add(party);
-        repository.save(c);
+        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
+                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
+                .execute();
     }
 
     private void addNotes(Long id, AddNotes notes) {
@@ -169,8 +173,15 @@ public class CaseHandlerImpl implements CaseHandler {
             }
         }
 
-        List<Party> parties = Lists.newArrayList(request.getClaimant(), request.getDefendant());
-        UnspecCase data = new UnspecCase(id, parties);
+        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
+                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getDefendant())))
+                .execute();
+
+        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
+                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getClaimant())))
+                .execute();
+
+        UnspecCase data = new UnspecCase(id);
         data.setCourtLocation(request.getApplicantPreferredCourt());
 
         repository.save(data);
