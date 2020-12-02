@@ -26,7 +26,7 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.queryParamMap.get('id');
-    this.route.paramMap.subscribe(x => this.caseId = x.get('claim'))
+    this.route.paramMap.subscribe(x => this.caseId = x.get('case_id'))
     if (null == this.eventId) {
       this.eventId = "CreateClaim";
     }

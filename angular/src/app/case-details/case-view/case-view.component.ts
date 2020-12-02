@@ -40,7 +40,7 @@ export class CaseViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
-      this.caseId = x.get('claim');
+      this.caseId = x.get('case_id');
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
