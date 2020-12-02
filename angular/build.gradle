@@ -2,13 +2,13 @@ import uk.gov.hmcts.AngularExec
 
 project.mkdir('build/test')
 task test(type: AngularExec) {
-  ngCommand 'ng', 'test', '--watch=false'
+  ngCommand 'ng test --watch=false'
   outputs.dir project.file('build/test')
 }
 
 project.mkdir('build/e2e')
 task e2e(type: AngularExec) {
-  ngCommand 'ng', 'e2e'
+  ngCommand 'ng e2e'
   inputs.dir file('e2e')
   outputs.dir file('build/e2e')
 }

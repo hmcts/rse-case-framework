@@ -15,6 +15,7 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
   @Input() step: StepType;
   @Input() form: FormGroup;
   @Input() index: number;
+  @Input() caseId: any;
   @Output() onChange = new EventEmitter<number>();
   component: CheckAnswersComponent;
 
@@ -36,6 +37,7 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
     if (this.step.answerInitialise) {
       this.step.answerInitialise(step.instance);
     }
+    this.component.caseId = this.caseId;
     this.component.index = this.index;
     this.component.onChange.subscribe((x) => this.onChange.emit(x));
     this.component.form = this.form;

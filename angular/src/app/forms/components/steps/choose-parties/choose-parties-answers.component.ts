@@ -39,14 +39,14 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
 
   ngOnInit(): void {
     const caseId = this.route.snapshot.paramMap.get('id')
-    this.caseService.getCase(caseId).subscribe( c => {
-      this.caseParties = c.data.parties
+    this.caseService.getCaseParties(caseId).subscribe( c => {
+      this.caseParties = c
     });
   }
 
   filterParties(type) {
     // @ts-ignore
-    return this.caseParties.filter(x => this.form.controls[type].controls[x.id]?.value)
+    return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value)
   }
 
   partyName(party: any) : string {

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PartiesTabComponent } from './parties-tab.component';
+import {HttpClientModule} from "@angular/common/http";
 
 describe('Parties tab', () => {
   let component: PartiesTabComponent;
@@ -9,6 +10,7 @@ describe('Parties tab', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         imports: [
+          HttpClientModule,
         ],
       declarations: [ PartiesTabComponent ]
     })

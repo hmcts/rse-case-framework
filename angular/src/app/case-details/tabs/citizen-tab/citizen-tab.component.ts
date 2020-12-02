@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {environment} from "../../../../environments/environment";
@@ -11,7 +11,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 })
 export class CitizenTabComponent implements OnInit {
 
-  caseId: any;
+  @Input() caseId: any;
   baseUrl = environment.baseUrl;
   citizens
   page = 1;
@@ -21,7 +21,6 @@ export class CitizenTabComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -29,7 +28,6 @@ export class CitizenTabComponent implements OnInit {
       forename: new FormControl(),
       surname: new FormControl(),
     })
-    this.caseId = this.route.snapshot.paramMap.get('id');
     this.fetch();
   }
 

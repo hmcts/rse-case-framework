@@ -8,7 +8,6 @@ import {CaseService} from "../../../services/case-service.service";
 })
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
-  parties: Array<any>;
   @Input() caseId: string = '1';
 
   constructor(
@@ -16,14 +15,12 @@ export class ClaimsTabComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCase(this.caseId).subscribe(x => {
-      this.claims = x.data.claims
-      this.parties = x.data.parties
+    this.caseService.getCaseClaims(this.caseId).subscribe(x => {
+      this.claims = x;
     })
   }
 
-  partyName(partyId: number) : string {
-    const party = this.parties[partyId - 1];
+  partyName(party: any) : string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
@@ -34,10 +31,10 @@ export class ClaimsTabComponent implements OnInit {
   }
 
   claimName(claim: any) {
-    return this.partyName(claim.claimantIds[0])
-      + (claim.claimantIds.length > 1 ? " et al" : "")
+    return this.partyName(claim.parties.claimants[0])
+      + (claim.parties.claimants.length > 1 ? " et al" : "")
       + " vs "
-      + this.partyName(claim.defendantIds[0])
-      + (claim.defendantIds.length > 1 ? " et al" : "")
+      + this.partyName(claim.parties.defendants[0])
+      + (claim.parties.defendants.length > 1 ? " et al" : "")
   }
 }

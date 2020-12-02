@@ -42,6 +42,7 @@ import { ConfirmServiceAnswersComponent } from './forms/components/steps/confirm
 import {HumanisePipe} from "./services/humanise.pipe";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {AuthService} from "./services/auth.service";
+import {HeaderComponent} from "./components/header/header.component";
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import {AuthService} from "./services/auth.service";
     ConfirmServiceComponent,
     HumanisePipe,
     ConfirmServiceAnswersComponent,
+    HeaderComponent,
       ],
   imports: [
     BrowserModule,

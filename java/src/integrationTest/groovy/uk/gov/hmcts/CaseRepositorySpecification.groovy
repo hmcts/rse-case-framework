@@ -26,13 +26,12 @@ class CaseRepositorySpecification extends Specification {
     @Autowired
     DefaultDSLContext create;
 
-
     def "Saves and loads the case"() {
         given:
         CasesRecord parent = create.newRecord(CASES);
         parent.store();
 
-        UnspecCase c = new UnspecCase(parent.getCaseId(), List.of(new Company()))
+        UnspecCase c = new UnspecCase(parent.getCaseId())
         c.setNotes(Lists.asList("Bar"))
         c.setName("Foo")
         repository.save(c)
@@ -48,7 +47,7 @@ class CaseRepositorySpecification extends Specification {
         CasesRecord parent = create.newRecord(CASES);
         parent.store();
 
-        UnspecCase c = new UnspecCase(parent.getCaseId(),List.of(new Company(), new Company()))
+        UnspecCase c = new UnspecCase(parent.getCaseId())
         c.setNotes(Lists.asList("Bar"))
         c.setName("Foo")
         repository.save(c)
@@ -60,15 +59,5 @@ class CaseRepositorySpecification extends Specification {
         expect:
         loaded.name == "Foo"
         loaded.notes.size() == 2
-    }
-
-
-    def "A claim must have a party list"() {
-        when:
-        UnspecCase u = new UnspecCase(1, null)
-        repository.save(u)
-
-        then:
-        thrown NullPointerException
     }
 }

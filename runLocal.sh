@@ -6,5 +6,5 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d -V --no-dep
 
 # Backend toggleable
 if [ "$#" -ne 1 ]; then
-  ./gradlew java:bootRun -i
+  ./gradlew java:bootRun -is
 fi

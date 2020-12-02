@@ -34,8 +34,8 @@ public class CreateClaim {
     private String claimDetails;
     private String claimParticulars;
 
-    private int lowerValue;
-    private int higherValue;
+    private long lowerValue;
+    private long higherValue;
 
     private String feeAccountNumber;
 

@@ -28,6 +28,7 @@ describe('workspace-project App', () => {
   it('displays the case list', () => {
     browser.waitForAngularEnabled(true);
     page.navigateTo();
+    expect(element(by.id('user-name')).getText()).toEqual('John Smith')
     let count = element.all(by.css('.govuk-table__row')).count();
     expect(count).toEqual(3);
     count = element.all(by.cssContainingText('.govuk-table__cell', 'Created')).count();

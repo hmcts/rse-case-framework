@@ -11,5 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserInfo {
     private String username;
+    private String forename;
+    private String surname;
     private Set<String> roles;
 }

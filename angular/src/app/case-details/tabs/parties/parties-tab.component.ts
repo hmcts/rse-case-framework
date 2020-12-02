@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {CaseService} from "../../../services/case-service.service";
 
 @Component({
   selector: 'app-parties-tab',
@@ -11,9 +12,12 @@ export class PartiesTabComponent implements OnInit {
   @Input() caseId: any;
   @Input() parties: any = [];
   constructor(
+    private caseService: CaseService,
   ) { }
 
   ngOnInit(): void {
+    this.caseService.getCaseParties(this.caseId)
+      .subscribe(x => this.parties = x);
   }
 
   partyName(party: any) : string {

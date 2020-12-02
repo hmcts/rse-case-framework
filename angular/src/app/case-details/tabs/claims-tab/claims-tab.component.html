@@ -23,7 +23,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-      <h4 class="govuk-heading-s">£{{claim.lowerValue | number}} - £{{claim.higherValue | number}}</h4>
+      <h4 class="govuk-heading-s">£{{claim.lower_amount | number}} - £{{claim.higher_amount | number}}</h4>
     </div>
   </div>
   <div class="govuk-grid-row">
@@ -35,8 +35,8 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let id of claim.claimantIds" class="govuk-table__row">
-          <td class="govuk-table__cell">{{partyName(id)}}</td>
+        <tr *ngFor="let claim of claim.parties.claimants" class="govuk-table__row">
+          <td class="govuk-table__cell">{{partyName(claim)}}</td>
         </tr>
         </tbody>
       </table>
@@ -49,8 +49,8 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let id of claim.defendantIds" class="govuk-table__row">
-          <td class="govuk-table__cell">{{partyName(id)}}</td>
+        <tr *ngFor="let claim of claim.parties.defendants" class="govuk-table__row">
+          <td class="govuk-table__cell">{{partyName(claim)}}</td>
         </tr>
         </tbody>
       </table>
