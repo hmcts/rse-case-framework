@@ -8,6 +8,7 @@ class AngularExec extends Exec {
             include "*.json"
         });
         getInputs().dir(project.file('src'))
+        getInputs().file(project.file('Dockerfile'))
         workingDir project.getRootProject().projectDir
         commandLine "docker-compose", "-p", name, "up", "--build", "--no-deps", "frontend"
     }

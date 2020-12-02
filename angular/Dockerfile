@@ -18,6 +18,8 @@ COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 RUN npm ci
 RUN npm install -g @angular/cli@11.0.2
+# Run and cache the compatibility compiler
+RUN /app/node_modules/.bin/ngcc --properties es2015 --tsconfig "./tsconfig.app.json"
 COPY . /app
 
 CMD ng serve --host 0.0.0.0 --configuration local --proxy-config proxy.conf.docker.json
