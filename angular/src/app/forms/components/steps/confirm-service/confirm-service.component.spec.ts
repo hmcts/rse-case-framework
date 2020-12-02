@@ -12,7 +12,7 @@ describe('ConfirmServiceComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ConfirmServiceComponent ],
       imports: [
-        RouterModule.forRoot([])
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })
       ]
     })
     .compileComponents();

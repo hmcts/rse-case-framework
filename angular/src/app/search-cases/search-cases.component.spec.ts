@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SearchCasesComponent } from './search-cases.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,13 +9,13 @@ describe('SearchCasesComponent', () => {
   let component: SearchCasesComponent;
   let fixture: ComponentFixture<SearchCasesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        RouterModule.forRoot([]),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
     ],
       declarations: [ SearchCasesComponent ]
     })

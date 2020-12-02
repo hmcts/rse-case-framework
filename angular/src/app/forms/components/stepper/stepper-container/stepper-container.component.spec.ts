@@ -10,7 +10,7 @@ describe('StepperContainerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([]),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
       ],
       declarations: [ StepperContainerComponent ]
     })

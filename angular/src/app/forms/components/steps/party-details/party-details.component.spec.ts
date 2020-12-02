@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PartyDetailsComponent } from './party-details.component';
 import {DynamicFormComponent} from "../../../dynamic-form/dynamic-form.component";
@@ -11,7 +11,7 @@ describe('PartyDetailsComponent', () => {
   let component: PartyDetailsComponent;
   let fixture: ComponentFixture<PartyDetailsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule],
       declarations: [ PartyDetailsComponent,

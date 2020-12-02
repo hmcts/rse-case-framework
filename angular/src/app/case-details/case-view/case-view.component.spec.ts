@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CaseViewComponent } from './case-view.component';
 import {ActivatedRoute, RouterModule} from '@angular/router';
@@ -9,10 +9,10 @@ describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
   let fixture: ComponentFixture<CaseViewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([]),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
         HttpClientModule,
       ],
       declarations: [ CaseViewComponent ],

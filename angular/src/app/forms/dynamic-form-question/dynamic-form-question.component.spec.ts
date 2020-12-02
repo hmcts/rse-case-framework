@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
 
@@ -6,7 +6,7 @@ describe('DynamicFormQuestionComponent', () => {
   let component: DynamicFormQuestionComponent;
   let fixture: ComponentFixture<DynamicFormQuestionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicFormQuestionComponent ]
     })

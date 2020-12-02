@@ -13,7 +13,7 @@ describe('CitizenTabComponent', () => {
       declarations: [ CitizenTabComponent ],
       imports: [
         HttpClientModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })
       ]
     })
     .compileComponents();
