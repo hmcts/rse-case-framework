@@ -3,6 +3,7 @@ package uk.gov.hmcts
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
@@ -12,7 +13,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
@@ -22,8 +22,12 @@ import uk.gov.hmcts.ccf.api.ApiCase
 import uk.gov.hmcts.ccf.api.ApiEventCreation
 import uk.gov.hmcts.ccf.api.UserInfo
 import uk.gov.hmcts.ccf.controller.CaseController
+import uk.gov.hmcts.unspec.CaseHandlerImpl
+import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.dto.Company
+import uk.gov.hmcts.unspec.dto.ConfirmService
 import uk.gov.hmcts.unspec.dto.Organisation
+import uk.gov.hmcts.unspec.enums.ClaimState
 import uk.gov.hmcts.unspec.enums.Event
 import uk.gov.hmcts.unspec.enums.State
 import uk.gov.hmcts.unspec.event.CloseCase
@@ -55,6 +59,9 @@ class CaseControllerSpecification extends Specification {
     private WebApplicationContext context;
 
     private MockMvc mockMvc
+
+    @Autowired
+    private CaseHandlerImpl handler;
 
     def setup() {
         mockMvc = MockMvcBuilders
@@ -130,6 +137,56 @@ class CaseControllerSpecification extends Specification {
         event.userSurname == "User"
     }
 
+    def "A new case has two parties"() {
+        given:
+        def response = CreateCase().getBody()
+        def parties = new JsonSlurper().parseText(controller.getParties(response.getId()))
+
+        expect: "Case has two parties"
+        parties.size() == 2
+        parties[0].party_id > 0
+    }
+
+    def "A new case has a single claim"() {
+        given:
+        def response = CreateCase().getBody()
+        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
+        def claim = claims[0]
+
+        expect: "Case has single claim"
+        claims.size() == 1
+        claim.claim_id > 0
+        claim.lower_amount == 1
+        claim.higher_amount == 2
+        claim.state == 'Issued'
+    }
+
+    def "Confirm service for a claim"() {
+        given:
+        def response = CreateCase().getBody()
+        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
+        def claim = claims[0]
+        def service = ConfirmService.builder().claimId(claim.claim_id).build()
+        handler.confirmService(response.getId(), service)
+        def modifiedClaim = new JsonSlurper().parseText(controller.getClaims(response.getId()))[0]
+
+        expect:
+        modifiedClaim.state == ClaimState.ServiceConfirmed.toString()
+
+    }
+
+    def "A claim has claimants and defendants"() {
+        given:
+        def response = CreateCase().getBody()
+        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
+        def parties = claims[0].parties
+        expect: "Case has single claim"
+        parties.defendants.size() == 1
+        parties.claimants.size() == 1
+        parties.defendants[0].name == 'Wiki'
+        parties.claimants[0].name == 'Hooli'
+    }
+
     def "An event can change a case's state"() {
         given:
         def response = CreateCase()
@@ -161,11 +218,11 @@ class CaseControllerSpecification extends Specification {
         def c = CreateCase().getBody()
         def query = Map.of("id", c.id)
         def string = Base64.getEncoder().encodeToString(JsonOutput.toJson(query).getBytes())
-        def cases = controller.searchCases(string)
+        def cases = new JsonSlurper().parseText(controller.searchCases(string))
 
         expect:
         cases.size() == 1
-        cases[0].id == c.id
+        cases[0].case_id == c.id
         cases[0].state == State.Created.toString()
     }
 
@@ -176,6 +233,8 @@ class CaseControllerSpecification extends Specification {
                 .defendantReference(name)
                 .claimant(new Company("Hooli"))
                 .defendant(new Organisation("Wiki"))
+                .lowerValue(1)
+                .higherValue(2)
                 .build()
         def request = new ApiEventCreation("Create", new ObjectMapper().valueToTree(event))
         return controller.createCase(request, "A", "User")

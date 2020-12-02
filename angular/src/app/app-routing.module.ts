@@ -10,8 +10,8 @@ const routes: Routes = [
     path: '', canActivate:[AuthGuardService], children: [
       { path: 'cases', component: SearchCasesComponent },
       { path: 'create-case', component: CreateEventComponent },
-      { path: 'cases/:id', component: CaseViewComponent },
-      { path: 'cases/:id/create-event', component: CreateEventComponent },
+      { path: 'cases/:claim', component: CaseViewComponent },
+      { path: 'cases/:claim/create-event', component: CreateEventComponent },
       { path: '', redirectTo: '/cases', pathMatch: 'full' },
     ]}
 ];

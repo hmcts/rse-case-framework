@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
+import org.jooq.JSONB;
+import org.jooq.JSONFormat;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.generated.tables.records.CasesRecord;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.ccf.Case;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.api.ApiCase;
@@ -37,14 +38,17 @@ import uk.gov.hmcts.unspec.enums.State;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.jooq.generated.Tables.CASES;
+import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.EVENTS;
+import static org.jooq.generated.Tables.PARTIES;
+import static org.jooq.impl.DSL.field;
 
 @RestController
 @RequestMapping("/web")
@@ -105,6 +109,28 @@ public class CaseController {
             .into(ApiEventHistory.class);
 
         return result;
+    }
+
+    @GetMapping(path = "/cases/{caseId}/parties")
+    public String getParties(@PathVariable("caseId") Long caseId) {
+        return jooq.select(field("parties.data || jsonb_build_object('party_id', parties.party_id)", JSONB.class,
+            PARTIES.DATA).as("data"))
+                .from(PARTIES)
+                .where(PARTIES.CASE_ID.eq(caseId))
+                .orderBy(PARTIES.CASE_ID.asc())
+                .fetch()
+                .formatJSON(JSONFormat.DEFAULT_FOR_RESULTS.header(false).wrapSingleColumnRecords(false));
+    }
+
+    @GetMapping(path = "/cases/{caseId}/claims")
+    public String getClaims(@PathVariable("caseId") Long caseId) {
+        return jooq.select()
+                .from(CLAIMS)
+                .join(CLAIMS_WITH_PARTIES).using(CLAIMS.CLAIM_ID)
+                .where(CLAIMS.CASE_ID.eq(caseId))
+                .fetch()
+                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
+                    .wrapSingleColumnRecords(false));
     }
 
     @PostMapping(path = "/cases/{caseId}/events")

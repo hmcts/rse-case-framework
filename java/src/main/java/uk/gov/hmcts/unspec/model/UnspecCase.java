@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import uk.gov.hmcts.unspec.dto.Party;
 
 import java.util.List;
 
@@ -19,5 +18,4 @@ public class UnspecCase {
     private String courtLocation;
     private List<String> notes = Lists.newArrayList();
 
-    private List<Claim> claims = Lists.newArrayList();
 }

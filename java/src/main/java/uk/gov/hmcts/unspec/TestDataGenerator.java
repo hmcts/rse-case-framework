@@ -49,6 +49,8 @@ public class TestDataGenerator implements InitializingBean {
         CreateClaim o = CreateClaim.builder()
             .claimantReference("666")
             .defendantReference("999")
+            .lowerValue(5000)
+            .higherValue(10000)
             .claimant(new Company("Acme Ltd"))
             .defendant(new Organisation("Megacorp Inc"))
             .build();
@@ -56,8 +58,8 @@ public class TestDataGenerator implements InitializingBean {
         controller.createCase(e, "Alex", "M");
 
         AddClaim a = AddClaim.builder()
-                .claimants(Map.of((long) 1, Boolean.TRUE))
-                .defendants(Map.of((long) 2, Boolean.TRUE))
+                .defendants(Map.of((long) 1, Boolean.TRUE))
+                .claimants(Map.of((long) 2, Boolean.TRUE))
                 .lowerValue(10000)
                 .higherValue(100000)
                 .build();

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {StepComponent} from "../../stepper/form-stepper/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {CaseService} from "../../../../services/case-service.service";
@@ -21,13 +21,13 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCase(this.caseId).subscribe( c => {
-      this.caseParties = c.data.parties
+    this.caseService.getCaseParties(this.caseId).subscribe( caseParties => {
+      this.caseParties = caseParties
       this.claimants.reset()
       this.defendants.reset()
       for (let party of this.caseParties) {
-        this.claimants.addControl(party.id, new FormControl(false))
-        this.defendants.addControl(party.id, new FormControl(false))
+        this.claimants.addControl(party.party_id, new FormControl(false))
+        this.defendants.addControl(party.party_id, new FormControl(false))
       }
     });
     this.form.addControl('claimants', this.claimants)
@@ -51,7 +51,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   countParties(side: FormGroup): number {
     let count = 0;
     for (let party of this.caseParties) {
-      if (side.controls[party.id.toString()].value)  {
+      if (side.controls[party.party_id.toString()].value)  {
         count++;
       }
     }

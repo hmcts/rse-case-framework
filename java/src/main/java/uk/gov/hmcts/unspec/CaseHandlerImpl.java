@@ -8,6 +8,7 @@ import org.apache.commons.csv.CSVParser;
 import org.jooq.Condition;
 import org.jooq.JSONB;
 import org.jooq.JSONFormat;
+import org.jooq.generated.enums.PartyType;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.jooq.generated.Tables.*;
+import static org.jooq.generated.Tables.CASES_WITH_STATES;
+import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIM_PARTIES;
+import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.tables.Citizen.CITIZEN;
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.table;
 
 @Service
 public class CaseHandlerImpl implements CaseHandler {
@@ -91,11 +97,11 @@ public class CaseHandlerImpl implements CaseHandler {
         return result;
     }
 
-    private void confirmService(Long caseId, ConfirmService service) {
-        UnspecCase c = repository.load(caseId);
-        Claim claim = c.getClaims().get(service.getClaimId());
-        claim.setState(ClaimState.ServiceConfirmed);
-        repository.save(c);
+    public void confirmService(Long caseId, ConfirmService service) {
+        jooq.update(CLAIMS)
+                .set(CLAIMS.STATE, ClaimState.ServiceConfirmed.toString())
+                .where(CLAIMS.CLAIM_ID.eq(service.getClaimId()))
+                .execute();
     }
 
     private void purgeInactive(Long caseId, Object o) {
@@ -120,7 +126,8 @@ public class CaseHandlerImpl implements CaseHandler {
         }
     }
 
-    private void addClaim(Long caseId, AddClaim claim) {
+    @SneakyThrows
+    public void addClaim(Long caseId, AddClaim claim) {
         List<Long> claimantIds = claim.getClaimants().entrySet().stream().filter((x) -> x.getValue())
                 .map(x -> x.getKey())
                 .collect(Collectors.toUnmodifiableList());
@@ -136,14 +143,27 @@ public class CaseHandlerImpl implements CaseHandler {
         }
 
         Claim c = new Claim();
-        c.setClaimantIds(claimantIds);
-        c.setDefendantIds(defendantIds);
         c.setLowerValue(claim.getLowerValue());
         c.setHigherValue(claim.getHigherValue());
 
-        UnspecCase cse = repository.load(caseId);
-        cse.getClaims().add(c);
-        repository.save(cse);
+        Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.STATE, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
+                .values(caseId, ClaimState.Issued.toString(), claim.getLowerValue(), claim.getHigherValue())
+                .returning(CLAIMS.CLAIM_ID)
+                .fetchOne().getClaimId();
+
+        List<Object[]> claimParties = claimantIds.stream().map(x -> {
+            return new Object[]{claimId, x, PartyType.claimant};
+        }).collect(Collectors.toList());
+
+        claimParties.addAll(defendantIds.stream().map(x -> {
+            return new Object[]{claimId, x, PartyType.defendant};
+        }).collect(Collectors.toList()));
+
+
+        jooq.loadInto(CLAIM_PARTIES)
+                .loadArrays(claimParties)
+                .fields(CLAIM_PARTIES.CLAIM_ID, CLAIM_PARTIES.PARTY_ID, CLAIM_PARTIES.PARTY_TYPE)
+                .execute();
     }
 
     @SneakyThrows
@@ -173,18 +193,25 @@ public class CaseHandlerImpl implements CaseHandler {
             }
         }
 
-        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getDefendant())))
-                .execute();
-
-        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getClaimant())))
-                .execute();
-
         UnspecCase data = new UnspecCase(id);
         data.setCourtLocation(request.getApplicantPreferredCourt());
 
         repository.save(data);
+
+        List<Long> partyIds = jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
+                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getClaimant())))
+                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getDefendant())))
+                .returningResult(PARTIES.PARTY_ID)
+                .fetch()
+                .getValues(PARTIES.PARTY_ID);
+
+        addClaim(id, AddClaim.builder()
+                .lowerValue(request.getLowerValue())
+                .higherValue(request.getHigherValue())
+                .claimants(Map.of(partyIds.get(0), true))
+                .defendants(Map.of(partyIds.get(1), true))
+                .build());
+
     }
 
     private void closeCase(Long id, CloseCase t) {

@@ -15,7 +15,11 @@ services:
       - "9222:9222"
     volumes:
       - './angular:/app'
+      - node_modules:/app/node_modules/
   keycloak:
     ports:
       - "8090:8080"
-
+volumes:
+  # https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container
+  # The container's node modules will be copied into this volume on creation.
+  node_modules:

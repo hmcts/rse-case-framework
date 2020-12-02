@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {CaseService} from "../../services/case-service.service";
 
@@ -40,7 +40,7 @@ export class CaseViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
-      this.caseId = x.get('id');
+      this.caseId = x.get('claim');
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
