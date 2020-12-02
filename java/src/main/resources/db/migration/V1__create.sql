@@ -37,7 +37,9 @@ CREATE TYPE party_type AS ENUM ('claimant', 'defendant');
 create table claim_parties(
     claim_id bigint not null references claims(claim_id),
     party_id bigint not null references parties(party_id),
-    party_type party_type not null
+    party_type party_type not null,
+    -- A party can only be on one side of a claim
+    unique (claim_id, party_id)
 );
 
 create table citizen(
