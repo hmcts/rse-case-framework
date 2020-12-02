@@ -11,7 +11,7 @@ describe('ChoosePartiesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([]),
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
         HttpClientModule
       ],
       declarations: [ ChoosePartiesComponent ]
