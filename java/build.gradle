@@ -34,7 +34,8 @@ dependencies {
     jdbc 'org.postgresql:postgresql:42.2.18'
 
     compile("org.springframework.boot:spring-boot-starter-jdbc")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    compile("org.springframework.boot:spring-boot-starter-jooq")
     compile("org.springframework.session:spring-session-jdbc")
 
     implementation group: 'com.google.guava', name: 'guava', version: '30.0-jre'

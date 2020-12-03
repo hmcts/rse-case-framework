@@ -1,10 +1,11 @@
-package uk.gov.hmcts.unspec;
+package uk.gov.hmcts.ccf.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.SneakyThrows;
+import org.flywaydb.core.api.callback.Callback;
+import org.flywaydb.core.api.callback.Context;
 import org.jooq.impl.DefaultDSLContext;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.impl.DSL.count;
 
 @Component
-public class TestDataGenerator implements InitializingBean {
+public class TestDataGenerator implements Callback {
 
     @Autowired
     private CaseController controller;
@@ -35,9 +36,9 @@ public class TestDataGenerator implements InitializingBean {
     @Autowired
     DefaultDSLContext create;
 
-    @SneakyThrows
     @Override
-    public void afterPropertiesSet() {
+    @SneakyThrows
+    public void handle(org.flywaydb.core.api.callback.Event event, Context context) {
         if (!"true".equals(generate)) {
             return;
         }
@@ -78,6 +79,16 @@ public class TestDataGenerator implements InitializingBean {
         URL url = Resources.getResource("seed_data/seed.sql");
         String sql = Resources.toString(url, StandardCharsets.UTF_8);
         create.execute(sql);
+    }
+
+    @Override
+    public boolean supports(org.flywaydb.core.api.callback.Event event, Context context) {
+        return event == org.flywaydb.core.api.callback.Event.AFTER_MIGRATE;
+    }
+
+    @Override
+    public boolean canHandleInTransaction(org.flywaydb.core.api.callback.Event event, Context context) {
+        return true;
     }
 
 }

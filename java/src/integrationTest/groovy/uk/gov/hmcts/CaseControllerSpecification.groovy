@@ -10,6 +10,7 @@ import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.test.context.support.WithMockUser
@@ -172,7 +173,20 @@ class CaseControllerSpecification extends Specification {
 
         expect:
         modifiedClaim.state == ClaimState.ServiceConfirmed.toString()
+    }
 
+    def "A party cannot be on both sides of a claim"() {
+        when:
+        def response = CreateCase().getBody()
+        def parties = new JsonSlurper().parseText(controller.getParties(response.getId()))
+        Long partyId = parties[0].party_id
+        handler.addClaim(response.getId(),
+                AddClaim.builder()
+                        .defendants(Map.of(partyId, true))
+                        .claimants(Map.of(partyId, true)).build())
+
+        then:
+        thrown DuplicateKeyException
     }
 
     def "A claim has claimants and defendants"() {
