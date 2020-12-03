@@ -87,6 +87,7 @@ bootJar {
 
 bootRun {
     args '--generate-data=true', '--database-host=localhost'
+    jvmArgs "-noverify"
     if (project.hasProperty('args')) {
         args project.args.split(',')
     }
