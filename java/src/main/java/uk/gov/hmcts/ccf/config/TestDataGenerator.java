@@ -70,6 +70,8 @@ public class TestDataGenerator implements Callback {
         o = CreateClaim.builder()
                 .claimantReference("1111")
                 .defendantReference("33333")
+                .lowerValue(1000000)
+                .higherValue(100000000)
                 .claimant(new Company("Hooli"))
                 .defendant(new Organisation("Acme Inc"))
                 .build();

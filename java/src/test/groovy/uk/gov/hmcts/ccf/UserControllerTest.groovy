@@ -2,7 +2,12 @@ package uk.gov.hmcts.ccf
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -18,21 +23,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController)
+@AutoConfigureMockMvc
 class UserControllerTest extends Specification {
+    @Autowired
     private MockMvc mockMvc
 
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private UserController controller;
-
-    def setup() {
-        mockMvc = MockMvcBuilders
-            .webAppContextSetup(context)
-            .apply(springSecurity())
-            .build();
-    }
+    // Mock out OIDC client registration.
+    @MockBean
+    ClientRegistrationRepository registrations;
 
     @WithMockUser
     def "info of logged in user is provided"() {
