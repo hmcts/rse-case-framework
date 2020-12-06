@@ -3,8 +3,6 @@ package uk.gov.hmcts.unspec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.jooq.Condition;
 import org.jooq.JSONB;
 import org.jooq.JSONFormat;
@@ -13,7 +11,6 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
@@ -30,8 +27,6 @@ import uk.gov.hmcts.unspec.model.Claim;
 import uk.gov.hmcts.unspec.model.UnspecCase;
 import uk.gov.hmcts.unspec.repository.CaseRepository;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,7 +35,6 @@ import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIM_PARTIES;
 import static org.jooq.generated.Tables.PARTIES;
-import static org.jooq.generated.tables.Citizen.CITIZEN;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.table;
@@ -87,9 +81,7 @@ public class CaseHandlerImpl implements CaseHandler {
         StateMachine<State, Event> result = new StateMachine<>();
         result.initialState(State.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
-                .addUniversalEvent(Event.PurgeInactiveCitizens, this::purgeInactive)
                 .addUniversalEvent(Event.ConfirmService, this::confirmService)
-                .addFileUploadEvent(State.Created, Event.ImportCitizens, this::bulkImport)
                 .addEvent(State.Created, Event.AddParty, this::addParty)
                 .addEvent(State.Created, Event.AddClaim, this::addClaim)
                 .addTransition(State.Created, State.Closed, Event.CloseCase, this::closeCase)
@@ -104,27 +96,6 @@ public class CaseHandlerImpl implements CaseHandler {
                 .execute();
     }
 
-    private void purgeInactive(Long caseId, Object o) {
-        jooq.delete(CITIZEN)
-                .where(CITIZEN.STATUS.eq("Inactive"))
-                .execute();
-    }
-
-    @SneakyThrows
-    private void bulkImport(Long caseId, MultipartFile f) {
-        try (InputStream is = f.getInputStream()) {
-            CSVParser records = CSVFormat.DEFAULT.parse(new InputStreamReader(is));
-            // Add the caseId column
-            List<Object[]> rows = records.getRecords().stream().map(x -> {
-                return new Object[]{caseId, x.get(0), x.get(1), x.get(2), x.get(3), x.get(4)};
-            }).collect(Collectors.toList());
-            jooq.loadInto(CITIZEN)
-                    .loadArrays(rows)
-                    .fields(CITIZEN.CASE_ID, CITIZEN.TITLE, CITIZEN.FORENAME, CITIZEN.SURNAME, CITIZEN.DATE_OF_BIRTH,
-                            CITIZEN.STATUS)
-                    .execute();
-        }
-    }
 
     @SneakyThrows
     public void addClaim(Long caseId, AddClaim claim) {

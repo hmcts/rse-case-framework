@@ -1,10 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:12.4:///ccf
+    url: jdbc:tc:postgresql:12.4:///ccf?TC_REUSABLE=true
   session:
     store-type: jdbc
     jdbc:
       initialize-schema: always
   security:
     enabled: false
+  flyway:
+    clean-on-validation-error: true

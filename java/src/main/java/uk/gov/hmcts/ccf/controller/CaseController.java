@@ -22,15 +22,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.api.ApiCase;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
-import uk.gov.hmcts.ccf.api.UserInfo;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.enums.State;
@@ -41,7 +38,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.jooq.generated.Tables.CASES;
 import static org.jooq.generated.Tables.CLAIMS;
@@ -63,17 +59,6 @@ public class CaseController {
 
     @Autowired
     DefaultDSLContext jooq;
-
-    @GetMapping("/userInfo")
-    public UserInfo getUserInfo(
-            @AuthenticationPrincipal OidcUser principal) {
-        return new UserInfo(principal.getName(),
-                principal.getGivenName(),
-                principal.getFamilyName(),
-                principal.getAuthorities().stream()
-                        .map(x -> x.getAuthority())
-                        .collect(Collectors.toSet()));
-    }
 
     @SneakyThrows
     @GetMapping(path = "/search")
@@ -154,27 +139,6 @@ public class CaseController {
         StateMachine<State, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
         insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1, user, surname);
-        return ResponseEntity.created(URI.create("/cases/" + caseId))
-                .body("");
-    }
-
-    @PostMapping(path = "/cases/{caseId}/files")
-    @Transactional
-    public ResponseEntity<String> fileUpload(@PathVariable("caseId") Long caseId,
-                                             @RequestParam("eventId") String eventId,
-                                             @RequestParam("file") MultipartFile file,
-                                             @AuthenticationPrincipal OidcUser user) {
-        Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
-                .from(EVENTS)
-                .where(EVENTS.CASE_ID.eq(caseId))
-                .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
-                .limit(1)
-                .fetchSingle();
-
-        StateMachine<State, Event> statemachine = getStatemachine(record.component2());
-        statemachine.handleFileUpload(record.component2(), caseId, Event.valueOf(eventId), file);
-        insertEvent(eventId, caseId, statemachine.getState(), record.value1() + 1, user.getGivenName(),
-                user.getFamilyName());
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }

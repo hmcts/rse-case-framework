@@ -13,11 +13,12 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 EXPOSE 9222
 
+RUN npm install -g @angular/cli@11.0.2
+
 # install and cache app dependencies
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 RUN npm ci
-RUN npm install -g @angular/cli@11.0.2
 # Run and cache the compatibility compiler
 RUN /app/node_modules/.bin/ngcc --properties es2015 --tsconfig "./tsconfig.app.json"
 COPY . /app
