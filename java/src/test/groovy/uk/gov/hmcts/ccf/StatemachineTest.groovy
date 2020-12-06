@@ -4,7 +4,7 @@ package uk.gov.hmcts.ccf
 import spock.lang.Specification
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.enums.Event
-import uk.gov.hmcts.unspec.enums.State
+import uk.gov.hmcts.unspec.enums.CaseState
 
 class StatemachineTest extends Specification {
 
@@ -16,6 +16,6 @@ class StatemachineTest extends Specification {
         machine.handleEvent(1, Event.SubmitAppeal, null)
 
         then:
-        machine.getState() == State.Created
+        machine.getState() == CaseState.Created
     }
 }

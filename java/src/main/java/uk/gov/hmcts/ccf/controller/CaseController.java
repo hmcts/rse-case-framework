@@ -30,7 +30,7 @@ import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
-import uk.gov.hmcts.unspec.enums.State;
+import uk.gov.hmcts.unspec.enums.CaseState;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -80,7 +80,7 @@ public class CaseController {
 
         JsonNode data = caseHandler.get(caseId);
         String state = result.get(EVENTS.STATE);
-        StateMachine<State, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
         return new ApiCase(caseId, state, statemachine.getAvailableActions(state), data);
     }
 
@@ -136,7 +136,7 @@ public class CaseController {
                 .limit(1)
                 .fetchSingle();
 
-        StateMachine<State, Event> statemachine = getStatemachine(record.component2());
+        StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
         insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1, user, surname);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
@@ -153,7 +153,7 @@ public class CaseController {
     public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event, String user, String surname) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
-        StateMachine<State, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
         insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1, user, surname);
 
         statemachine.onCreated(c.getCaseId(), event.getData());
@@ -164,12 +164,13 @@ public class CaseController {
 
 
     private StateMachine getStatemachine(String state) {
-        StateMachine<State, Event> result = stateMachineSupplier.build();
+        StateMachine<CaseState, Event> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;
     }
 
-    private void insertEvent(String eventId, Long caseId, State state, int sequence, String forename, String surname) {
+    private void insertEvent(String eventId, Long caseId, CaseState state, int sequence, String forename,
+                             String surname) {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
                 EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)

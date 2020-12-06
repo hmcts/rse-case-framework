@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.unspec.enums.CaseState;
 
 import java.util.Collection;
 import java.util.Set;
@@ -127,7 +128,7 @@ public class StateMachine<StateT, EventT> {
 
     public void rehydrate(String state) {
         // TODO
-        this.state = (StateT) Enum.valueOf(uk.gov.hmcts.unspec.enums.State.class, state);
+        this.state = (StateT) Enum.valueOf(CaseState.class, state);
     }
 
     @Data

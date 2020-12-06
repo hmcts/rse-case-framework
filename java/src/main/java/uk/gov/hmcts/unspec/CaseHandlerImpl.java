@@ -19,7 +19,7 @@ import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.enums.ClaimState;
 import uk.gov.hmcts.unspec.enums.Event;
-import uk.gov.hmcts.unspec.enums.State;
+import uk.gov.hmcts.unspec.enums.CaseState;
 import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
@@ -77,15 +77,15 @@ public class CaseHandlerImpl implements CaseHandler {
                 .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
     }
 
-    public StateMachine<State, Event> build() {
-        StateMachine<State, Event> result = new StateMachine<>();
-        result.initialState(State.Created, this::onCreate)
+    public StateMachine<CaseState, Event> build() {
+        StateMachine<CaseState, Event> result = new StateMachine<>();
+        result.initialState(CaseState.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
                 .addUniversalEvent(Event.ConfirmService, this::confirmService)
-                .addEvent(State.Created, Event.AddParty, this::addParty)
-                .addEvent(State.Created, Event.AddClaim, this::addClaim)
-                .addTransition(State.Created, State.Closed, Event.CloseCase, this::closeCase)
-                .addTransition(State.Closed, State.Stayed, Event.SubmitAppeal, this::closeCase);
+                .addEvent(CaseState.Created, Event.AddParty, this::addParty)
+                .addEvent(CaseState.Created, Event.AddClaim, this::addClaim)
+                .addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
+                .addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
     }
 

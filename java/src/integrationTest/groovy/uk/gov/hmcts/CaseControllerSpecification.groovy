@@ -30,7 +30,7 @@ import uk.gov.hmcts.unspec.dto.ConfirmService
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.enums.ClaimState
 import uk.gov.hmcts.unspec.enums.Event
-import uk.gov.hmcts.unspec.enums.State
+import uk.gov.hmcts.unspec.enums.CaseState
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal
@@ -102,7 +102,7 @@ class CaseControllerSpecification extends Specification {
         ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
 
         expect:
-        a.getState() == State.Created.toString()
+        a.getState() == CaseState.Created.toString()
         a.getActions().isEmpty() == false
     }
 
@@ -133,7 +133,7 @@ class CaseControllerSpecification extends Specification {
 
         expect: "Case has a single event"
         events.size() == 1
-        event.getState() == State.Created.toString()
+        event.getState() == CaseState.Created.toString()
         LocalDate.now() == event.getTimestamp().toLocalDate()
         event.userForename == "A"
         event.userSurname == "User"
@@ -210,7 +210,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, "A", "User")
 
         expect:
-        controller.getCase(id).state == State.Closed.toString()
+        controller.getCase(id).state == CaseState.Closed.toString()
     }
 
     def "A closed case can be reopened"() {
@@ -223,7 +223,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, "A", "User")
 
         expect:
-        controller.getCase(id).state == State.Stayed.toString()
+        controller.getCase(id).state == CaseState.Stayed.toString()
     }
 
 
@@ -238,7 +238,7 @@ class CaseControllerSpecification extends Specification {
         expect:
         cases.size() == 1
         cases[0].case_id == c.id
-        cases[0].state == State.Created.toString()
+        cases[0].state == CaseState.Created.toString()
     }
 
 

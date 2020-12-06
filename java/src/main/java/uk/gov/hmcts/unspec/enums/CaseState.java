@@ -1,6 +1,6 @@
 package uk.gov.hmcts.unspec.enums;
 
-public enum State {
+public enum CaseState {
     Created,
     Stayed,
     Closed,
