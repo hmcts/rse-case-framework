@@ -115,13 +115,14 @@ class CaseControllerSpecification extends Specification {
 
     def "an invalid case is not created"() {
         when:
+        def count = caseCount()
         CreateClaim sol = CreateClaim.builder().defendantReference("@!").claimantReference("@").build()
         JsonNode j = new ObjectMapper().valueToTree(sol)
         controller.createCase(new ApiEventCreation('Create', j), "A", "User")
 
         then:
         thrown IllegalArgumentException
-        caseCount() == 0
+        caseCount() == count
     }
 
     def "A new case has a creation event"() {
