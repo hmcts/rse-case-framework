@@ -14,7 +14,7 @@ import uk.gov.hmcts.ccf.controller.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
-import uk.gov.hmcts.unspec.enums.Event;
+import org.jooq.generated.enums.Event;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;

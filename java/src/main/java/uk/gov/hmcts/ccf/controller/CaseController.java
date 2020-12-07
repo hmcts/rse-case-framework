@@ -30,7 +30,7 @@ import uk.gov.hmcts.ccf.api.ApiCase;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
-import uk.gov.hmcts.unspec.enums.Event;
+import org.jooq.generated.enums.Event;
 
 import java.net.URI;
 import java.time.LocalDateTime;

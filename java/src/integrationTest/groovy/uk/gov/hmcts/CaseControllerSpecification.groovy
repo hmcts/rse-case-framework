@@ -30,7 +30,7 @@ import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.ConfirmService
 import uk.gov.hmcts.unspec.dto.Organisation
-import uk.gov.hmcts.unspec.enums.Event
+import org.jooq.generated.enums.Event
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal

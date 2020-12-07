@@ -4,6 +4,18 @@ create table cases(
 
 CREATE TYPE case_state AS ENUM ('Created', 'Stayed', 'Closed');
 
+create type event as enum (
+    'CreateClaim',
+    'AddParty',
+    'AddClaim',
+    'AddNotes',
+    'CloseCase',
+    'ImportCitizens',
+    'PurgeInactiveCitizens',
+    'ConfirmService',
+    'SubmitAppeal'
+    );
+
 create table events(
   case_id bigint references cases(case_id) not null,
   id varchar not null,
