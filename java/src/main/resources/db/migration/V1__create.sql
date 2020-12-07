@@ -20,7 +20,7 @@ create table events(
   case_id bigint references cases(case_id) not null,
   id event not null,
   sequence_number serial not null,
-  timestamp timestamp not null,
+  timestamp timestamp not null default now(),
   state case_state not null,
   user_forename varchar not null,
   user_surname varchar not null,

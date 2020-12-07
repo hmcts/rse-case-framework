@@ -47,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @Transactional
-@Import(TestUsers)
 class CaseControllerSpecification extends Specification {
 
     @Autowired

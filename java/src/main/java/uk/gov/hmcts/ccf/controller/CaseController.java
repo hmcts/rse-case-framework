@@ -171,10 +171,9 @@ public class CaseController {
     private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String forename,
                              String surname) {
         jooq.insertInto(EVENTS)
-            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
+            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER,
                 EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-            .values(eventId, caseId, state, sequence,
-                LocalDateTime.now(), forename, surname)
+            .values(eventId, caseId, state, sequence, forename, surname)
             .execute();
     }
 }
