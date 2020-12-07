@@ -6,6 +6,8 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
+import org.jooq.generated.enums.CaseState
+import org.jooq.generated.enums.ClaimState
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -28,9 +30,7 @@ import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.ConfirmService
 import uk.gov.hmcts.unspec.dto.Organisation
-import uk.gov.hmcts.unspec.enums.ClaimState
 import uk.gov.hmcts.unspec.enums.Event
-import uk.gov.hmcts.unspec.enums.CaseState
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal
@@ -102,7 +102,7 @@ class CaseControllerSpecification extends Specification {
         ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
 
         expect:
-        a.getState() == CaseState.Created.toString()
+        a.getState() == CaseState.Created
         a.getActions().isEmpty() == false
     }
 
@@ -133,7 +133,7 @@ class CaseControllerSpecification extends Specification {
 
         expect: "Case has a single event"
         events.size() == 1
-        event.getState() == CaseState.Created.toString()
+        event.getState() == CaseState.Created
         LocalDate.now() == event.getTimestamp().toLocalDate()
         event.userForename == "A"
         event.userSurname == "User"
@@ -210,7 +210,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, "A", "User")
 
         expect:
-        controller.getCase(id).state == CaseState.Closed.toString()
+        controller.getCase(id).state == CaseState.Closed
     }
 
     def "A closed case can be reopened"() {
@@ -223,7 +223,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, "A", "User")
 
         expect:
-        controller.getCase(id).state == CaseState.Stayed.toString()
+        controller.getCase(id).state == CaseState.Stayed
     }
 
 

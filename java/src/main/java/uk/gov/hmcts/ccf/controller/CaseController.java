@@ -8,6 +8,7 @@ import org.jooq.JSONB;
 import org.jooq.JSONFormat;
 import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.enums.Event;
-import uk.gov.hmcts.unspec.enums.CaseState;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -79,7 +79,7 @@ public class CaseController {
             .fetchSingle();
 
         JsonNode data = caseHandler.get(caseId);
-        String state = result.get(EVENTS.STATE);
+        CaseState state = result.get(EVENTS.STATE);
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
         return new ApiCase(caseId, state, statemachine.getAvailableActions(state), data);
     }
@@ -129,7 +129,7 @@ public class CaseController {
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               String user, String surname) {
-        Record2<Integer, String> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
+        Record2<Integer, CaseState> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
                 .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
@@ -159,11 +159,11 @@ public class CaseController {
         statemachine.onCreated(c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
-                .body(new ApiCase(c.getCaseId(), statemachine.getState().toString(), Sets.newHashSet(), null));
+                .body(new ApiCase(c.getCaseId(), statemachine.getState(), Sets.newHashSet(), null));
     }
 
 
-    private StateMachine getStatemachine(String state) {
+    private StateMachine getStatemachine(CaseState state) {
         StateMachine<CaseState, Event> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;
@@ -174,7 +174,7 @@ public class CaseController {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
                 EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-            .values(eventId, caseId, state.toString(), sequence,
+            .values(eventId, caseId, state, sequence,
                 LocalDateTime.now(), forename, surname)
             .execute();
     }

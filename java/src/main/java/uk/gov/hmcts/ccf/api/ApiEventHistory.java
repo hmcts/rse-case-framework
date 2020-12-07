@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ccf.api;
 
 import lombok.Data;
+import org.jooq.generated.enums.CaseState;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ public class ApiEventHistory {
 
     private int sequenceNumber;
     private String id;
-    private String state;
+    private CaseState state;
     private LocalDateTime timestamp;
     private String userForename;
     private String userSurname;

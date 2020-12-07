@@ -6,6 +6,8 @@ import lombok.SneakyThrows;
 import org.jooq.Condition;
 import org.jooq.JSONB;
 import org.jooq.JSONFormat;
+import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.PartyType;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
@@ -17,9 +19,7 @@ import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
-import uk.gov.hmcts.unspec.enums.ClaimState;
 import uk.gov.hmcts.unspec.enums.Event;
-import uk.gov.hmcts.unspec.enums.CaseState;
 import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
@@ -91,7 +91,7 @@ public class CaseHandlerImpl implements CaseHandler {
 
     public void confirmService(Long caseId, ConfirmService service) {
         jooq.update(CLAIMS)
-                .set(CLAIMS.STATE, ClaimState.ServiceConfirmed.toString())
+                .set(CLAIMS.STATE, ClaimState.ServiceConfirmed)
                 .where(CLAIMS.CLAIM_ID.eq(service.getClaimId()))
                 .execute();
     }
@@ -118,7 +118,7 @@ public class CaseHandlerImpl implements CaseHandler {
         c.setHigherValue(claim.getHigherValue());
 
         Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.STATE, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
-                .values(caseId, ClaimState.Issued.toString(), claim.getLowerValue(), claim.getHigherValue())
+                .values(caseId, ClaimState.Issued, claim.getLowerValue(), claim.getHigherValue())
                 .returning(CLAIMS.CLAIM_ID)
                 .fetchOne().getClaimId();
 

@@ -2,12 +2,14 @@ create table cases(
   case_id bigserial not null primary key
 );
 
+CREATE TYPE case_state AS ENUM ('Created', 'Stayed', 'Closed');
+
 create table events(
   case_id bigint references cases(case_id) not null,
   id varchar not null,
   sequence_number serial not null,
   timestamp timestamp not null,
-  state varchar not null,
+  state case_state not null,
   user_forename varchar not null,
   user_surname varchar not null,
   unique(case_id, sequence_number)
@@ -18,9 +20,11 @@ create table unspec_cases(
     data jsonb not null
 );
 
+CREATE TYPE claim_state AS ENUM ('Issued', 'Stayed', 'ServiceConfirmed');
+
 create table claims(
     claim_id bigserial not null primary key,
-    state varchar not null,
+    state claim_state not null,
     case_id bigint not null references cases(case_id),
     lower_amount bigint,
     higher_amount bigint
