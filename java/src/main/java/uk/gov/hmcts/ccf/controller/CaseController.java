@@ -33,7 +33,6 @@ import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import org.jooq.generated.enums.Event;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
