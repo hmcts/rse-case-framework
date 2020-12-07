@@ -18,7 +18,7 @@ create type event as enum (
 
 create table events(
   case_id bigint references cases(case_id) not null,
-  id varchar not null,
+  id event not null,
   sequence_number serial not null,
   timestamp timestamp not null,
   state case_state not null,

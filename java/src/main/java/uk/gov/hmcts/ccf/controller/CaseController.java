@@ -138,7 +138,7 @@ public class CaseController {
 
         StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
-        insertEvent(event.getId(), caseId, statemachine.getState(), record.value1() + 1, user, surname);
+        insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, user, surname);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -154,7 +154,7 @@ public class CaseController {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        insertEvent(Event.CreateClaim.toString(), c.getCaseId(), statemachine.getState(), 1, user, surname);
+        insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), 1, user, surname);
 
         statemachine.onCreated(c.getCaseId(), event.getData());
 
@@ -162,14 +162,13 @@ public class CaseController {
                 .body(new ApiCase(c.getCaseId(), statemachine.getState(), Sets.newHashSet(), null));
     }
 
-
     private StateMachine getStatemachine(CaseState state) {
         StateMachine<CaseState, Event> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;
     }
 
-    private void insertEvent(String eventId, Long caseId, CaseState state, int sequence, String forename,
+    private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String forename,
                              String surname) {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER, EVENTS.TIMESTAMP,
