@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {CaseService} from "../../../services/case-service.service";
+import {CaseService} from '../../../services/case-service.service';
 
 @Component({
   selector: 'app-parties-tab',
@@ -10,7 +9,7 @@ import {CaseService} from "../../../services/case-service.service";
 export class PartiesTabComponent implements OnInit {
 
   @Input() caseId: any;
-  @Input() parties: any = [];
+  parties: any = [];
   constructor(
     private caseService: CaseService,
   ) { }

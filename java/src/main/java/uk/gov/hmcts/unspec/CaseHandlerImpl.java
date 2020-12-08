@@ -1,6 +1,5 @@
 package uk.gov.hmcts.unspec;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.jooq.JSONB;
@@ -11,7 +10,6 @@ import org.jooq.generated.enums.PartyType;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.unspec.dto.AddClaim;
@@ -34,19 +32,13 @@ import static org.jooq.generated.Tables.CLAIM_PARTIES;
 import static org.jooq.generated.Tables.PARTIES;
 
 @Service
-public class CaseHandlerImpl implements CaseHandler {
+public class CaseHandlerImpl {
 
     @Autowired
     DefaultDSLContext jooq;
 
     @Autowired
     CaseRepository repository;
-
-    @Override
-    public JsonNode get(Long caseId) {
-        UnspecCase c = repository.load(Long.valueOf(caseId));
-        return new ObjectMapper().valueToTree(c);
-    }
 
     public StateMachine<CaseState, Event> build() {
         StateMachine<CaseState, Event> result = new StateMachine<>();

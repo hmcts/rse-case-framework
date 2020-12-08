@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.dto.Citizen;
 
@@ -34,9 +33,6 @@ public class UnspecCaseController {
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;
-
-    @Autowired
-    CaseHandler caseHandler;
 
     @Autowired
     DefaultDSLContext create;

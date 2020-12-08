@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
-import {CaseService} from "../../services/case-service.service";
+import {CaseService} from '../../services/case-service.service';
 
 
 @Component({

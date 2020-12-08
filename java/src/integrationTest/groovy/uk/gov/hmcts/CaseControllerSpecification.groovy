@@ -13,22 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.api.ApiCase
+import uk.gov.hmcts.ccf.api.CaseActions
 import uk.gov.hmcts.ccf.api.ApiEventCreation
 import uk.gov.hmcts.ccf.api.UserInfo
 import uk.gov.hmcts.ccf.controller.CaseController
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
-import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.ConfirmService
-import uk.gov.hmcts.unspec.dto.Organisation
 import org.jooq.generated.enums.Event
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
@@ -100,7 +97,7 @@ class CaseControllerSpecification extends Specification {
         def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-        ApiCase a = new ObjectMapper().readValue(json, ApiCase.class)
+        CaseActions a = new ObjectMapper().readValue(json, CaseActions.class)
 
         expect:
         a.getState() == CaseState.Created

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.ccf.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
@@ -26,9 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.api.ApiCase;
+import uk.gov.hmcts.ccf.api.CaseActions;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
@@ -61,9 +59,6 @@ public class CaseController {
     CaseHandlerImpl stateMachineSupplier;
 
     @Autowired
-    CaseHandler caseHandler;
-
-    @Autowired
     DefaultDSLContext jooq;
 
     @SneakyThrows
@@ -93,7 +88,7 @@ public class CaseController {
     }
 
     @GetMapping(path = "/cases/{caseId}")
-    public ApiCase getCase(@PathVariable("caseId") Long caseId) {
+    public CaseActions getCase(@PathVariable("caseId") Long caseId) {
         Record result = jooq.select(EVENTS.STATE)
             .from(EVENTS)
             .where(EVENTS.CASE_ID.eq(Long.valueOf(caseId)))
@@ -101,10 +96,9 @@ public class CaseController {
             .limit(1)
             .fetchSingle();
 
-        JsonNode data = caseHandler.get(caseId);
         CaseState state = result.get(EVENTS.STATE);
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        return new ApiCase(caseId, state, statemachine.getAvailableActions(state), data);
+        return new CaseActions(caseId, state, statemachine.getAvailableActions(state));
     }
 
     @GetMapping(path = "/cases/{caseId}/events")
@@ -169,12 +163,12 @@ public class CaseController {
 
     @PostMapping(path = "/cases")
     @Transactional
-    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event,
-                                              @AuthenticationPrincipal OidcUser user) {
+    public ResponseEntity<CaseActions> createCase(@RequestBody ApiEventCreation event,
+                                                  @AuthenticationPrincipal OidcUser user) {
         return createCase(event, user.getSubject());
     }
 
-    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event, String userId) {
+    public ResponseEntity<CaseActions> createCase(@RequestBody ApiEventCreation event, String userId) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
@@ -183,7 +177,7 @@ public class CaseController {
         statemachine.onCreated(userId, c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
-                .body(new ApiCase(c.getCaseId(), statemachine.getState(), Sets.newHashSet(), null));
+                .body(new CaseActions(c.getCaseId(), statemachine.getState(), Sets.newHashSet()));
     }
 
     private StateMachine getStatemachine(CaseState state) {

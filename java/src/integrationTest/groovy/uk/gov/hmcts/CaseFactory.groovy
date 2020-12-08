@@ -5,7 +5,7 @@ import org.jooq.impl.DefaultDSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
-import uk.gov.hmcts.ccf.api.ApiCase
+import uk.gov.hmcts.ccf.api.CaseActions
 import uk.gov.hmcts.ccf.api.ApiEventCreation
 import uk.gov.hmcts.ccf.controller.CaseController
 import uk.gov.hmcts.unspec.dto.Company
@@ -30,7 +30,7 @@ class CaseFactory {
         return id;
     }
 
-    ResponseEntity<ApiCase> CreateCase(String userId = createUser()) {
+    ResponseEntity<CaseActions> CreateCase(String userId = createUser()) {
         def event = CreateClaim.builder()
             .claimantReference("Foo")
             .defendantReference("Bar")
