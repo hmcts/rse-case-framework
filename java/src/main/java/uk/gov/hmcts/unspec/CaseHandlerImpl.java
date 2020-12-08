@@ -3,13 +3,11 @@ package uk.gov.hmcts.unspec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.jooq.Condition;
 import org.jooq.JSONB;
-import org.jooq.JSONFormat;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimState;
+import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyType;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
-import org.jooq.generated.enums.Event;
 import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
@@ -32,13 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIM_PARTIES;
 import static org.jooq.generated.Tables.PARTIES;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.select;
-import static org.jooq.impl.DSL.table;
 
 @Service
 public class CaseHandlerImpl implements CaseHandler {
@@ -53,29 +46,6 @@ public class CaseHandlerImpl implements CaseHandler {
     public JsonNode get(Long caseId) {
         UnspecCase c = repository.load(Long.valueOf(caseId));
         return new ObjectMapper().valueToTree(c);
-    }
-
-    @SneakyThrows
-    @Override
-    public String search(Map<String, String> params) {
-        Object id = params.get("id");
-        Condition condition = DSL.trueCondition();
-        if (id != null && id.toString().length() > 0) {
-            condition = condition.and(CASES_WITH_STATES.CASE_ID.equal(Long.valueOf(id.toString())));
-        }
-
-        return jooq.with("party_counts").as(
-                        select(PARTIES.CASE_ID, count().as("party_count"))
-                        .from(PARTIES)
-                        .groupBy(PARTIES.CASE_ID)
-                )
-                .select()
-                .from(CASES_WITH_STATES)
-                .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
-                .where(condition)
-                .orderBy(CASES_WITH_STATES.CASE_ID.asc())
-                .fetch()
-                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
     }
 
     public StateMachine<CaseState, Event> build() {
