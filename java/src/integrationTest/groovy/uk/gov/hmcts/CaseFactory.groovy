@@ -12,6 +12,8 @@ import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.event.CreateClaim
 
+import static org.jooq.generated.Tables.USERS
+
 @Component
 class CaseFactory {
 
@@ -21,7 +23,14 @@ class CaseFactory {
     @Autowired
     DefaultDSLContext jooq;
 
-    ResponseEntity<ApiCase> CreateCase() {
+    String createUser(String id = "1") {
+        jooq.insertInto(USERS,USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
+                .values(id, "John", "Smith")
+                .execute();
+        return id;
+    }
+
+    ResponseEntity<ApiCase> CreateCase(String userId = createUser()) {
         def event = CreateClaim.builder()
             .claimantReference("Foo")
             .defendantReference("Bar")
@@ -31,6 +40,6 @@ class CaseFactory {
             .higherValue(2)
             .build()
         def request = new ApiEventCreation("Create", new ObjectMapper().valueToTree(event))
-        return controller.createCase(request, "A", "user")
+        return controller.createCase(request, userId)
     }
 }

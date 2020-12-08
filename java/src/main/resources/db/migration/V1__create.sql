@@ -16,14 +16,19 @@ create type event as enum (
     'SubmitAppeal'
     );
 
+create table users(
+    user_id varchar primary key,
+    user_forename varchar not null,
+    user_surname varchar not null
+);
+
 create table events(
   case_id bigint references cases(case_id) not null,
   id event not null,
   sequence_number serial not null,
   timestamp timestamp not null default now(),
   state case_state not null,
-  user_forename varchar not null,
-  user_surname varchar not null,
+  user_id varchar not null references users(user_id),
   unique(case_id, sequence_number)
 );
 

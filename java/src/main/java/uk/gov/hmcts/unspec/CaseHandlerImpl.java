@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
@@ -151,7 +152,7 @@ public class CaseHandlerImpl implements CaseHandler {
     }
 
     @SneakyThrows
-    private void onCreate(Long id, CreateClaim request) {
+    private void onCreate(TransitionContext context, CreateClaim request) {
         String ref = request.getClaimantReference();
         if (ref == null || ref.length() == 0 || ref.contains("@")) {
             throw new IllegalArgumentException("Invalid reference!");
@@ -164,19 +165,21 @@ public class CaseHandlerImpl implements CaseHandler {
             }
         }
 
-        UnspecCase data = new UnspecCase(id);
+        UnspecCase data = new UnspecCase(context.getEntityId());
         data.setCourtLocation(request.getApplicantPreferredCourt());
 
         repository.save(data);
 
         List<Long> partyIds = jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getClaimant())))
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getDefendant())))
+                .values(context.getEntityId(), JSONB.valueOf(
+                    new ObjectMapper().writeValueAsString(request.getClaimant())))
+                .values(context.getEntityId(), JSONB.valueOf(
+                    new ObjectMapper().writeValueAsString(request.getDefendant())))
                 .returningResult(PARTIES.PARTY_ID)
                 .fetch()
                 .getValues(PARTIES.PARTY_ID);
 
-        addClaim(id, AddClaim.builder()
+        addClaim(context.getEntityId(), AddClaim.builder()
                 .lowerValue(request.getLowerValue())
                 .higherValue(request.getHigherValue())
                 .claimants(Map.of(partyIds.get(0), true))

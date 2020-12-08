@@ -43,6 +43,7 @@ import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
+import static org.jooq.generated.Tables.USERS;
 import static org.jooq.impl.DSL.field;
 
 @RestController
@@ -87,6 +88,7 @@ public class CaseController {
     public List<ApiEventHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
         List<ApiEventHistory> result = jooq.select()
             .from(EVENTS)
+            .join(USERS).using(USERS.USER_ID)
             .where(EVENTS.CASE_ID.eq(caseId))
             .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
             .fetch()
@@ -122,12 +124,12 @@ public class CaseController {
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               @AuthenticationPrincipal OidcUser user) {
-        return createEvent(caseId, event, user.getGivenName(), user.getFamilyName());
+        return createEvent(caseId, event, user.getSubject());
     }
 
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
-                                              String user, String surname) {
+                                              String userId) {
         Record2<Integer, CaseState> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
                 .from(EVENTS)
                 .where(EVENTS.CASE_ID.eq(caseId))
@@ -137,7 +139,7 @@ public class CaseController {
 
         StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
         statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
-        insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, user, surname);
+        insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -146,16 +148,16 @@ public class CaseController {
     @Transactional
     public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event,
                                               @AuthenticationPrincipal OidcUser user) {
-        return createCase(event, user.getGivenName(), user.getFamilyName());
+        return createCase(event, user.getSubject());
     }
 
-    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event, String user, String surname) {
+    public ResponseEntity<ApiCase> createCase(@RequestBody ApiEventCreation event, String userId) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), 1, user, surname);
+        insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), 1, userId); // TODO
 
-        statemachine.onCreated(c.getCaseId(), event.getData());
+        statemachine.onCreated(userId, c.getCaseId(), event.getData());
 
         return ResponseEntity.created(URI.create("/cases/" + c.getCaseId()))
                 .body(new ApiCase(c.getCaseId(), statemachine.getState(), Sets.newHashSet(), null));
@@ -167,12 +169,11 @@ public class CaseController {
         return result;
     }
 
-    private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String forename,
-                             String surname) {
+    private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String userId) {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER,
-                EVENTS.USER_FORENAME, EVENTS.USER_SURNAME)
-            .values(eventId, caseId, state, sequence, forename, surname)
+                EVENTS.USER_ID)
+            .values(eventId, caseId, state, sequence, userId)
             .execute();
     }
 }
