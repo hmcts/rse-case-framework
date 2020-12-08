@@ -69,19 +69,6 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
-    @WithMockUser
-    def "info of logged in user is provided"() {
-        given:
-        def json = mockMvc.perform(get("/web/userInfo").with(oidcLogin()))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString()
-        UserInfo o = new ObjectMapper().readValue(json, UserInfo)
-
-        expect:
-        o.getUsername() == 'user'
-        o.getRoles() == ['ROLE_USER', 'SCOPE_read'].toSet()
-    }
-
     def "A case can be created"() {
         given:
         def response = factory.CreateCase()
