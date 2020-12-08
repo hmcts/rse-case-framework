@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import org.jooq.Condition;
 import org.jooq.JSONB;
 import org.jooq.JSONFormat;
-import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.tables.records.CasesRecord;
@@ -89,16 +88,13 @@ public class CaseController {
 
     @GetMapping(path = "/cases/{caseId}")
     public CaseActions getCase(@PathVariable("caseId") Long caseId) {
-        Record result = jooq.select(EVENTS.STATE)
-            .from(EVENTS)
-            .where(EVENTS.CASE_ID.eq(Long.valueOf(caseId)))
-            .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
-            .limit(1)
-            .fetchSingle();
+        CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
+            .from(CASES_WITH_STATES)
+            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .fetchOne().value1();
 
-        CaseState state = result.get(EVENTS.STATE);
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        return new CaseActions(caseId, state, statemachine.getAvailableActions(state));
+        return new CaseActions(caseId, currentState, statemachine.getAvailableActions(currentState));
     }
 
     @GetMapping(path = "/cases/{caseId}/events")
@@ -155,7 +151,7 @@ public class CaseController {
                 .fetchSingle();
 
         StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
-        statemachine.handleEvent(caseId, Event.valueOf(event.getId().toString()), event.getData());
+        statemachine.handleEvent(caseId, Event.valueOf(event.getId()), event.getData());
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
