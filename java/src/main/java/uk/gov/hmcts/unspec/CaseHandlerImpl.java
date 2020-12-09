@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.unspec.dto.AddClaim;
-import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.AddNotes;
@@ -104,8 +103,8 @@ public class CaseHandlerImpl {
                 .execute();
     }
 
-    private void addNotes(Long id, AddNotes notes) {
-        UnspecCase c = repository.load(id);
+    private void addNotes(TransitionContext context, AddNotes notes) {
+        UnspecCase c = repository.load(context.getEntityId());
         c.getNotes().add(notes.getNotes());
         repository.save(c);
     }

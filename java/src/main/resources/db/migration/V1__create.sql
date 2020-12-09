@@ -47,7 +47,7 @@ create table claims(
 
 CREATE TYPE claim_event AS ENUM (
     'ClaimIssued',
-    'ServiceConfirmed',
+    'ConfirmService',
     'ServiceAcknowledged',
     'ResponseFiled'
 );

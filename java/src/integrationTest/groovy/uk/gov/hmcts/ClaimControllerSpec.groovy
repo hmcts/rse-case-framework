@@ -40,8 +40,8 @@ class ClaimControllerSpec extends Specification {
         def response = factory.CreateCase(userId).getBody()
         def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
         def claim = claims[0]
-        def service = ConfirmService.builder().claimId(claim.claim_id).build()
-        def context = new TransitionContext(userId, response.getId())
+        def service = ConfirmService.builder().build();
+        TransitionContext context = new TransitionContext(userId, claim.claim_id)
         controller.confirmService(context, service)
         def modifiedClaim = new JsonSlurper().parseText(controller.getClaims(response.getId()))[0]
 

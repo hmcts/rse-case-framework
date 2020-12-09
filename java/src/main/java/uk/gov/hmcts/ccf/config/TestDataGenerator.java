@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import lombok.SneakyThrows;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
+import org.jooq.generated.enums.Event;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,6 @@ import uk.gov.hmcts.ccf.controller.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
-import org.jooq.generated.enums.Event;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;

@@ -15,7 +15,7 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <a *ngIf="claim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
-           [queryParams]="{id: 'ConfirmService', claimId: i}">
+           [queryParams]="{id: 'ConfirmService', entity_id: claim.claim_id}">
           <button class="govuk-button hmcts-menu__item" >Confirm service</button>
         </a>
       </div>

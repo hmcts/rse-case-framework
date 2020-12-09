@@ -2,14 +2,11 @@ package uk.gov.hmcts.ccf.controller;
 
 import org.jooq.JSONFormat;
 import org.jooq.Record2;
-import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
-import org.jooq.generated.enums.Event;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +24,6 @@ import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URI;
 
-import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
@@ -39,13 +35,6 @@ public class ClaimController {
     @Autowired
     DefaultDSLContext jooq;
 
-    @PostMapping(path = "/claims/{claimId}/events")
-    @Transactional
-    public ResponseEntity<String> createEvent(@PathVariable("claimId") Long claimId,
-                                              @RequestBody ApiEventCreation event,
-                                              @AuthenticationPrincipal OidcUser user) {
-        return createEvent(claimId, event, user.getSubject());
-    }
 
     @GetMapping(path = "/cases/{caseId}/claims")
     public String getClaims(@PathVariable("caseId") Long caseId) {
@@ -56,6 +45,14 @@ public class ClaimController {
             .fetch()
             .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
                 .wrapSingleColumnRecords(false));
+    }
+
+    @PostMapping(path = "/claims/{claimId}/events")
+    @Transactional
+    public ResponseEntity<String> createEvent(@PathVariable("claimId") Long claimId,
+                                              @RequestBody ApiEventCreation event,
+                                              @AuthenticationPrincipal OidcUser user) {
+        return createEvent(claimId, event, user.getSubject());
     }
 
     private ResponseEntity<String> createEvent(Long claimId,
@@ -79,7 +76,7 @@ public class ClaimController {
     public StateMachine<ClaimState, ClaimEvent> build(ClaimState state) {
         StateMachine<ClaimState, ClaimEvent> result = new StateMachine<>();
         result.initialState(ClaimState.Issued, this::onCreate)
-            .addTransition(ClaimState.Issued, ClaimState.ServiceConfirmed, ClaimEvent.ServiceConfirmed,
+            .addTransition(ClaimState.Issued, ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService,
                 this::confirmService);
         result.rehydrate(state);
         return result;
@@ -91,7 +88,7 @@ public class ClaimController {
 
     public void confirmService(TransitionContext context, ConfirmService service) {
         jooq.insertInto(CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.USER_ID)
-            .values(service.getClaimId(), ClaimEvent.ServiceConfirmed, ClaimState.ServiceConfirmed, context.getUserId())
+            .values(context.getEntityId(), ClaimEvent.ConfirmService, ClaimState.ServiceConfirmed, context.getUserId())
             .execute();
     }
 

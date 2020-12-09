@@ -83,7 +83,7 @@ public class StateMachine<StateT, EventT> {
         return state;
     }
 
-    public <T> StateMachine<StateT, EventT> addUniversalEvent(EventT event, BiConsumer<Long, T> consumer) {
+    public <T> StateMachine<StateT, EventT> addUniversalEvent(EventT event, BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         universalEvents.add(new TransitionRecord(null, event, typeArgs[1], consumer));
         return this;
@@ -96,7 +96,8 @@ public class StateMachine<StateT, EventT> {
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event, BiConsumer<TransitionContext, T> consumer) {
+    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event,
+                                                     BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
         return this;

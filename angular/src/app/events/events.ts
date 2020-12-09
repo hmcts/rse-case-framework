@@ -100,6 +100,7 @@ export class EventList {
       .buildPage()
     .buildEvent()
     .event('ConfirmService')
+      .atLocation('claims')
       .redirectToTab('claims')
       .customPage(ConfirmServiceComponent)
       .withAnswers(ConfirmServiceAnswersComponent)
