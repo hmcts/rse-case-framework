@@ -19,7 +19,7 @@ export class CaseViewComponent implements OnInit {
     history: 0,
     parties: 1,
     claims: 2,
-    citizens:3,
+    citizens: 3,
   };
 
   eventDescriptions = {
@@ -41,6 +41,8 @@ export class CaseViewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
       this.caseId = x.get('case_id');
+      const tab = x.get('case_tab');
+      this.selectedIndex = this.tabMap[tab];
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result
         this.selectedValue = this.case.actions[0]
@@ -50,10 +52,6 @@ export class CaseViewComponent implements OnInit {
       });
     });
 
-    this.route.queryParamMap.subscribe(q => {
-      const tab = q.get('tab');
-      this.selectedIndex = this.tabMap[tab];
-    });
   }
 
   actions() {
@@ -70,13 +68,6 @@ export class CaseViewComponent implements OnInit {
       }
     }
 
-    const queryParams: Params = { tab: value };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: queryParams,
-        queryParamsHandling: 'merge',
-      });
+    this.router.navigateByUrl(`/cases/${this.caseId}/${value}`);
   }
 }

@@ -55,7 +55,7 @@ export class CreateEventComponent implements OnInit {
         const redirectTo = EventList.EVENTS.get(this.eventId).redirectTo;
 
         if (redirectTo) {
-          this.router.navigateByUrl(`/cases/${this.caseId}?tab=${redirectTo}`, {replaceUrl: true})
+          this.router.navigateByUrl(`/cases/${this.caseId}/${redirectTo}`, {replaceUrl: true})
         } else {
           this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true})
         }
