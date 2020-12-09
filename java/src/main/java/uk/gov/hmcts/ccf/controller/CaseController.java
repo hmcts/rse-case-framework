@@ -39,6 +39,7 @@ import java.util.Map;
 
 import static org.jooq.generated.Tables.CASES;
 import static org.jooq.generated.Tables.CASES_WITH_STATES;
+import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.Tables.USERS;
@@ -97,10 +98,10 @@ public class CaseController {
     @GetMapping(path = "/cases/{caseId}/events")
     public List<ApiEventHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
         List<ApiEventHistory> result = jooq.select()
-            .from(EVENTS)
+            .from(CASE_HISTORY)
             .join(USERS).using(USERS.USER_ID)
-            .where(EVENTS.CASE_ID.eq(caseId))
-            .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
+            .where(CASE_HISTORY.CASE_ID.eq(caseId))
+            .orderBy(CASE_HISTORY.TIMESTAMP.desc())
             .fetch()
             .into(ApiEventHistory.class);
 
@@ -171,9 +172,9 @@ public class CaseController {
 
     private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String userId) {
         jooq.insertInto(EVENTS)
-            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.SEQUENCE_NUMBER,
+            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE,
                 EVENTS.USER_ID)
-            .values(eventId, caseId, state, sequence, userId)
+            .values(eventId, caseId, state, userId)
             .execute();
     }
 }

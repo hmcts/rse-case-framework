@@ -24,7 +24,7 @@ create table users(
 create table events(
   case_id bigint references cases(case_id) not null,
   id event not null,
-  sequence_number serial not null,
+  sequence_number serial not null unique,
   timestamp timestamp not null default now(),
   state case_state not null,
   user_id varchar not null references users(user_id),
@@ -57,7 +57,7 @@ create table claim_events(
   user_id varchar not null references users(user_id),
   id claim_event not null,
   state claim_state not null,
-  sequence_number serial not null,
+  sequence_number serial not null unique,
   timestamp timestamp default now()
 );
 
@@ -133,3 +133,9 @@ with parties_by_type as (
 select claim_id, json_object_agg(party_type, parties) as parties
 from parties_by_type
 group by claim_id;
+
+create view case_history as
+select case_id, user_id, id::text, timestamp from events
+union all
+select case_id, user_id, id::text, timestamp from claim_events
+join claims using (claim_id);

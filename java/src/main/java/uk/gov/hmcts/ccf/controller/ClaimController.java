@@ -94,9 +94,9 @@ public class ClaimController {
 
     private void insertEvent(ClaimEvent eventId, Long claimId, ClaimState state, int sequence, String userId) {
         jooq.insertInto(CLAIM_EVENTS)
-            .columns(CLAIM_EVENTS.ID, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.SEQUENCE_NUMBER,
+            .columns(CLAIM_EVENTS.ID, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE,
                 CLAIM_EVENTS.USER_ID)
-            .values(eventId, claimId, state, sequence, userId)
+            .values(eventId, claimId, state, userId)
             .execute();
     }
 }

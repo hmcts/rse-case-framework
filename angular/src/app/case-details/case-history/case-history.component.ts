@@ -10,6 +10,7 @@ export class CaseHistoryComponent implements OnInit {
   @Input() history: any;
   eventDescriptions = {
     CreateClaim: 'Case opened',
+    ClaimIssued: 'Claim Issued',
     AddNotes: 'Case notes added',
     AddClaim: 'New claim created',
     CloseCase: 'Case closed',

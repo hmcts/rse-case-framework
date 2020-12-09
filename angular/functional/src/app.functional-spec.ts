@@ -87,7 +87,7 @@ describe('workspace-project App', () => {
     browser.get(browser.baseUrl + '/cases/1');
     const count = element.all(by.css('.hmcts-timeline__item')).count();
     // Case creation and claim added by test data creator.
-    expect(count).toEqual(2);
+    expect(count).toEqual(4);
   });
 
   it('can create a case event', () => {

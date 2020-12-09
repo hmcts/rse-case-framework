@@ -44,9 +44,11 @@ class ClaimControllerSpec extends Specification {
         TransitionContext context = new TransitionContext(userId, claim.claim_id)
         controller.confirmService(context, service)
         def modifiedClaim = new JsonSlurper().parseText(controller.getClaims(response.getId()))[0]
+        ArrayList claimList = new JsonSlurper().parseText(controller.getClaims(response.getId()));
 
         expect:
         modifiedClaim.state == ClaimState.ServiceConfirmed.toString()
+        claimList.size() == 1
     }
 
     def "A claim has claimants and defendants"() {
