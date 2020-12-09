@@ -2,6 +2,7 @@ create table cases(
   case_id bigserial not null primary key
 );
 
+
 CREATE TYPE case_state AS ENUM ('Created', 'Stayed', 'Closed');
 
 create type event as enum (

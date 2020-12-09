@@ -7,15 +7,29 @@
   </div>
 </div>
 
-<div class="claim" *ngFor="let claim of claims;let i = index">
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-one-quarter">
+    <ul class="claims">
+      <li *ngFor="let claim of claims"
+          [class.selected]="claim === selectedClaim"
+          (click)="onSelect(claim)">
+        {{claimantName(claim) | slice:0:15}} vs ...
+      </li>
+    </ul>
+  </div>
+
+  <div class="govuk-grid-column-three-quarters">
+
+<div class="claim" *ngIf="selectedClaim">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">{{ claimName(claim)}}</h2>
-        <strong class="govuk-tag">{{claim.state | humanise}}</strong>
+        <h2 class="govuk-heading-m">{{ claimName(selectedClaim)}}</h2>
+        <strong class="govuk-tag">{{selectedClaim.state | humanise}}</strong>
       </div>
       <div class="govuk-grid-column-one-third">
-        <a *ngIf="claim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
-           [queryParams]="{id: 'ConfirmService', entity_id: claim.claim_id}">
+        <a *ngIf="selectedClaim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
+           [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claim_id}">
           <button class="govuk-button hmcts-menu__item" >Confirm service</button>
         </a>
       </div>
@@ -23,7 +37,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-      <h4 class="govuk-heading-s">£{{claim.lower_amount | number}} - £{{claim.higher_amount | number}}</h4>
+      <h4 class="govuk-heading-s">£{{selectedClaim.lower_amount | number}} - £{{selectedClaim.higher_amount | number}}</h4>
     </div>
   </div>
   <div class="govuk-grid-row">
@@ -35,7 +49,7 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let claim of claim.parties.claimants" class="govuk-table__row">
+        <tr *ngFor="let claim of selectedClaim.parties.claimants" class="govuk-table__row">
           <td class="govuk-table__cell">{{partyName(claim)}}</td>
         </tr>
         </tbody>
@@ -49,11 +63,13 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let claim of claim.parties.defendants" class="govuk-table__row">
+        <tr *ngFor="let claim of selectedClaim.parties.defendants" class="govuk-table__row">
           <td class="govuk-table__cell">{{partyName(claim)}}</td>
         </tr>
         </tbody>
       </table>
     </div>
+  </div>
+</div>
   </div>
 </div>

@@ -8,5 +8,3 @@ spring:
       initialize-schema: always
   security:
     enabled: false
-  flyway:
-    clean-on-validation-error: true

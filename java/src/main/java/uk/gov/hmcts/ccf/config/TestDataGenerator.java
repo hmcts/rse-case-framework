@@ -62,7 +62,7 @@ public class TestDataGenerator implements Callback {
             .defendant(new Organisation("Megacorp Inc"))
             .build();
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e, testUserId);
+        Long caseId = controller.createCase(e, testUserId).getBody().getId();
 
         AddClaim a = AddClaim.builder()
                 .defendants(Map.of((long) 1, Boolean.TRUE))
@@ -71,7 +71,7 @@ public class TestDataGenerator implements Callback {
                 .higherValue(100000)
                 .build();
         e = new ApiEventCreation(Event.AddClaim, new ObjectMapper().valueToTree(a));
-        controller.createEvent((long) 1, e, testUserId);
+        controller.createEvent(caseId, e, testUserId);
 
         o = CreateClaim.builder()
                 .claimantReference("1111")

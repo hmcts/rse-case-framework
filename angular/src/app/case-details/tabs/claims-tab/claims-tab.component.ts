@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CaseService} from "../../../services/case-service.service";
+import {CaseService} from '../../../services/case-service.service';
 
 @Component({
   selector: 'app-claims-tab',
@@ -8,7 +8,8 @@ import {CaseService} from "../../../services/case-service.service";
 })
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
-  @Input() caseId: string = '1';
+  @Input() caseId = '1';
+  selectedClaim: any;
 
   constructor(
     private caseService: CaseService,
@@ -17,10 +18,11 @@ export class ClaimsTabComponent implements OnInit {
   ngOnInit(): void {
     this.caseService.getCaseClaims(this.caseId).subscribe(x => {
       this.claims = x;
+      this.selectedClaim = this.claims[0];
     })
   }
 
-  partyName(party: any) : string {
+  partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
@@ -30,11 +32,19 @@ export class ClaimsTabComponent implements OnInit {
     }
   }
 
-  claimName(claim: any) {
+  claimantName(claim: any): string {
+    return this.partyName(claim.parties.claimants[0]);
+  }
+
+  claimName(claim: any): string {
     return this.partyName(claim.parties.claimants[0])
-      + (claim.parties.claimants.length > 1 ? " et al" : "")
-      + " vs "
+      + (claim.parties.claimants.length > 1 ? ' et al' : '')
+      + ' vs '
       + this.partyName(claim.parties.defendants[0])
-      + (claim.parties.defendants.length > 1 ? " et al" : "")
+      + (claim.parties.defendants.length > 1 ? ' et al' : '');
+  }
+
+  onSelect(claim: any): void {
+    this.selectedClaim = claim;
   }
 }

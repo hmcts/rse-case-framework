@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import org.jooq.Condition;
 import org.jooq.JSONB;
 import org.jooq.JSONFormat;
-import org.jooq.Record2;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.records.CasesRecord;
@@ -130,17 +129,16 @@ public class CaseController {
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               String userId) {
-        Record2<Integer, CaseState> record = jooq.select(EVENTS.SEQUENCE_NUMBER, EVENTS.STATE)
-                .from(EVENTS)
-                .where(EVENTS.CASE_ID.eq(caseId))
-                .orderBy(EVENTS.SEQUENCE_NUMBER.desc())
-                .limit(1)
-                .fetchSingle();
+        // TODO - investigate org.jooq.exception.NoDataFoundException: Cursor returned no rows
+        CaseState state = jooq.select(CASES_WITH_STATES.STATE)
+                .from(CASES_WITH_STATES)
+                .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
+                .fetchOne().value1();
 
-        StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
+        StateMachine<CaseState, Event> statemachine = getStatemachine(state);
         TransitionContext context = new TransitionContext(userId, caseId);
         statemachine.handleEvent(context, Event.valueOf(event.getId()), event.getData());
-        insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, userId);
+        insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
     }
@@ -156,7 +154,7 @@ public class CaseController {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), 1, userId); // TODO
+        insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), userId);
 
         statemachine.onCreated(userId, c.getCaseId(), event.getData());
 
@@ -170,7 +168,7 @@ public class CaseController {
         return result;
     }
 
-    private void insertEvent(Event eventId, Long caseId, CaseState state, int sequence, String userId) {
+    private void insertEvent(Event eventId, Long caseId, CaseState state, String userId) {
         jooq.insertInto(EVENTS)
             .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE,
                 EVENTS.USER_ID)
