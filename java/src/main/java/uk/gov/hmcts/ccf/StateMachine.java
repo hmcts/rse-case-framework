@@ -60,11 +60,11 @@ public class StateMachine<StateT, EventT> {
     }
 
     @SneakyThrows
-    public void handleEvent(Long caseId, EventT event, JsonNode data) {
+    public void handleEvent(TransitionContext context, EventT event, JsonNode data) {
         for (TransitionRecord transitionRecord : transitions.get(state.toString())) {
             if (transitionRecord.event.equals(event)) {
                 Object instance = new ObjectMapper().treeToValue(data, transitionRecord.clazz);
-                transitionRecord.consumer.accept(caseId, instance);
+                transitionRecord.consumer.accept(context, instance);
                 state = transitionRecord.destination;
                 return;
             }
@@ -73,7 +73,7 @@ public class StateMachine<StateT, EventT> {
         for (TransitionRecord universalEvent : universalEvents) {
             if (universalEvent.event.equals(event)) {
                 Object instance = new ObjectMapper().treeToValue(data, universalEvent.clazz);
-                universalEvent.consumer.accept(caseId, instance);
+                universalEvent.consumer.accept(context, instance);
                 return;
             }
         }
@@ -90,13 +90,13 @@ public class StateMachine<StateT, EventT> {
     }
 
     public <T> StateMachine<StateT, EventT> addTransition(StateT from, StateT to, EventT event,
-                                                          BiConsumer<Long, T> consumer) {
+                                                          BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         transitions.put(from.toString(), new TransitionRecord(to, event, typeArgs[1], consumer));
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event, BiConsumer<Long, T> consumer) {
+    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event, BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
         return this;

@@ -12,7 +12,6 @@ create type event as enum (
     'CloseCase',
     'ImportCitizens',
     'PurgeInactiveCitizens',
-    'ConfirmService',
     'SubmitAppeal'
     );
 
@@ -41,11 +40,42 @@ CREATE TYPE claim_state AS ENUM ('Issued', 'Stayed', 'ServiceConfirmed');
 
 create table claims(
     claim_id bigserial not null primary key,
-    state claim_state not null,
     case_id bigint not null references cases(case_id),
     lower_amount bigint,
     higher_amount bigint
 );
+
+CREATE TYPE claim_event AS ENUM (
+    'ClaimIssued',
+    'ServiceConfirmed',
+    'ServiceAcknowledged',
+    'ResponseFiled'
+);
+
+create table claim_events(
+  claim_id bigint not null references claims(claim_id),
+  user_id varchar not null references users(user_id),
+  id claim_event not null,
+  state claim_state not null,
+  sequence_number serial not null,
+  timestamp timestamp default now()
+);
+
+-- View for claims with their current states.
+create view claims_with_states as
+with latest_events as (
+    select claim_id, max(claim_events.sequence_number) as latest_seq
+    from claims
+             join claim_events using (claim_id)
+    group by claim_id
+)
+select
+    claims.*,
+    claim_events.state
+from latest_events
+    join claims using (claim_id)
+    join claim_events on claim_events.claim_id = latest_events.claim_id
+        and claim_events.sequence_number = latest_seq;
 
 create table parties(
                         party_id bigserial not null primary key,

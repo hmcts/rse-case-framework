@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
-import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.repository.CaseRepository
 import uk.gov.hmcts.unspec.model.UnspecCase
 

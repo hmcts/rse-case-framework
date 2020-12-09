@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
+import uk.gov.hmcts.ccf.TransitionContext
 import uk.gov.hmcts.ccf.api.CaseActions
 import uk.gov.hmcts.ccf.api.ApiEventCreation
 import uk.gov.hmcts.ccf.api.UserInfo
@@ -134,39 +135,13 @@ class CaseControllerSpecification extends Specification {
         parties[0].party_id > 0
     }
 
-    def "A new case has a single claim"() {
-        given:
-        def response = factory.CreateCase().getBody()
-        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
-        def claim = claims[0]
-
-        expect: "Case has single claim"
-        claims.size() == 1
-        claim.claim_id > 0
-        claim.lower_amount == 1
-        claim.higher_amount == 2
-        claim.state == 'Issued'
-    }
-
-    def "Confirm service for a claim"() {
-        given:
-        def response = factory.CreateCase().getBody()
-        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
-        def claim = claims[0]
-        def service = ConfirmService.builder().claimId(claim.claim_id).build()
-        handler.confirmService(response.getId(), service)
-        def modifiedClaim = new JsonSlurper().parseText(controller.getClaims(response.getId()))[0]
-
-        expect:
-        modifiedClaim.state == ClaimState.ServiceConfirmed.toString()
-    }
-
     def "A party cannot be on both sides of a claim"() {
         when:
-        def response = factory.CreateCase().getBody()
+        def userId = factory.createUser()
+        def response = factory.CreateCase(userId).getBody()
         def parties = new JsonSlurper().parseText(controller.getParties(response.getId()))
         Long partyId = parties[0].party_id
-        handler.addClaim(response.getId(),
+        handler.addClaim(TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
                         .defendants(Map.of(partyId, true))
                         .claimants(Map.of(partyId, true)).build())
@@ -175,17 +150,6 @@ class CaseControllerSpecification extends Specification {
         thrown DuplicateKeyException
     }
 
-    def "A claim has claimants and defendants"() {
-        given:
-        def response = factory.CreateCase().getBody()
-        def claims = new JsonSlurper().parseText(controller.getClaims(response.getId()))
-        def parties = claims[0].parties
-        expect: "Case has single claim"
-        parties.defendants.size() == 1
-        parties.claimants.size() == 1
-        parties.defendants[0].name == 'Wiki'
-        parties.claimants[0].name == 'Hooli'
-    }
 
     def "An event can change a case's state"() {
         given:

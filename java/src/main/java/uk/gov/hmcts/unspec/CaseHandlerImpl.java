@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.jooq.JSONB;
 import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyType;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIM_EVENTS;
 import static org.jooq.generated.Tables.CLAIM_PARTIES;
 import static org.jooq.generated.Tables.PARTIES;
 
@@ -44,7 +46,6 @@ public class CaseHandlerImpl {
         StateMachine<CaseState, Event> result = new StateMachine<>();
         result.initialState(CaseState.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
-                .addUniversalEvent(Event.ConfirmService, this::confirmService)
                 .addEvent(CaseState.Created, Event.AddParty, this::addParty)
                 .addEvent(CaseState.Created, Event.AddClaim, this::addClaim)
                 .addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
@@ -52,16 +53,8 @@ public class CaseHandlerImpl {
         return result;
     }
 
-    public void confirmService(Long caseId, ConfirmService service) {
-        jooq.update(CLAIMS)
-                .set(CLAIMS.STATE, ClaimState.ServiceConfirmed)
-                .where(CLAIMS.CLAIM_ID.eq(service.getClaimId()))
-                .execute();
-    }
-
-
     @SneakyThrows
-    public void addClaim(Long caseId, AddClaim claim) {
+    public void addClaim(TransitionContext context, AddClaim claim) {
         List<Long> claimantIds = claim.getClaimants().entrySet().stream().filter((x) -> x.getValue())
                 .map(x -> x.getKey())
                 .collect(Collectors.toUnmodifiableList());
@@ -80,10 +73,14 @@ public class CaseHandlerImpl {
         c.setLowerValue(claim.getLowerValue());
         c.setHigherValue(claim.getHigherValue());
 
-        Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.STATE, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
-                .values(caseId, ClaimState.Issued, claim.getLowerValue(), claim.getHigherValue())
+        Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
+                .values(context.getEntityId(), claim.getLowerValue(), claim.getHigherValue())
                 .returning(CLAIMS.CLAIM_ID)
                 .fetchOne().getClaimId();
+
+        jooq.insertInto(CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.USER_ID)
+            .values(claimId, ClaimEvent.ClaimIssued, ClaimState.Issued, context.getUserId())
+            .execute();
 
         List<Object[]> claimParties = claimantIds.stream().map(x -> {
             return new Object[]{claimId, x, PartyType.claimant};
@@ -101,9 +98,9 @@ public class CaseHandlerImpl {
     }
 
     @SneakyThrows
-    private void addParty(Long id, Party party) {
+    private void addParty(TransitionContext context, Party party) {
         jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
+                .values(context.getEntityId(), JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
                 .execute();
     }
 
@@ -141,7 +138,7 @@ public class CaseHandlerImpl {
                 .fetch()
                 .getValues(PARTIES.PARTY_ID);
 
-        addClaim(context.getEntityId(), AddClaim.builder()
+        addClaim(context, AddClaim.builder()
                 .lowerValue(request.getLowerValue())
                 .higherValue(request.getHigherValue())
                 .claimants(Map.of(partyIds.get(0), true))
@@ -150,7 +147,7 @@ public class CaseHandlerImpl {
 
     }
 
-    private void closeCase(Long id, CloseCase t) {
+    private void closeCase(TransitionContext context, CloseCase t) {
 
     }
 }

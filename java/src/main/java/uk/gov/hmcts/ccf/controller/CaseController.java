@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.ccf.api.CaseActions;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
@@ -51,7 +52,6 @@ import static org.jooq.impl.DSL.table;
 
 @RestController
 @RequestMapping("/web")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CaseController {
 
     @Autowired
@@ -121,17 +121,6 @@ public class CaseController {
                 .formatJSON(JSONFormat.DEFAULT_FOR_RESULTS.header(false).wrapSingleColumnRecords(false));
     }
 
-    @GetMapping(path = "/cases/{caseId}/claims")
-    public String getClaims(@PathVariable("caseId") Long caseId) {
-        return jooq.select()
-                .from(CLAIMS)
-                .join(CLAIMS_WITH_PARTIES).using(CLAIMS.CLAIM_ID)
-                .where(CLAIMS.CASE_ID.eq(caseId))
-                .fetch()
-                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
-                    .wrapSingleColumnRecords(false));
-    }
-
     @PostMapping(path = "/cases/{caseId}/events")
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
@@ -151,7 +140,8 @@ public class CaseController {
                 .fetchSingle();
 
         StateMachine<CaseState, Event> statemachine = getStatemachine(record.component2());
-        statemachine.handleEvent(caseId, Event.valueOf(event.getId()), event.getData());
+        TransitionContext context = new TransitionContext(userId, caseId);
+        statemachine.handleEvent(context, Event.valueOf(event.getId()), event.getData());
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), record.value1() + 1, userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
