@@ -7,3 +7,38 @@ button {
   padding: 10px;
   border: 1px solid;
 }
+.claim {
+  background-color: whitesmoke;
+  margin-bottom: 25px;
+  padding: 10px;
+  border: 1px solid;
+}
+
+.parties {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+}
+.parties li {
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  background-color: #EEE;
+  padding: .3em 0;
+  height: 1.6em;
+  margin-bottom: 0.5em;
+}
+.parties li:hover {
+  color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
+  border: 1px solid;
+}
+.parties li.selected {
+  background-color: #CFD8DC;
+  border: 1px solid black;
+  font-weight: bold;
+}
+.parties li.selected:hover {
+  background-color: #BBD8DC;
+}
