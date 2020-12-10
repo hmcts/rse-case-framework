@@ -19,7 +19,7 @@ export class CaseHistoryComponent implements OnInit {
     ImportCitizens: 'Citizen details bulk imported',
     PurgeInactiveCitizens: 'Inactive citizen accounts removed',
     ConfirmService: 'Service confirmed',
-  }
+  };
   constructor() { }
 
   ngOnInit(): void {

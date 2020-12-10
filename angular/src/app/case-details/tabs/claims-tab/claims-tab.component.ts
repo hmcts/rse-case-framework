@@ -10,6 +10,7 @@ export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
   @Input() caseId = '1';
   selectedClaim: any;
+  private history: any;
 
   constructor(
     private caseService: CaseService,
@@ -18,7 +19,7 @@ export class ClaimsTabComponent implements OnInit {
   ngOnInit(): void {
     this.caseService.getCaseClaims(this.caseId).subscribe(x => {
       this.claims = x;
-      this.selectedClaim = this.claims[0];
+      this.onSelect(this.claims[0]);
     })
   }
 
@@ -45,6 +46,9 @@ export class ClaimsTabComponent implements OnInit {
   }
 
   onSelect(claim: any): void {
-    this.selectedClaim = claim;
+    if (claim) {
+      this.selectedClaim = claim;
+      this.caseService.getClaimEvents(claim.claim_id).subscribe(x => this.history = x);
+    }
   }
 }

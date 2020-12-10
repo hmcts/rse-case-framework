@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
+import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URI;
+import java.util.List;
 
 import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
+import static org.jooq.generated.Tables.USERS;
 
 @RestController
 @RequestMapping("/web")
@@ -35,16 +38,29 @@ public class ClaimController {
     @Autowired
     DefaultDSLContext jooq;
 
-
     @GetMapping(path = "/cases/{caseId}/claims")
     public String getClaims(@PathVariable("caseId") Long caseId) {
         return jooq.select()
             .from(CLAIMS_WITH_STATES)
             .join(CLAIMS_WITH_PARTIES).using(CLAIMS_WITH_STATES.CLAIM_ID)
             .where(CLAIMS_WITH_STATES.CASE_ID.eq(caseId))
+            .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.desc())
             .fetch()
             .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
                 .wrapSingleColumnRecords(false));
+    }
+
+    @GetMapping(path = "/claims/{claimId}/events")
+    public List<ApiEventHistory> getClaimEvents(@PathVariable("claimId") Long claimId) {
+        List<ApiEventHistory> result = jooq.select()
+            .from(CLAIM_EVENTS)
+            .join(USERS).using(USERS.USER_ID)
+            .where(CLAIM_EVENTS.CLAIM_ID.eq(claimId))
+            .orderBy(CLAIM_EVENTS.TIMESTAMP.desc())
+            .fetch()
+            .into(ApiEventHistory.class);
+
+        return result;
     }
 
     @PostMapping(path = "/claims/{claimId}/events")
@@ -55,7 +71,7 @@ public class ClaimController {
         return createEvent(claimId, event, user.getSubject());
     }
 
-    private ResponseEntity<String> createEvent(Long claimId,
+    public ResponseEntity<String> createEvent(Long claimId,
                                               ApiEventCreation event,
                                               String userId) {
         Record2<Integer, ClaimState> record = jooq.select(CLAIM_EVENTS.SEQUENCE_NUMBER, CLAIM_EVENTS.STATE)
@@ -68,7 +84,6 @@ public class ClaimController {
         StateMachine<ClaimState, ClaimEvent> statemachine = build(record.component2());
         TransitionContext context = new TransitionContext(userId, claimId);
         statemachine.handleEvent(context, ClaimEvent.valueOf(event.getId()), event.getData());
-        insertEvent(ClaimEvent.valueOf(event.getId()), claimId, statemachine.getState(), record.value1() + 1, userId);
         return ResponseEntity.created(URI.create("/claims/" + claimId))
             .body("");
     }

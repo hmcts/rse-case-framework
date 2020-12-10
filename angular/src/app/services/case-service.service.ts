@@ -34,6 +34,13 @@ export class CaseService {
     return this.http.get(`${this.baseUrl}cases/${caseId}/claims`);
   }
 
+  public getClaimEvents(claimId: string): Observable<any> {
+    if (this.isTestEnv()) {
+      return of([])
+    }
+    return this.http.get(`${this.baseUrl}claims/${claimId}/events`);
+  }
+
   public getCaseParties(caseId: string): Observable<any> {
     if (this.isTestEnv()) {
       return of([])
