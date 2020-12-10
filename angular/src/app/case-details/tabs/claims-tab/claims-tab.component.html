@@ -13,7 +13,7 @@
     <ul class="claims">
       <li *ngFor="let claim of claims"
           [class.selected]="claim === selectedClaim"
-          (click)="onSelect(claim)">
+          (click)="onSelect(claim.claim_id)">
         {{claimantName(claim) | slice:0:15}} vs ...
       </li>
     </ul>
@@ -27,13 +27,15 @@
         <h2 class="govuk-heading-m">{{ claimName(selectedClaim)}}</h2>
         <strong class="govuk-tag">{{selectedClaim.state | humanise}}</strong>
       </div>
-      <div class="govuk-grid-column-one-third">
-        <a *ngIf="selectedClaim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
-           [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claim_id}">
-          <button class="govuk-button hmcts-menu__item" >Confirm service</button>
-        </a>
-      </div>
     </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a *ngIf="selectedClaim.state == 'Issued'" routerLink="/cases/{{caseId}}/create-event"
+         [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claim_id}">
+        <button class="govuk-button hmcts-menu__item" >Confirm service</button>
+      </a>
+    </div>
+  </div>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">

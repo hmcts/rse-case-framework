@@ -44,7 +44,7 @@ public class ClaimController {
             .from(CLAIMS_WITH_STATES)
             .join(CLAIMS_WITH_PARTIES).using(CLAIMS_WITH_STATES.CLAIM_ID)
             .where(CLAIMS_WITH_STATES.CASE_ID.eq(caseId))
-            .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.desc())
+            .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.asc())
             .fetch()
             .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
                 .wrapSingleColumnRecords(false));

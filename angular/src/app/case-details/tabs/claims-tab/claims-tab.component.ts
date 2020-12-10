@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-claims-tab',
@@ -14,13 +15,23 @@ export class ClaimsTabComponent implements OnInit {
 
   constructor(
     private caseService: CaseService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.caseService.getCaseClaims(this.caseId).subscribe(x => {
       this.claims = x;
-      this.onSelect(this.claims[0]);
-    })
+      this.route.paramMap.subscribe(x => {
+        if (this.claims.length > 0) {
+          const claimId = x.get('entity_id') ?? this.claims[0].claim_id;
+          const tab = x.get('case_tab');
+          if (tab === 'claims') {
+            this.onSelect(claimId);
+          }
+        }
+      });
+    });
   }
 
   partyName(party: any): string {
@@ -45,10 +56,11 @@ export class ClaimsTabComponent implements OnInit {
       + (claim.parties.defendants.length > 1 ? ' et al' : '');
   }
 
-  onSelect(claim: any): void {
-    if (claim) {
-      this.selectedClaim = claim;
-      this.caseService.getClaimEvents(claim.claim_id).subscribe(x => this.history = x);
+  onSelect(claimId: any): void {
+    if (claimId) {
+      this.selectedClaim = this.claims.find(x => x.claim_id == claimId);
+      this.caseService.getClaimEvents(claimId).subscribe(x => this.history = x);
+      this.router.navigateByUrl(`/cases/${this.caseId}/claims/${claimId}`);
     }
   }
 }
