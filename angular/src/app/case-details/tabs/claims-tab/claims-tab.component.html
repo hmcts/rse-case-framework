@@ -51,8 +51,12 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let claim of selectedClaim.parties.claimants" class="govuk-table__row">
-          <td class="govuk-table__cell">{{partyName(claim)}}</td>
+        <tr *ngFor="let party of selectedClaim.parties.claimants" class="govuk-table__row">
+          <td class="govuk-table__cell">
+          <a [routerLink]="['../../parties', party.party_id]">
+            {{partyName(party)}}
+          </a>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -65,8 +69,16 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        <tr *ngFor="let claim of selectedClaim.parties.defendants" class="govuk-table__row">
-          <td class="govuk-table__cell">{{partyName(claim)}}</td>
+        <tr *ngFor="let party of selectedClaim.parties.defendants" class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <a [routerLink]="['../../parties', party.party_id]">
+              {{partyName(party)}}
+            </a>
+<!--            <a href="/cases/1/parties/2">-->
+<!--              {{partyName(party)}}-->
+<!--            </a>-->
+
+          </td>
         </tr>
         </tbody>
       </table>

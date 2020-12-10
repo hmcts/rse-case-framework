@@ -68,6 +68,9 @@ export class CaseViewComponent implements OnInit {
       }
     }
 
-    this.router.navigateByUrl(`/cases/${this.caseId}/${value}`);
+    const currentTab = this.route.snapshot.paramMap.get('case_tab');
+    if (currentTab !== value) {
+      this.router.navigateByUrl(`/cases/${this.caseId}/${value}`);
+    }
   }
 }

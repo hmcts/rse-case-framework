@@ -126,7 +126,7 @@ with parties_by_type as (
                when party_type = 'defendant' then 'defendants'
                when party_type = 'claimant' then 'claimants'
                end as party_type,
-           array_agg(data) as parties
+           array_agg(data || jsonb_build_object('party_id', party_id)) as parties
     from claim_parties
              join parties using(party_id)
     group by claim_id, party_type
