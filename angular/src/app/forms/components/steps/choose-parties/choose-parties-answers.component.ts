@@ -13,7 +13,7 @@ import {CaseService} from "../../../../services/case-service.service";
     <dl *ngIf="this.caseParties" class="govuk-summary-list govuk-!-margin-bottom-9">
       <div *ngFor="let party of filterParties(type); let i = index" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ partyName(party) }}
+          {{ partyName(party.data) }}
         </dt>
         <dd class="govuk-summary-list__actions">
           <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
@@ -38,7 +38,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   }
 
   ngOnInit(): void {
-    const caseId = this.route.snapshot.paramMap.get('id')
+    const caseId = this.route.snapshot.paramMap.get('case_id')
     this.caseService.getCaseParties(caseId).subscribe( c => {
       this.caseParties = c
     });

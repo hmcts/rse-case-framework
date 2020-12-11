@@ -118,6 +118,21 @@ from latest_events
          join events on events.case_id = latest_events.case_id
     and  events.sequence_number = latest_seq;
 
+create view parties_with_claims as
+with claims_by_type as (
+    select party_id, party_type, array_agg(claim_id) as claims from claim_parties
+    group by party_id, party_type
+    order by party_id
+), next as (
+    select party_id,
+           json_object_agg(party_type, claims) as claims
+    from claims_by_type
+    group by party_id
+) select
+      parties.party_id,
+      next.claims
+from parties left join next using(party_id);
+
 -- View of claims with their associated parties
 create view claims_with_parties as
 with parties_by_type as (

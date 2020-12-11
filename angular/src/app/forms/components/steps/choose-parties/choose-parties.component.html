@@ -13,7 +13,7 @@
   </thead>
   <tbody class="govuk-table__body">
   <tr class="govuk-table__row" *ngFor="let party of caseParties">
-    <th scope="row" class="govuk-table__header">{{ partyName(party)}}</th>
+    <th scope="row" class="govuk-table__header">{{ partyName(party.data)}}</th>
     <td [formGroup]="claimants" class="govuk-table__cell">
       <div class="govuk-checkboxes__item">
         <input [attr.disabled]="isCheckBoxDisabled(true, party.party_id) ? true : null" [formControlName]="party.party_id" class="govuk-checkboxes__input" type="checkbox">

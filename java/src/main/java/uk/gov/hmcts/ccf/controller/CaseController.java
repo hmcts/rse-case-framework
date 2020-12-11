@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import org.jooq.Condition;
-import org.jooq.JSONB;
 import org.jooq.JSONFormat;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
@@ -41,9 +40,9 @@ import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
+import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 import static org.jooq.generated.Tables.USERS;
 import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.table;
 
@@ -109,13 +108,13 @@ public class CaseController {
 
     @GetMapping(path = "/cases/{caseId}/parties")
     public String getParties(@PathVariable("caseId") Long caseId) {
-        return jooq.select(field("parties.data || jsonb_build_object('party_id', parties.party_id)", JSONB.class,
-            PARTIES.DATA).as("data"))
+        return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
+                .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
                 .where(PARTIES.CASE_ID.eq(caseId))
                 .orderBy(PARTIES.CASE_ID.asc())
                 .fetch()
-                .formatJSON(JSONFormat.DEFAULT_FOR_RESULTS.header(false).wrapSingleColumnRecords(false));
+                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
     }
 
     @PostMapping(path = "/cases/{caseId}/events")

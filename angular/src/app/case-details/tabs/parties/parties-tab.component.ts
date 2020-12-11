@@ -13,6 +13,7 @@ export class PartiesTabComponent implements OnInit {
   parties: any = [];
   party: any;
   currentTab: string;
+  private claims: any;
   constructor(
     private caseService: CaseService,
     private route: ActivatedRoute,
@@ -45,9 +46,14 @@ export class PartiesTabComponent implements OnInit {
 
   onSelect(partyId: any): void {
     if (partyId) {
-      this.party = this.parties.find(x => x.party_id == partyId);
-      if (this.currentTab === 'parties') {
-        this.router.navigateByUrl(`/cases/${this.caseId}/parties/${partyId}`);
+
+      const p = this.parties.find(x => x.party_id == partyId);
+      if (p) {
+        this.party = p.data;
+        this.claims = p.claims;
+        if (this.currentTab === 'parties') {
+          this.router.navigateByUrl(`/cases/${this.caseId}/parties/${partyId}`);
+        }
       }
     }
   }

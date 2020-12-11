@@ -132,6 +132,8 @@ class CaseControllerSpecification extends Specification {
         expect: "Case has two parties"
         parties.size() == 2
         parties[0].party_id > 0
+        parties[0].data != null
+        parties[0].claims.claimant.size() == 1
     }
 
     def "A party cannot be on both sides of a claim"() {

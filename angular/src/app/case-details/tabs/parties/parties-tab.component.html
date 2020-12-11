@@ -11,9 +11,9 @@
   <div class="govuk-grid-column-one-quarter">
     <ul class="parties">
       <li *ngFor="let p of parties"
-          [class.selected]="p === party"
+          [class.selected]="p.data === party"
           (click)="onSelect(p.party_id)">
-        {{partyName(p) | slice:0:15}}
+        {{partyName(p.data) | slice:0:15}}
       </li>
     </ul>
   </div>
@@ -71,6 +71,27 @@
           </div>
         </ng-container>
       </dl>
+      <ng-container *ngIf="claims">
+        <h2 class="govuk-heading-m">Claims</h2>
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Pursuing</dt>
+            <dd class="govuk-summary-list__value">
+              <a *ngFor="let claimId of claims.defendant" [routerLink]="['../../claims', claimId]">
+                Claim #{{claimId}}
+              </a>
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Defending</dt>
+            <dd class="govuk-summary-list__value">
+              <a *ngFor="let claimId of claims.claimant" [routerLink]="['../../claims', claimId]">
+                Claim #{{claimId}}
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </ng-container>
     </div>
   </div>
 </div>
