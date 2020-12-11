@@ -36,25 +36,22 @@ h2 {
   padding: 0;
 }
 .claims li {
+  color: #1d70b8;
   cursor: pointer;
   position: relative;
   left: 0;
-  background-color: #EEE;
+  //background-color: #EEE;
   padding: .3em 0;
   height: 1.6em;
   margin-bottom: 0.5em;
 }
 .claims li:hover {
   color: #607D8B;
-  background-color: #DDD;
+  //background-color: #DDD;
+  text-decoration: underline;
   left: .1em;
-  border: 1px solid;
 }
 .claims li.selected {
-  background-color: #CFD8DC;
-  border: 1px solid black;
+  background-color: #f3f2f1;
   font-weight: bold;
-}
-.claims li.selected:hover {
-  background-color: #BBD8DC;
 }

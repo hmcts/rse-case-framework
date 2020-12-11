@@ -12,6 +12,7 @@ button {
   padding: 10px;
   border: 1px solid;
 }
+
 .claim {
   background-color: whitesmoke;
   margin-bottom: 25px;
@@ -25,10 +26,10 @@ button {
   padding: 0;
 }
 .parties li {
+  color: #1d70b8;
   cursor: pointer;
   position: relative;
   left: 0;
-  background-color: #EEE;
   padding: .3em 0;
   height: 1.6em;
   margin-bottom: 0.5em;
@@ -37,13 +38,9 @@ button {
   color: #607D8B;
   background-color: #DDD;
   left: .1em;
-  border: 1px solid;
+  text-decoration: underline;
 }
 .parties li.selected {
-  background-color: #CFD8DC;
-  border: 1px solid black;
+  background-color: #f3f2f1;
   font-weight: bold;
-}
-.parties li.selected:hover {
-  background-color: #BBD8DC;
 }
