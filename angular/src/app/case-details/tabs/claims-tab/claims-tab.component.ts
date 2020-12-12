@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {CaseControllerService, ClaimControllerService } from 'build/client-lib';
 
 @Component({
   selector: 'app-claims-tab',
@@ -9,7 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
-  @Input() caseId = '1';
+  @Input() caseId = 1;
   selectedClaim: any;
   private history: any;
 
@@ -17,10 +18,17 @@ export class ClaimsTabComponent implements OnInit {
     private caseService: CaseService,
     private route: ActivatedRoute,
     private router: Router,
+    private foo: ClaimControllerService,
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCaseClaims(this.caseId).subscribe(x => {
+    this.foo.getClaimEvents(1).subscribe(events => {
+      console.warn(events[0].userForename);
+    });
+    this.foo.getClaims(this.caseId).subscribe(x => {
+      console.warn(x);
+    });
+    this.caseService.getCaseClaims(String(this.caseId)).subscribe(x => {
       this.claims = x;
       this.route.paramMap.subscribe(x => {
         if (this.claims.length > 0) {

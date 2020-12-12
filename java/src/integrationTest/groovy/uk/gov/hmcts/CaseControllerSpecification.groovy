@@ -70,6 +70,15 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
+    def "exports openAPI specification"() {
+        when:
+        def f = mockMvc.perform(get('/v3/api-docs').with(oidcLogin()))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString()
+        then:
+        new File("build/open-api.yaml").write(f)
+    }
+
     def "A case can be created"() {
         given:
         def response = factory.CreateCase()
