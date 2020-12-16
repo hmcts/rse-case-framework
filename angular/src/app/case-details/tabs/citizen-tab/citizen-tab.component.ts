@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
 import {FormControl, FormGroup} from "@angular/forms";
+import {CitizenControllerService} from "../../../../generated/client-lib";
 
 @Component({
   selector: 'app-citizen-tab',
@@ -21,6 +21,7 @@ export class CitizenTabComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    private citizenService: CitizenControllerService,
   ) { }
 
   ngOnInit(): void {
@@ -36,15 +37,9 @@ export class CitizenTabComponent implements OnInit {
       return;
     }
     const query = btoa(JSON.stringify(this.searchForm.value));
-    const url = this.baseUrl + 'cases/' + this.caseId + '/citizens';
-    this.http.get(url, {
-      params: {
-        page: this.page.toString()
-      },
-      headers: new HttpHeaders({ 'search-query': query})
-    }).subscribe(result => {
-      this.citizens = result['citizens'];
-      this.hasMore = result['hasMore'];
+    this.citizenService.getCitizens(this.caseId, query, this.page).subscribe(x => {
+      this.hasMore = x.hasMore;
+      this.citizens = x.citizens;
     });
   }
 

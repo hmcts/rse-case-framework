@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import org.jooq.Condition;
-import org.jooq.JSONFormat;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.records.CasesRecord;
@@ -58,7 +57,7 @@ public class CaseController {
 
     @SneakyThrows
     @GetMapping(path = "/search")
-    public String searchCases(@RequestHeader("search-query") String base64JsonQuery) {
+    public List<CaseSearchResult> searchCases(@RequestHeader("search-query") String base64JsonQuery) {
         byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
 
@@ -78,8 +77,7 @@ public class CaseController {
             .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
             .where(condition)
             .orderBy(CASES_WITH_STATES.CASE_ID.asc())
-            .fetch()
-            .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
+            .fetchInto(CaseSearchResult.class);
     }
 
     @GetMapping(path = "/cases/{caseId}")
@@ -107,14 +105,13 @@ public class CaseController {
     }
 
     @GetMapping(path = "/cases/{caseId}/parties")
-    public String getParties(@PathVariable("caseId") Long caseId) {
+    public List<CaseParty> getParties(@PathVariable("caseId") Long caseId) {
         return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
                 .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
                 .where(PARTIES.CASE_ID.eq(caseId))
                 .orderBy(PARTIES.CASE_ID.asc())
-                .fetch()
-                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
+                .fetchInto(CaseParty.class);
     }
 
     @PostMapping(path = "/cases/{caseId}/events")

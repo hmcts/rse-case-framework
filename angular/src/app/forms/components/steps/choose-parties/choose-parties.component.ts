@@ -9,8 +9,8 @@ import {CaseService} from "../../../../services/case-service.service";
   styleUrls: ['./choose-parties.component.scss']
 })
 export class ChoosePartiesComponent implements OnInit, StepComponent {
-  caseParties: any = []
-  @Input() caseId: string = "1";
+  caseParties: any = [];
+  @Input() caseId = '1';
   @Input() parties: any;
   @Input() form: FormGroup = new FormGroup({})
   defendants = new FormGroup({})
@@ -21,7 +21,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCaseParties(this.caseId).subscribe( caseParties => {
+    this.caseService.getCaseParties(Number(this.caseId)).subscribe(caseParties => {
       this.caseParties = caseParties
       this.claimants.reset()
       this.defendants.reset()

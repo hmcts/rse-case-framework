@@ -12,7 +12,7 @@
     <ul class="parties">
       <li *ngFor="let p of parties"
           [class.selected]="p.data === party"
-          (click)="onSelect(p.party_id)">
+          (click)="onSelect(p.partyId)">
         {{partyName(p.data) | slice:0:15}}
       </li>
     </ul>

@@ -3,7 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Event, StepType} from '../../forms/components/stepper/form-stepper/types';
-import {EventList} from "../../events/events";
+import {EventList} from '../../events/events';
+import {CaseControllerService} from '../../../generated/client-lib';
 
 @Component({
   selector: 'app-create-event',
@@ -23,6 +24,7 @@ export class CreateEventComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
+    private caseService: CaseControllerService,
     private router: Router,
   ) { }
 
@@ -44,7 +46,7 @@ export class CreateEventComponent implements OnInit {
         id: this.eventId,
         data,
       };
-    let url = this.event.location ?? 'cases';
+    let url = this.event.location ?? '/web/cases';
     if (this.entityId) {
       url += '/' + this.entityId + (isFile
         ? '/files'

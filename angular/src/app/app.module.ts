@@ -43,8 +43,8 @@ import {HumanisePipe} from "./services/humanise.pipe";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {AuthService} from "./services/auth.service";
 import {HeaderComponent} from "./components/header/header.component";
-import {ApiModule, BASE_PATH} from '../../build/client-lib';
 import {environment} from "../environments/environment";
+import {ApiModule, BASE_PATH} from "../generated/client-lib";
 
 @NgModule({
   declarations: [
@@ -95,7 +95,7 @@ import {environment} from "../environments/environment";
     ApiModule,
   ],
   providers: [AuthGuardService, AuthService,
-    { provide: BASE_PATH, useValue: 'http://localhost:4200' }],
+    { provide: BASE_PATH, useValue: environment.baseUrl }],
 bootstrap: [AppComponent]
 })
 export class AppModule { }

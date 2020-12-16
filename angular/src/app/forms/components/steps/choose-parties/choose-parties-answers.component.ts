@@ -39,7 +39,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
 
   ngOnInit(): void {
     const caseId = this.route.snapshot.paramMap.get('case_id')
-    this.caseService.getCaseParties(caseId).subscribe( c => {
+    this.caseService.getCaseParties(Number(caseId)).subscribe(c => {
       this.caseParties = c
     });
   }

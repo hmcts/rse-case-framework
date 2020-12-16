@@ -103,5 +103,5 @@ tasks.withType(Checkstyle) {
 task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask, dependsOn: integrationTest) {
     generatorName = "typescript-angular"
     inputSpec = file("$buildDir/open-api.yaml").toString()
-    outputDir = "$buildDir/../../angular/build/client-lib".toString()
+    outputDir = "$buildDir/../../angular/src/generated/client-lib".toString()
 }

@@ -136,11 +136,12 @@ class CaseControllerSpecification extends Specification {
     def "A new case has two parties"() {
         given:
         def response = factory.CreateCase().getBody()
-        def parties = new JsonSlurper().parseText(controller.getParties(response.getId()))
+        def s = controller.getParties(response.getId());
+        def parties = controller.getParties(response.getId())
 
         expect: "Case has two parties"
         parties.size() == 2
-        parties[0].party_id > 0
+        parties[0].partyId > 0
         parties[0].data != null
         parties[0].claims.claimant.size() == 1
     }
@@ -149,8 +150,8 @@ class CaseControllerSpecification extends Specification {
         when:
         def userId = factory.createUser()
         def response = factory.CreateCase(userId).getBody()
-        def parties = new JsonSlurper().parseText(controller.getParties(response.getId()))
-        Long partyId = parties[0].party_id
+        def parties = controller.getParties(response.getId())
+        Long partyId = parties[0].partyId
         handler.addClaim(TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
                         .defendants(Map.of(partyId, true))
@@ -193,12 +194,12 @@ class CaseControllerSpecification extends Specification {
         def c = factory.CreateCase().getBody()
         def query = Map.of("id", c.id)
         def string = Base64.getEncoder().encodeToString(JsonOutput.toJson(query).getBytes())
-        def cases = new JsonSlurper().parseText(controller.searchCases(string))
+        def cases = controller.searchCases(string)
 
         expect:
         cases.size() == 1
-        cases[0].case_id == c.id
-        cases[0].state == CaseState.Created.toString()
+        cases[0].caseId == c.id
+        cases[0].state == CaseState.Created
     }
 
     private int caseCount() {

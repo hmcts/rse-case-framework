@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CaseControllerService, ClaimControllerService } from 'build/client-lib';
+import {ApiEventHistory} from "../../../../generated/client-lib";
 
 @Component({
   selector: 'app-claims-tab',
@@ -12,28 +12,21 @@ export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
   @Input() caseId = 1;
   selectedClaim: any;
-  private history: any;
+  private history: Array<ApiEventHistory>;
 
   constructor(
     private caseService: CaseService,
     private route: ActivatedRoute,
     private router: Router,
-    private foo: ClaimControllerService,
   ) { }
 
   ngOnInit(): void {
-    this.foo.getClaimEvents(1).subscribe(events => {
-      console.warn(events[0].userForename);
-    });
-    this.foo.getClaims(this.caseId).subscribe(x => {
-      console.warn(x);
-    });
-    this.caseService.getCaseClaims(String(this.caseId)).subscribe(x => {
+    this.caseService.getCaseClaims(this.caseId).subscribe(x => {
       this.claims = x;
-      this.route.paramMap.subscribe(x => {
+      this.route.paramMap.subscribe(params => {
         if (this.claims.length > 0) {
-          const claimId = x.get('entity_id') ?? this.claims[0].claim_id;
-          const tab = x.get('case_tab');
+          const claimId = params.get('entity_id') ?? this.claims[0].claim_id;
+          const tab = params.get('case_tab');
           if (tab === 'claims') {
             this.onSelect(claimId);
           }
