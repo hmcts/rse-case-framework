@@ -25,10 +25,6 @@ export class CaseService {
   }
 
   searchCases(data): Observable<Array<CaseSearchResult>> {
-    if (this.isTestEnv()) {
-      // TODO
-      return of(new Array<CaseSearchResult>());
-    }
     const query = btoa(JSON.stringify(data));
     return this.cases.searchCases(query);
   }

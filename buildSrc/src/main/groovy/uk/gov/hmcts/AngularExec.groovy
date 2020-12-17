@@ -4,6 +4,7 @@ import org.gradle.api.tasks.Exec
 
 class AngularExec extends Exec {
     AngularExec() {
+        project.mkdir("build/${getName()}")
         dependsOn('build')
         getInputs().files(project.fileTree(project.projectDir).matching {
             include "*.json"

@@ -7,19 +7,20 @@ plugins {
 task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
   generatorName = "typescript-angular"
   def producer = tasks.getByPath(':java:integrationTest').outputs
+  inputs.files producer
   inputSpec = producer.files[0].getAbsolutePath()
-  outputDir = file('src/generated/client-lib').path
+  def outDir = file('src/generated/client-lib')
+  outputDir = outDir.path
+  outputs.dir outDir
 }
 
 task build(dependsOn: buildTypescriptClient)
 
-project.mkdir('build/test')
 task test(type: AngularExec) {
   ngCommand 'ng test --watch=false'
   outputs.dir project.file('build/test')
 }
 
-project.mkdir('build/e2e')
 task e2e(type: AngularExec) {
   ngCommand 'ng e2e'
   inputs.dir file('e2e')
