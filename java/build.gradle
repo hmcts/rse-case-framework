@@ -12,6 +12,7 @@ def springBootVersion = '2.3.5.RELEASE'
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 sourceSets {
