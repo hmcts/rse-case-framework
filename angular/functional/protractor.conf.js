@@ -5,6 +5,12 @@
 
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 
+var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+var reporter = new HtmlScreenshotReporter({
+  dest: 'build/functional/screenshots',
+  filename: 'failure-report.html'
+});
+
 /**
  * @type { import("protractor").Config }
  */
@@ -14,6 +20,18 @@ exports.config = {
   specs: [
     './src/**/*.functional-spec.ts'
   ],
+  // Setup the report before any tests start
+  beforeLaunch: function() {
+    return new Promise(function(resolve){
+      reporter.beforeLaunch(resolve);
+    });
+  },
+  // Close the report after all tests finish
+  afterLaunch: function(exitCode) {
+    return new Promise(function(resolve){
+      reporter.afterLaunch(resolve.bind(this, exitCode));
+    });
+  },
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
@@ -35,11 +53,13 @@ exports.config = {
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.json')
     });
+    jasmine.getEnv().addReporter(reporter);
     jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
         displayStacktrace: StacktraceOption.PRETTY
       }
     }));
+
     await browser.waitForAngularEnabled(false);
     while (true) {
       try {

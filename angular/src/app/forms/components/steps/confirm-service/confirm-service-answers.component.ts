@@ -28,7 +28,6 @@ import {environment} from "../../../../../environments/environment";
 })
 export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersComponent {
 
-  baseUrl = environment.baseUrl;
   private case: any;
   private parties: any;
   caseName: string;

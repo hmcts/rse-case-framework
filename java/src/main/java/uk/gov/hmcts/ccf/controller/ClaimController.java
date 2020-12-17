@@ -38,6 +38,8 @@ public class ClaimController {
     @Autowired
     DefaultDSLContext jooq;
 
+
+
     @GetMapping(path = "/cases/{caseId}/claims")
     public String getClaims(@PathVariable("caseId") Long caseId) {
         return jooq.select()

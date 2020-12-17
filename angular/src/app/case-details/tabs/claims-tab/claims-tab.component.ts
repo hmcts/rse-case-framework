@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ApiEventHistory} from "../../../../generated/client-lib";
 
 @Component({
   selector: 'app-claims-tab',
@@ -9,9 +10,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class ClaimsTabComponent implements OnInit {
   claims: Array<any>;
-  @Input() caseId = '1';
+  @Input() caseId = 1;
   selectedClaim: any;
-  private history: any;
+  private history: Array<ApiEventHistory>;
 
   constructor(
     private caseService: CaseService,
@@ -22,10 +23,10 @@ export class ClaimsTabComponent implements OnInit {
   ngOnInit(): void {
     this.caseService.getCaseClaims(this.caseId).subscribe(x => {
       this.claims = x;
-      this.route.paramMap.subscribe(x => {
+      this.route.paramMap.subscribe(params => {
         if (this.claims.length > 0) {
-          const claimId = x.get('entity_id') ?? this.claims[0].claim_id;
-          const tab = x.get('case_tab');
+          const claimId = params.get('entity_id') ?? this.claims[0].claim_id;
+          const tab = params.get('case_tab');
           if (tab === 'claims') {
             this.onSelect(claimId);
           }

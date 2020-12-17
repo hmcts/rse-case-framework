@@ -67,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .set(USERS.USER_FORENAME, user.getGivenName())
                 .set(USERS.USER_SURNAME, user.getFamilyName())
                 .execute();
-            super.onAuthenticationSuccess(request, response, authentication);
+            response.sendRedirect("/");
         }
     };
 

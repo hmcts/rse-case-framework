@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router'
 import {CaseService} from "../services/case-service.service";
+import {CaseSearchResult} from "../../generated/client-lib";
 
 @Component({
   selector: 'search-cases',
@@ -11,10 +12,10 @@ import {CaseService} from "../services/case-service.service";
 export class SearchCasesComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
-    private caseService: CaseService,
-    private router: Router) { }
+              private caseService: CaseService,
+              private router: Router) { }
   searchForm;
-  caseList;
+  caseList: Array<CaseSearchResult>;
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
       caseLocalAuthority: '',
