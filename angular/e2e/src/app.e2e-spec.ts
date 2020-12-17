@@ -18,7 +18,7 @@ describe('workspace-project App', () => {
     page.navigateTo();
     var count = element.all(by.css('.govuk-table__row')).count();
     expect(count).toEqual(3);
-    count = element.all(by.cssContainingText('.govuk-table__cell', 'Open')).count();
+    count = element.all(by.cssContainingText('.govuk-table__cell', 'Created')).count();
     expect(count).toEqual(2);
   });
 

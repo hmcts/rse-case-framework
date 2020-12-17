@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClaimsTabComponent } from './claims-tab.component';
 import {HttpClientModule} from "@angular/common/http";
+import {RouterModule} from "@angular/router";
 
 describe('ClaimsTabComponent', () => {
   let component: ClaimsTabComponent;
@@ -10,7 +11,8 @@ describe('ClaimsTabComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientModule
+        HttpClientModule,
+        RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
       ],
       declarations: [ ClaimsTabComponent ]
     })

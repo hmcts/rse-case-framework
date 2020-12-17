@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ConfirmService {
-    private Long claimId;
     private String name;
     private String role;
 }

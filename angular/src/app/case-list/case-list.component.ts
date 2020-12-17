@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import {CaseSearchResult} from "../../generated/client-lib";
 
 @Component({
   selector: 'app-case-list',
@@ -8,7 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class CaseListComponent implements OnInit {
 
   constructor() { }
-  @Input() caseList;
+  @Input() caseList: Array<CaseSearchResult>;
   ngOnInit(): void {
   }
 }

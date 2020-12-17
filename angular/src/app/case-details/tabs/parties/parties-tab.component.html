@@ -7,57 +7,92 @@
   </div>
 </div>
 
-<div class="party-container" *ngFor="let party of parties">
-  <h2 class="govuk-heading-m">{{ partyName(party) }}</h2>
-  <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">
-        Claimant type
-      </dt>
-      <dd class="govuk-summary-list__value">
-        {{ party.partyType }}
-      </dd>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter">
+    <ul class="parties">
+      <li *ngFor="let p of parties"
+          [class.selected]="p.data === party"
+          (click)="onSelect(p.partyId)">
+        {{partyName(p.data) | slice:0:15}}
+      </li>
+    </ul>
+  </div>
+  <div class="govuk-grid-column-three-quarters" *ngIf="party">
+    <div class="party-container">
+      <h2 class="govuk-heading-m">{{ partyName(party) }}</h2>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Claimant type
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ party.partyType }}
+          </dd>
 
+        </div>
+        <div *ngIf="party.partyType == 'Company' || party.partyType == 'Organisation'" class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ party.partyType }} name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ party.name }}
+          </dd>
+        </div>
+        <ng-container *ngIf="party.partyType == 'Individual' || party.partyType == 'SoleTrader'">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Title</dt>
+            <dd class="govuk-summary-list__value">
+              {{ party.title }}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Forename
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ party.firstName }}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Surname
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ party.lastName }}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Date of birth
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ party.dateOfBirth | date:'mediumDate'}}
+            </dd>
+          </div>
+        </ng-container>
+      </dl>
+      <ng-container *ngIf="claims">
+        <h2 class="govuk-heading-m">Claims</h2>
+        <dl class="govuk-summary-list">
+          <div *ngIf="claims.claimant" class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Pursuing</dt>
+            <dd class="govuk-summary-list__value">
+              <a *ngFor="let claimId of claims.claimant" [routerLink]="['../../claims', claimId]">
+                Claim #{{claimId}}
+              </a>
+            </dd>
+          </div>
+          <div *ngIf="claims.defendant" class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Defending</dt>
+            <dd class="govuk-summary-list__value">
+              <a *ngFor="let claimId of claims.defendant" [routerLink]="['../../claims', claimId]">
+                Claim #{{claimId}}
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </ng-container>
     </div>
-    <div *ngIf="party.partyType == 'Company' || party.partyType == 'Organisation'" class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">
-        {{ party.partyType }} name
-      </dt>
-      <dd class="govuk-summary-list__value">
-        {{ party.name }}
-      </dd>
-    </div>
-    <ng-container *ngIf="party.partyType == 'Individual' || party.partyType == 'SoleTrader'">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Title</dt>
-        <dd class="govuk-summary-list__value">
-          {{ party.title }}
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Forename
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ party.firstName }}
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Surname
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ party.lastName }}
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          Date of birth
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ party.dateOfBirth | date:'mediumDate'}}
-        </dd>
-      </div>
-    </ng-container>
-  </dl>
+  </div>
 </div>
+

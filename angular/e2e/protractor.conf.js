@@ -4,6 +4,12 @@
 
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 
+var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+var reporter = new HtmlScreenshotReporter({
+  dest: 'build/e2e/screenshots',
+  filename: 'failure-report.html'
+});
+
 /**
  * @type { import("protractor").Config }
  */
@@ -33,6 +39,7 @@ exports.config = {
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.json')
     });
+    jasmine.getEnv().addReporter(reporter);
     jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
         displayStacktrace: StacktraceOption.PRETTY

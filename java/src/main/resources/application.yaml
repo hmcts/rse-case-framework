@@ -18,6 +18,7 @@ spring:
     url: jdbc:postgresql://${database-host:db}:5432/ccf
     username: postgres
   flyway:
+    clean-on-validation-error: true # TODO - remove once envs exist
     connectRetries: 600000
     locations: classpath:/db/migration
     password: postgres

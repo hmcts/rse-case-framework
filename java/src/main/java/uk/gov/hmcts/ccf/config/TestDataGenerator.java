@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import lombok.SneakyThrows;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
+import org.jooq.generated.enums.Event;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,6 @@ import uk.gov.hmcts.ccf.controller.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
-import uk.gov.hmcts.unspec.enums.Event;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;
@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.jooq.generated.Tables.EVENTS;
+import static org.jooq.generated.Tables.USERS;
 import static org.jooq.impl.DSL.count;
 
 @Component
@@ -46,6 +47,11 @@ public class TestDataGenerator implements Callback {
         if (count > 0) {
             return;
         }
+        // User 'john' in the keycloak configuration.
+        String testUserId = "a62f4e6f-c223-467d-acc1-fe91444783f5";
+        create.insertInto(USERS,USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
+            .values(testUserId, "John", "Smith")
+            .execute();
 
         CreateClaim o = CreateClaim.builder()
             .claimantReference("666")
@@ -56,7 +62,7 @@ public class TestDataGenerator implements Callback {
             .defendant(new Organisation("Megacorp Inc"))
             .build();
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e, "Alex", "M");
+        Long caseId = controller.createCase(e, testUserId).getBody().getId();
 
         AddClaim a = AddClaim.builder()
                 .defendants(Map.of((long) 1, Boolean.TRUE))
@@ -65,7 +71,7 @@ public class TestDataGenerator implements Callback {
                 .higherValue(100000)
                 .build();
         e = new ApiEventCreation(Event.AddClaim, new ObjectMapper().valueToTree(a));
-        controller.createEvent((long) 1, e, "Alex", "M");
+        controller.createEvent(caseId, e, testUserId);
 
         o = CreateClaim.builder()
                 .claimantReference("1111")
@@ -76,7 +82,7 @@ public class TestDataGenerator implements Callback {
                 .defendant(new Organisation("Acme Inc"))
                 .build();
         e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e, "Alex", "M");
+        controller.createCase(e, testUserId);
 
         URL url = Resources.getResource("seed_data/seed.sql");
         String sql = Resources.toString(url, StandardCharsets.UTF_8);

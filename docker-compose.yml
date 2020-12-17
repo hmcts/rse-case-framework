@@ -30,6 +30,9 @@ services:
       - backend
     expose:
       - 4200
+    volumes:
+      - './angular/build:/app/build'
+
   keycloak:
     build:
       context: keycloak

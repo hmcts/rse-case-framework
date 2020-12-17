@@ -19,8 +19,6 @@ export class ConfirmServiceComponent implements OnInit, StepComponent {
   ngOnInit(): void {
     this.form.addControl('name', new FormControl())
     this.form.addControl('role', new FormControl())
-    const claimId = this.route.snapshot.queryParamMap.get('claimId')
-    this.form.addControl('claimId', new FormControl(claimId))
   }
 
 

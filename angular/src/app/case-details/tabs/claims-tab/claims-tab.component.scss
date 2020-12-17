@@ -1,6 +1,18 @@
 button {
-  margin-left: 50px;
   float: right;
+}
+
+.govuk-grid-row {
+  max-width: 898px;
+}
+
+.claim-action {
+  float: left;
+  margin-bottom: 2em;
+}
+
+.claim-panel {
+  padding-right: 0px;
 }
 
 h2 {
@@ -18,3 +30,26 @@ h2 {
   border: 1px solid;
 }
 
+.claims {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+}
+.claims li {
+  color: #1d70b8;
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  padding: .3em 0;
+  height: 1.6em;
+  margin-bottom: 0.5em;
+}
+.claims li:hover {
+  color: #607D8B;
+  text-decoration: underline;
+  left: .1em;
+}
+.claims li.selected {
+  background-color: #f3f2f1;
+  font-weight: bold;
+}

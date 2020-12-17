@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
-import {CaseService} from "../../services/case-service.service";
+import {CaseService} from '../../services/case-service.service';
+import {CaseActions} from "../../../generated/client-lib";
 
 
 @Component({
@@ -10,8 +11,8 @@ import {CaseService} from "../../services/case-service.service";
   encapsulation: ViewEncapsulation.None
 })
 export class CaseViewComponent implements OnInit {
-  caseId: string;
-  case: any;
+  caseId: number;
+  case: CaseActions;
   events: any = [];
   selectedValue: any;
   selectedIndex: number;
@@ -19,7 +20,7 @@ export class CaseViewComponent implements OnInit {
     history: 0,
     parties: 1,
     claims: 2,
-    citizens:3,
+    citizens: 3,
   };
 
   eventDescriptions = {
@@ -40,9 +41,11 @@ export class CaseViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
-      this.caseId = x.get('case_id');
+      this.caseId = Number(x.get('case_id'));
+      const tab = x.get('case_tab');
+      this.selectedIndex = this.tabMap[tab];
       this.caseService.getCase(this.caseId).subscribe(result => {
-        this.case = result
+        this.case = result;
         this.selectedValue = this.case.actions[0]
       });
       this.caseService.getCaseEvents(this.caseId).subscribe(result => {
@@ -50,10 +53,6 @@ export class CaseViewComponent implements OnInit {
       });
     });
 
-    this.route.queryParamMap.subscribe(q => {
-      const tab = q.get('tab');
-      this.selectedIndex = this.tabMap[tab];
-    });
   }
 
   actions() {
@@ -70,13 +69,9 @@ export class CaseViewComponent implements OnInit {
       }
     }
 
-    const queryParams: Params = { tab: value };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: queryParams,
-        queryParamsHandling: 'merge',
-      });
+    const currentTab = this.route.snapshot.paramMap.get('case_tab');
+    if (currentTab !== value) {
+      this.router.navigateByUrl(`/cases/${this.caseId}/${value}`);
+    }
   }
 }

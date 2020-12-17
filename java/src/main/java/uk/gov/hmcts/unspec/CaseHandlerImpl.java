@@ -1,25 +1,21 @@
 package uk.gov.hmcts.unspec;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.jooq.Condition;
 import org.jooq.JSONB;
-import org.jooq.JSONFormat;
+import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.ClaimEvent;
+import org.jooq.generated.enums.ClaimState;
+import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyType;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.ccf.CaseHandler;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.unspec.dto.AddClaim;
-import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
-import uk.gov.hmcts.unspec.enums.ClaimState;
-import uk.gov.hmcts.unspec.enums.Event;
-import uk.gov.hmcts.unspec.enums.State;
 import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
@@ -31,16 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIM_EVENTS;
 import static org.jooq.generated.Tables.CLAIM_PARTIES;
 import static org.jooq.generated.Tables.PARTIES;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.select;
-import static org.jooq.impl.DSL.table;
 
 @Service
-public class CaseHandlerImpl implements CaseHandler {
+public class CaseHandlerImpl {
 
     @Autowired
     DefaultDSLContext jooq;
@@ -48,57 +41,19 @@ public class CaseHandlerImpl implements CaseHandler {
     @Autowired
     CaseRepository repository;
 
-    @Override
-    public JsonNode get(Long caseId) {
-        UnspecCase c = repository.load(Long.valueOf(caseId));
-        return new ObjectMapper().valueToTree(c);
-    }
-
-    @SneakyThrows
-    @Override
-    public String search(Map<String, String> params) {
-        Object id = params.get("id");
-        Condition condition = DSL.trueCondition();
-        if (id != null && id.toString().length() > 0) {
-            condition = condition.and(CASES_WITH_STATES.CASE_ID.equal(Long.valueOf(id.toString())));
-        }
-
-        return jooq.with("party_counts").as(
-                        select(PARTIES.CASE_ID, count().as("party_count"))
-                        .from(PARTIES)
-                        .groupBy(PARTIES.CASE_ID)
-                )
-                .select()
-                .from(CASES_WITH_STATES)
-                .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
-                .where(condition)
-                .orderBy(CASES_WITH_STATES.CASE_ID.asc())
-                .fetch()
-                .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT));
-    }
-
-    public StateMachine<State, Event> build() {
-        StateMachine<State, Event> result = new StateMachine<>();
-        result.initialState(State.Created, this::onCreate)
+    public StateMachine<CaseState, Event> build() {
+        StateMachine<CaseState, Event> result = new StateMachine<>();
+        result.initialState(CaseState.Created, this::onCreate)
                 .addUniversalEvent(Event.AddNotes, this::addNotes)
-                .addUniversalEvent(Event.ConfirmService, this::confirmService)
-                .addEvent(State.Created, Event.AddParty, this::addParty)
-                .addEvent(State.Created, Event.AddClaim, this::addClaim)
-                .addTransition(State.Created, State.Closed, Event.CloseCase, this::closeCase)
-                .addTransition(State.Closed, State.Stayed, Event.SubmitAppeal, this::closeCase);
+                .addEvent(CaseState.Created, Event.AddParty, this::addParty)
+                .addEvent(CaseState.Created, Event.AddClaim, this::addClaim)
+                .addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
+                .addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
     }
 
-    public void confirmService(Long caseId, ConfirmService service) {
-        jooq.update(CLAIMS)
-                .set(CLAIMS.STATE, ClaimState.ServiceConfirmed.toString())
-                .where(CLAIMS.CLAIM_ID.eq(service.getClaimId()))
-                .execute();
-    }
-
-
     @SneakyThrows
-    public void addClaim(Long caseId, AddClaim claim) {
+    public void addClaim(TransitionContext context, AddClaim claim) {
         List<Long> claimantIds = claim.getClaimants().entrySet().stream().filter((x) -> x.getValue())
                 .map(x -> x.getKey())
                 .collect(Collectors.toUnmodifiableList());
@@ -117,10 +72,14 @@ public class CaseHandlerImpl implements CaseHandler {
         c.setLowerValue(claim.getLowerValue());
         c.setHigherValue(claim.getHigherValue());
 
-        Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.STATE, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
-                .values(caseId, ClaimState.Issued.toString(), claim.getLowerValue(), claim.getHigherValue())
+        Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
+                .values(context.getEntityId(), claim.getLowerValue(), claim.getHigherValue())
                 .returning(CLAIMS.CLAIM_ID)
                 .fetchOne().getClaimId();
+
+        jooq.insertInto(CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.USER_ID)
+            .values(claimId, ClaimEvent.ClaimIssued, ClaimState.Issued, context.getUserId())
+            .execute();
 
         List<Object[]> claimParties = claimantIds.stream().map(x -> {
             return new Object[]{claimId, x, PartyType.claimant};
@@ -138,20 +97,20 @@ public class CaseHandlerImpl implements CaseHandler {
     }
 
     @SneakyThrows
-    private void addParty(Long id, Party party) {
+    private void addParty(TransitionContext context, Party party) {
         jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
+                .values(context.getEntityId(), JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
                 .execute();
     }
 
-    private void addNotes(Long id, AddNotes notes) {
-        UnspecCase c = repository.load(id);
+    private void addNotes(TransitionContext context, AddNotes notes) {
+        UnspecCase c = repository.load(context.getEntityId());
         c.getNotes().add(notes.getNotes());
         repository.save(c);
     }
 
     @SneakyThrows
-    private void onCreate(Long id, CreateClaim request) {
+    private void onCreate(TransitionContext context, CreateClaim request) {
         String ref = request.getClaimantReference();
         if (ref == null || ref.length() == 0 || ref.contains("@")) {
             throw new IllegalArgumentException("Invalid reference!");
@@ -164,19 +123,21 @@ public class CaseHandlerImpl implements CaseHandler {
             }
         }
 
-        UnspecCase data = new UnspecCase(id);
+        UnspecCase data = new UnspecCase(context.getEntityId());
         data.setCourtLocation(request.getApplicantPreferredCourt());
 
         repository.save(data);
 
         List<Long> partyIds = jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getClaimant())))
-                .values(id, JSONB.valueOf(new ObjectMapper().writeValueAsString(request.getDefendant())))
+                .values(context.getEntityId(), JSONB.valueOf(
+                    new ObjectMapper().writeValueAsString(request.getClaimant())))
+                .values(context.getEntityId(), JSONB.valueOf(
+                    new ObjectMapper().writeValueAsString(request.getDefendant())))
                 .returningResult(PARTIES.PARTY_ID)
                 .fetch()
                 .getValues(PARTIES.PARTY_ID);
 
-        addClaim(id, AddClaim.builder()
+        addClaim(context, AddClaim.builder()
                 .lowerValue(request.getLowerValue())
                 .higherValue(request.getHigherValue())
                 .claimants(Map.of(partyIds.get(0), true))
@@ -185,7 +146,7 @@ public class CaseHandlerImpl implements CaseHandler {
 
     }
 
-    private void closeCase(Long id, CloseCase t) {
+    private void closeCase(TransitionContext context, CloseCase t) {
 
     }
 }
