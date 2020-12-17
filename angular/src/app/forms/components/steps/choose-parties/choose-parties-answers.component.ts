@@ -1,9 +1,9 @@
-import {Component, Input, EventEmitter, OnInit} from "@angular/core";
-import {FormGroup} from "@angular/forms";
-import {CheckAnswersComponent} from "../../check-answers/types";
-import {ActivatedRoute} from "@angular/router";
-import {CaseService} from "../../../../services/case-service.service";
-import {CaseParty} from "../../../../../generated/client-lib";
+import {Component, Input, EventEmitter, OnInit} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {CheckAnswersComponent} from '../../check-answers/types';
+import {ActivatedRoute} from '@angular/router';
+import {CaseService} from '../../../../services/case-service.service';
+import {CaseParty} from '../../../../../generated/client-lib';
 
 @Component({
   selector: 'app-party-details-answers',
@@ -38,24 +38,24 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   }
 
   ngOnInit(): void {
-    const caseId = this.route.snapshot.paramMap.get('case_id')
+    const caseId = this.route.snapshot.paramMap.get('case_id');
     this.caseService.getCaseParties(Number(caseId)).subscribe(c => {
-      this.caseParties = c
+      this.caseParties = c;
     });
   }
 
   filterParties(type) {
     // @ts-ignore
-    return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value)
+    return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value);
   }
 
-  partyName(party: any) : string {
+  partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
-        return party.name
+        return party.name;
       default:
-        return party.title + ' ' + party.firstName + ' ' + party.lastName
+        return party.title + ' ' + party.firstName + ' ' + party.lastName;
     }
   }
 }

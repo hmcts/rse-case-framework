@@ -1,8 +1,8 @@
-import {Component, Input, EventEmitter} from "@angular/core";
-import {FormGroup} from "@angular/forms";
-import {CheckAnswersComponent} from "../../check-answers/types";
-import {PartyDetailsComponent} from "./party-details.component";
-import {Question} from "../../../dynamic-form/dynamic-form.component";
+import {Component, Input, EventEmitter} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {CheckAnswersComponent} from '../../check-answers/types';
+import {PartyDetailsComponent} from './party-details.component';
+import {Question} from '../../../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-party-details-answers',
@@ -18,8 +18,8 @@ export class PartyDetailsAnswersComponent implements CheckAnswersComponent {
   questions = PartyDetailsComponent.buildQuestions();
   partyType: string;
   details(): Question[] {
-    this.partyType = this.form.value['partyType']
-    let initial = [{ title: 'Party type', id: 'partyType', type: ''}]
+    this.partyType = this.form.value.partyType;
+    const initial = [{ title: 'Party type', id: 'partyType', type: ''}];
     return initial.concat(this.questions[this.partyType]);
   }
 }

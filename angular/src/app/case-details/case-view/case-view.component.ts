@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
-import {CaseActions} from "../../../generated/client-lib";
+import {CaseActions} from '../../../generated/client-lib';
 
 
 @Component({
@@ -31,7 +31,7 @@ export class CaseViewComponent implements OnInit {
     SubmitAppeal: 'Submit an appeal',
     ImportCitizens: 'Import citizens',
     PurgeInactiveCitizens: 'Purge inactive citizens',
-  }
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +46,7 @@ export class CaseViewComponent implements OnInit {
       this.selectedIndex = this.tabMap[tab];
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result;
-        this.selectedValue = this.case.actions[0]
+        this.selectedValue = this.case.actions[0];
       });
       this.caseService.getCaseEvents(this.caseId).subscribe(result => {
         this.events = result;
@@ -56,7 +56,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   actions() {
-    return this.case.actions.sort()
+    return this.case.actions.sort();
   }
 
   // Update the address bar URL to track the active tab.

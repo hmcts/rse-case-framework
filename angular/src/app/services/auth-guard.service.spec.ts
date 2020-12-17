@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthGuardService } from './auth-guard.service';
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from '@angular/common/http';
 
 describe('AuthGuardService', () => {
   let service: AuthGuardService;

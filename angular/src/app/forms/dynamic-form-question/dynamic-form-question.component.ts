@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class DynamicFormQuestionComponent {
 
-  @Input() question: any = {}
+  @Input() question: any = {};
   @Input() form: FormGroup;
   @Input() validate: boolean;
 

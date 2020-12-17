@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmServiceComponent } from './confirm-service.component';
-import {HttpClientModule} from "@angular/common/http";
-import {RouterModule} from "@angular/router";
+import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
 
 describe('ConfirmServiceComponent', () => {
   let component: ConfirmServiceComponent;

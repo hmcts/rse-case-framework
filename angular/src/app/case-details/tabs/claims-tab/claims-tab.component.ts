@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEventHistory} from "../../../../generated/client-lib";
+import {ApiEventHistory} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-claims-tab',
@@ -39,9 +39,9 @@ export class ClaimsTabComponent implements OnInit {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
-        return party.name
+        return party.name;
       default:
-        return party.title + ' ' + party.firstName + ' ' + party.lastName
+        return party.title + ' ' + party.firstName + ' ' + party.lastName;
     }
   }
 

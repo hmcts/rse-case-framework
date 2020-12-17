@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StepperContainerComponent } from './stepper-container.component';
-import {RouterModule} from "@angular/router";
+import {RouterModule} from '@angular/router';
 
 describe('StepperContainerComponent', () => {
   let component: StepperContainerComponent;

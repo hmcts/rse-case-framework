@@ -1,9 +1,9 @@
 import {Component, EventEmitter, OnInit} from '@angular/core';
-import {CheckAnswersComponent} from "../../check-answers/types";
-import {FormGroup} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../../environments/environment";
+import {CheckAnswersComponent} from '../../check-answers/types';
+import {FormGroup} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-confirm-service-answers',
@@ -27,25 +27,25 @@ import {environment} from "../../../../../environments/environment";
   `,
 })
 export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersComponent {
-
-  private case: any;
-  private parties: any;
-  caseName: string;
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient
   ) { }
 
-  ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
-    const entityId = this.route.snapshot.queryParamMap.get('entity_id');
-    this.caseName = entityId;
-
-  }
+  private case: any;
+  private parties: any;
+  caseName: string;
 
 
   form: FormGroup;
   index: number;
-  onChange = new EventEmitter<number>()
+  onChange = new EventEmitter<number>();
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    const entityId = this.route.snapshot.queryParamMap.get('entity_id');
+    this.caseName = entityId;
+
+  }
 
 }

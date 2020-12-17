@@ -14,7 +14,7 @@ import {CaseControllerService} from '../../../generated/client-lib';
 export class CreateEventComponent implements OnInit {
   baseUrl = environment.baseUrl;
   pages: Array<StepType>;
-  files = new FormData()
+  files = new FormData();
 
   caseId: string;
   private eventId: string;
@@ -58,9 +58,9 @@ export class CreateEventComponent implements OnInit {
         const redirectTo = EventList.EVENTS.get(this.eventId).redirectTo;
 
         if (redirectTo) {
-          this.router.navigateByUrl(`/cases/${this.caseId}/${redirectTo}`, {replaceUrl: true})
+          this.router.navigateByUrl(`/cases/${this.caseId}/${redirectTo}`, {replaceUrl: true});
         } else {
-          this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true})
+          this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true});
         }
       });
   }

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChoosePartiesComponent } from './choose-parties.component';
-import {RouterModule} from "@angular/router";
-import {HttpClientModule} from "@angular/common/http";
+import {RouterModule} from '@angular/router';
+import {HttpClientModule} from '@angular/common/http';
 
 describe('ChoosePartiesComponent', () => {
   let component: ChoosePartiesComponent;

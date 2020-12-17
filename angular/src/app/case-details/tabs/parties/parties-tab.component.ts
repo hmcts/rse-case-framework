@@ -35,13 +35,13 @@ export class PartiesTabComponent implements OnInit {
       });
   }
 
-  partyName(party: any) : string {
+  partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
-        return party.name
+        return party.name;
       default:
-        return party.title + ' ' + party.firstName + ' ' + party.lastName
+        return party.title + ' ' + party.firstName + ' ' + party.lastName;
     }
   }
 

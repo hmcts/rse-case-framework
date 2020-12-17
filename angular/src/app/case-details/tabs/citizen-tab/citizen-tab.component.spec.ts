@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CitizenTabComponent } from './citizen-tab.component';
-import {HttpClientModule} from "@angular/common/http";
-import {RouterModule} from "@angular/router";
+import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
 
 describe('CitizenTabComponent', () => {
   let component: CitizenTabComponent;

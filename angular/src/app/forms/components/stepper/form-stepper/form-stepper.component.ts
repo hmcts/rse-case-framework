@@ -8,10 +8,10 @@ import {
   ViewChild,
   ViewChildren
 } from '@angular/core';
-import {FormArray, FormGroup} from "@angular/forms";
-import {StepType} from "./types";
-import {StepperContainerComponent} from "../stepper-container/stepper-container.component";
-import {StepperStepComponent} from "../stepper-step/stepper-step.component";
+import {FormArray, FormGroup} from '@angular/forms';
+import {StepType} from './types';
+import {StepperContainerComponent} from '../stepper-container/stepper-container.component';
+import {StepperStepComponent} from '../stepper-step/stepper-step.component';
 
 @Component({
   selector: 'app-form-stepper',
@@ -20,12 +20,12 @@ import {StepperStepComponent} from "../stepper-step/stepper-step.component";
 })
 export class FormStepperComponent implements OnInit {
 
-  @ViewChild(StepperContainerComponent, { static: true}) stepper: StepperContainerComponent
-  @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>
+  @ViewChild(StepperContainerComponent, { static: true}) stepper: StepperContainerComponent;
+  @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>;
   @Input() pages: Array<StepType> = [];
   @Input() files: FormData;
   @Input() caseId: string;
-  @Output() onSubmit = new EventEmitter<any>()
+  @Output() onSubmit = new EventEmitter<any>();
   validate = false;
   forms = new FormArray([]);
   answers: any;
@@ -33,26 +33,26 @@ export class FormStepperComponent implements OnInit {
 
   ngOnInit(): void {
     for (const page of this.pages) {
-      let group = new FormGroup({})
+      let group = new FormGroup({});
       this.forms.push(group);
       if (page.formGroupName) {
-        let sub = new FormGroup({})
-        group.addControl(page.formGroupName, sub)
+        const sub = new FormGroup({});
+        group.addControl(page.formGroupName, sub);
         group = sub;
       }
-      page['form'] = group;
+      page.form = group;
     }
   }
 
-  onNext(event:any) {
+  onNext(event: any) {
     // If on the answer's page.
     if (this.stepper.selectedIndex > this.children.length - 1) {
       // Merge the pages into a single map
-      let result = this.forms.controls.map(x => x.value)
-        .reduce((a, b)=> {return { ...a, ...b}}, {})
-      this.onSubmit.emit(result)
+      const result = this.forms.controls.map(x => x.value)
+        .reduce((a, b) => ({ ...a, ...b}), {});
+      this.onSubmit.emit(result);
     } else {
-      let page = this.children.toArray()[this.stepper.selectedIndex];
+      const page = this.children.toArray()[this.stepper.selectedIndex];
       if (page.valid()) {
         this.validate = false;
         if (this.checkingAnswers) {

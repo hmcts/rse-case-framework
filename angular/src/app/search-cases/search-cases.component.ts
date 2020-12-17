@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router'
-import {CaseService} from "../services/case-service.service";
-import {CaseSearchResult} from "../../generated/client-lib";
+import { Router } from '@angular/router';
+import {CaseService} from '../services/case-service.service';
+import {CaseSearchResult} from '../../generated/client-lib';
 
 @Component({
   selector: 'search-cases',
@@ -22,7 +22,7 @@ export class SearchCasesComponent implements OnInit {
       caseName: '',
       id: '',
     });
-    this.onSubmit({})
+    this.onSubmit({});
   }
 
   onSubmit(data) {

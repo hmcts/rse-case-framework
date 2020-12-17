@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {CaseSearchResult} from "../../generated/client-lib";
+import {CaseSearchResult} from '../../generated/client-lib';
 
 @Component({
   selector: 'app-case-list',

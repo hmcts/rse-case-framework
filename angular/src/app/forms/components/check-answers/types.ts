@@ -1,5 +1,5 @@
-import {FormGroup} from "@angular/forms";
-import {Directive, EventEmitter, ViewContainerRef} from "@angular/core";
+import {FormGroup} from '@angular/forms';
+import {Directive, EventEmitter, ViewContainerRef} from '@angular/core';
 
 export interface CheckAnswersComponent {
   form: FormGroup;

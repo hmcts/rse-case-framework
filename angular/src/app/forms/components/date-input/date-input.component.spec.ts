@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DateInputComponent } from './date-input.component';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from '@angular/forms';
 
 describe('DateInputComponent', () => {
   let component: DateInputComponent;
@@ -34,16 +34,16 @@ describe('DateInputComponent', () => {
   });
 
   it('builds the date from year month day', () => {
-    component.patchDate(4,1,2000)
-    expect(dob.value.getFullYear()).toBe(2000)
-    expect(dob.value.getDate()).toBe(4)
-    expect(dob.value.getMonth()).toBe(0)
-    expect(component.form.valid).toBeTrue()
+    component.patchDate(4, 1, 2000);
+    expect(dob.value.getFullYear()).toBe(2000);
+    expect(dob.value.getDate()).toBe(4);
+    expect(dob.value.getMonth()).toBe(0);
+    expect(component.form.valid).toBeTrue();
   });
 
   it('does not build an invalid date', () => {
-    component.patchDate(4,13,2000)
-    expect(dob.value).toBeNull()
-    expect(component.form.valid).toBeFalse()
+    component.patchDate(4, 13, 2000);
+    expect(dob.value).toBeNull();
+    expect(component.form.valid).toBeFalse();
   });
 });

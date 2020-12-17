@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../environments/environment";
-import {FormControl, FormGroup} from "@angular/forms";
-import {CitizenControllerService} from "../../../../generated/client-lib";
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../../environments/environment';
+import {FormControl, FormGroup} from '@angular/forms';
+import {CitizenControllerService} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-citizen-tab',
@@ -13,7 +13,7 @@ export class CitizenTabComponent implements OnInit {
 
   @Input() caseId: any;
   baseUrl = environment.baseUrl;
-  citizens
+  citizens;
   page = 1;
   pageSize = 10;
   searchForm: FormGroup;
@@ -28,7 +28,7 @@ export class CitizenTabComponent implements OnInit {
     this.searchForm = new FormGroup({
       forename: new FormControl(),
       surname: new FormControl(),
-    })
+    });
     this.fetch();
   }
 
@@ -45,16 +45,16 @@ export class CitizenTabComponent implements OnInit {
 
   next() {
     this.page++;
-    this.fetch()
+    this.fetch();
   }
 
   previous() {
-    this.page = Math.max(1, this.page - 1)
-    this.fetch()
+    this.page = Math.max(1, this.page - 1);
+    this.fetch();
   }
 
   startIndex() {
-    return Math.max(1, (this.page - 1) * this.pageSize)
+    return Math.max(1, (this.page - 1) * this.pageSize);
   }
 
   onSubmit() {

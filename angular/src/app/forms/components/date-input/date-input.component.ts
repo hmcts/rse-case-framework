@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {Question} from "../../dynamic-form/dynamic-form.component";
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {Question} from '../../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-date-input',
@@ -23,18 +23,18 @@ export class DateInputComponent implements OnInit {
 
   ngOnInit(): void {
     this.group.valueChanges.subscribe(x => {
-      this.patchDate(this.group.controls.day.value, this.group.controls.month.value, this.group.controls.year.value)
+      this.patchDate(this.group.controls.day.value, this.group.controls.month.value, this.group.controls.year.value);
     });
 
-    this.form.controls[this.input.id].setValidators(Validators.required)
+    this.form.controls[this.input.id].setValidators(Validators.required);
   }
 
   patchDate(day: number, month: number, year: number): void {
-    let date = new Date(year, month - 1, day)
+    const date = new Date(year, month - 1, day);
     if (date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day) {
-      this.form.controls[this.input.id].patchValue(date)
+      this.form.controls[this.input.id].patchValue(date);
     } else {
-      this.form.controls[this.input.id].patchValue(null)
+      this.form.controls[this.input.id].patchValue(null);
     }
   }
 

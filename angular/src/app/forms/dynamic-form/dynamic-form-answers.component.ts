@@ -1,6 +1,6 @@
-import {Component, Input, EventEmitter, Output, OnInit} from "@angular/core";
-import {FormGroup} from "@angular/forms";
-import {CheckAnswersComponent} from "../components/check-answers/types";
+import {Component, Input, EventEmitter, Output, OnInit} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {CheckAnswersComponent} from '../components/check-answers/types';
 
 export interface DynamicFormCheckAnswer {
   title: string;
@@ -40,7 +40,7 @@ export class DynamicFormAnswersComponent implements CheckAnswersComponent {
   @Output() onChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
-  @Input() questions: DynamicFormCheckAnswer[]
+  @Input() questions: DynamicFormCheckAnswer[];
   @Input() title: string;
 
 }

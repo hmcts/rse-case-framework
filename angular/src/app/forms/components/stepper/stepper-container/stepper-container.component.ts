@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output,} from '@angular/core';
-import {CdkStepper} from "@angular/cdk/stepper";
-import {ActivatedRoute } from "@angular/router";
-import {Directionality} from "@angular/cdk/bidi";
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, } from '@angular/core';
+import {CdkStepper} from '@angular/cdk/stepper';
+import {ActivatedRoute } from '@angular/router';
+import {Directionality} from '@angular/cdk/bidi';
 
 @Component({
   selector: 'app-stepper-container',
@@ -25,18 +25,18 @@ export class StepperContainerComponent extends CdkStepper implements OnInit {
   @Output() prevEvent = new EventEmitter<any>();
   @Output() submitEvent = new EventEmitter<any>();
   ngOnInit(): void {
-    this.selectedIndex = Number(this.route.snapshot.queryParamMap.get('step'))
+    this.selectedIndex = Number(this.route.snapshot.queryParamMap.get('step'));
   }
 
   onNext() {
-    this.nextEvent.emit()
+    this.nextEvent.emit();
   }
 
   onPrevious() {
-    this.prevEvent.emit()
+    this.prevEvent.emit();
   }
 
-  lastPage() : boolean {
+  lastPage(): boolean {
     return this.selectedIndex === this.steps.length - 1;
   }
 }

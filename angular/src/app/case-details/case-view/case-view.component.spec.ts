@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseViewComponent } from './case-view.component';
 import {ActivatedRoute, RouterModule} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import {of} from "rxjs";
-import {environment} from "../../../environments/environment";
-import {BASE_PATH} from "../../../generated/client-lib";
+import {of} from 'rxjs';
+import {environment} from '../../../environments/environment';
+import {BASE_PATH} from '../../../generated/client-lib';
 
 describe('CaseViewComponent', () => {
   let component: CaseViewComponent;

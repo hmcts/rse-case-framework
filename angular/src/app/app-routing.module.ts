@@ -7,7 +7,7 @@ import {AuthGuardService} from './services/auth-guard.service';
 
 const routes: Routes = [
   {
-    path: '', canActivate:[AuthGuardService], children: [
+    path: '', canActivate: [AuthGuardService], children: [
       { path: 'cases', component: SearchCasesComponent },
       { path: 'create-case', component: CreateEventComponent },
       { path: 'cases/:case_id/create-event', component: CreateEventComponent },
