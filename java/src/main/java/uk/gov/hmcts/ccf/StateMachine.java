@@ -22,18 +22,19 @@ import java.util.function.BiConsumer;
 public class StateMachine<StateT, EventT> {
 
     private StateT state;
-    private Multimap<String, Transition> transitions = HashMultimap.create();
-    private Collection<Transition> universalEvents = Lists.newArrayList();
+    private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
+    private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
     private Table<String, String, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
 
     private Class clazz;
     private BiConsumer initialHandler;
+
     private StateT initialState;
 
     public StateMachine() {
     }
 
-    public <T> StateMachine<StateT, EventT> initialState(StateT state, BiConsumer<Long, T> c) {
+    public <T> StateMachine<StateT, EventT> initialState(StateT state, BiConsumer<TransitionContext, T> c) {
         this.initialState = state;
         this.state = initialState;
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, c.getClass());
@@ -43,9 +44,9 @@ public class StateMachine<StateT, EventT> {
     }
 
     @SneakyThrows
-    public void onCreated(Long caseId, JsonNode data) {
+    public void onCreated(String userId, Long caseId, JsonNode data) {
         Object instance = new ObjectMapper().treeToValue(data, clazz);
-        initialHandler.accept(caseId, instance);
+        initialHandler.accept(new TransitionContext(userId, caseId), instance);
         state = initialState;
     }
 
@@ -59,20 +60,20 @@ public class StateMachine<StateT, EventT> {
     }
 
     @SneakyThrows
-    public void handleEvent(Long caseId, EventT event, JsonNode data) {
-        for (Transition transition : transitions.get(state.toString())) {
-            if (transition.event.equals(event)) {
-                Object instance = new ObjectMapper().treeToValue(data, transition.clazz);
-                transition.consumer.accept(caseId, instance);
-                state = transition.destination;
+    public void handleEvent(TransitionContext context, EventT event, JsonNode data) {
+        for (TransitionRecord transitionRecord : transitions.get(state.toString())) {
+            if (transitionRecord.event.equals(event)) {
+                Object instance = new ObjectMapper().treeToValue(data, transitionRecord.clazz);
+                transitionRecord.consumer.accept(context, instance);
+                state = transitionRecord.destination;
                 return;
             }
         }
 
-        for (Transition universalEvent : universalEvents) {
+        for (TransitionRecord universalEvent : universalEvents) {
             if (universalEvent.event.equals(event)) {
                 Object instance = new ObjectMapper().treeToValue(data, universalEvent.clazz);
-                universalEvent.consumer.accept(caseId, instance);
+                universalEvent.consumer.accept(context, instance);
                 return;
             }
         }
@@ -82,22 +83,23 @@ public class StateMachine<StateT, EventT> {
         return state;
     }
 
-    public <T> StateMachine<StateT, EventT> addUniversalEvent(EventT event, BiConsumer<Long, T> consumer) {
+    public <T> StateMachine<StateT, EventT> addUniversalEvent(EventT event, BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
-        universalEvents.add(new Transition(null, event, typeArgs[1], consumer));
+        universalEvents.add(new TransitionRecord(null, event, typeArgs[1], consumer));
         return this;
     }
 
     public <T> StateMachine<StateT, EventT> addTransition(StateT from, StateT to, EventT event,
-                                                          BiConsumer<Long, T> consumer) {
+                                                          BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
-        transitions.put(from.toString(), new Transition(to, event, typeArgs[1], consumer));
+        transitions.put(from.toString(), new TransitionRecord(to, event, typeArgs[1], consumer));
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event, BiConsumer<Long, T> consumer) {
+    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event,
+                                                     BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
-        transitions.put(state.toString(), new Transition(state, event, typeArgs[1], consumer));
+        transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
         return this;
     }
 
@@ -113,10 +115,10 @@ public class StateMachine<StateT, EventT> {
 
     public Set<String> getAvailableActions(String state) {
         Set<String> result = Sets.newHashSet();
-        for (Transition transition : transitions.get(state)) {
-            result.add(transition.getEvent().toString());
+        for (TransitionRecord transitionRecord : transitions.get(state)) {
+            result.add(transitionRecord.getEvent().toString());
         }
-        for (Transition universalEvent : universalEvents) {
+        for (TransitionRecord universalEvent : universalEvents) {
             result.add(universalEvent.getEvent().toString());
         }
 
@@ -125,15 +127,14 @@ public class StateMachine<StateT, EventT> {
         return result;
     }
 
-    public void rehydrate(String state) {
-        // TODO
-        this.state = (StateT) Enum.valueOf(uk.gov.hmcts.unspec.enums.State.class, state);
+    public void rehydrate(StateT state) {
+        this.state = state;
     }
 
     @Data
     @AllArgsConstructor
     @RequiredArgsConstructor
-    private class Transition {
+    private class TransitionRecord {
         private final StateT destination;
         private final EventT event;
         private Class clazz;

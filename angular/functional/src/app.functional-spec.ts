@@ -76,7 +76,7 @@ describe('workspace-project App', () => {
 
     // Confirm answers
     element(by.id('submit-button')).click();
-    expect(browser.getCurrentUrl()).toEndWith('/cases/3');
+    expect(browser.getCurrentUrl()).toEndWith('/cases/3/history');
     // Check case appears in case list
     browser.get(browser.baseUrl);
     const count = element.all(by.css('.govuk-table__row')).count();
@@ -87,7 +87,7 @@ describe('workspace-project App', () => {
     browser.get(browser.baseUrl + '/cases/1');
     const count = element.all(by.css('.hmcts-timeline__item')).count();
     // Case creation and claim added by test data creator.
-    expect(count).toEqual(2);
+    expect(count).toEqual(4);
   });
 
   it('can create a case event', () => {
@@ -100,7 +100,7 @@ describe('workspace-project App', () => {
 
     // Submit
     element(by.id('submit-button')).click();
-    expect(browser.getCurrentUrl()).toEndWith('/cases/1');
+    expect(browser.getCurrentUrl()).toEndWith('/cases/1/history');
   });
 
   it('searches cases', () => {
@@ -112,7 +112,7 @@ describe('workspace-project App', () => {
   });
 
   it('supports bulk upload of citizens', () => {
-    browser.get(browser.baseUrl + '/cases/2?tab=citizens');
+    browser.get(browser.baseUrl + '/cases/2/citizens');
     element(by.id('bulk-add-citizens')).click();
     var fileToUpload = 'src/assets/citizens.csv',
       absolutePath = path.resolve(process.cwd(), fileToUpload);
@@ -121,7 +121,7 @@ describe('workspace-project App', () => {
     // Check answers
     element(by.id('submit-button')).click();
 
-    expect(browser.getCurrentUrl()).toEndWith('/cases/2?tab=citizens');
+    expect(browser.getCurrentUrl()).toEndWith('/cases/2/citizens');
     let count = element.all(by.css('.govuk-table__row')).count();
     // 10 rows should be displayed plus the header
     expect(count).toEqual(11);

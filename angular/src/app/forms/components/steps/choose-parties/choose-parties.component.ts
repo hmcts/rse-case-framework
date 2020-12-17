@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {StepComponent} from "../../stepper/form-stepper/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {CaseService} from "../../../../services/case-service.service";
+import {CaseParty} from "../../../../../generated/client-lib";
 
 @Component({
   selector: 'app-choose-parties',
@@ -9,8 +10,8 @@ import {CaseService} from "../../../../services/case-service.service";
   styleUrls: ['./choose-parties.component.scss']
 })
 export class ChoosePartiesComponent implements OnInit, StepComponent {
-  caseParties: any = []
-  @Input() caseId: string = "1";
+  caseParties: Array<CaseParty> = [];
+  @Input() caseId = '1';
   @Input() parties: any;
   @Input() form: FormGroup = new FormGroup({})
   defendants = new FormGroup({})
@@ -21,22 +22,22 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCaseParties(this.caseId).subscribe( caseParties => {
-      this.caseParties = caseParties
+    this.caseService.getCaseParties(Number(this.caseId)).subscribe(caseParties => {
+      this.caseParties = caseParties;
       this.claimants.reset()
       this.defendants.reset()
-      for (let party of this.caseParties) {
-        this.claimants.addControl(party.party_id, new FormControl(false))
-        this.defendants.addControl(party.party_id, new FormControl(false))
+      for (const party of this.caseParties) {
+        this.claimants.addControl(String(party.partyId), new FormControl(false));
+        this.defendants.addControl(String(party.partyId), new FormControl(false));
       }
     });
     this.form.addControl('claimants', this.claimants)
     this.form.addControl('defendants', this.defendants)
   }
 
-  isCheckBoxDisabled(isClaimant: boolean, partyId: string): boolean {
+  isCheckBoxDisabled(isClaimant: boolean, partyId: number): boolean {
     const otherSide = isClaimant ? this.defendants : this.claimants;
-    // Canot be both a claimant and defendant.
+    // Cannot be both a claimant and defendant.
     if (otherSide.controls[partyId].value) {
       return true;
     }
@@ -50,8 +51,8 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
 
   countParties(side: FormGroup): number {
     let count = 0;
-    for (let party of this.caseParties) {
-      if (side.controls[party.party_id.toString()].value)  {
+    for (const party of this.caseParties) {
+      if (side.controls[party.partyId.toString()].value)  {
         count++;
       }
     }

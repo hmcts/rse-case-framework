@@ -1,7 +1,7 @@
 package uk.gov.hmcts.unspec.model;
 
 import lombok.Data;
-import uk.gov.hmcts.unspec.enums.ClaimState;
+import org.jooq.generated.enums.ClaimState;
 
 @Data
 public class Claim {

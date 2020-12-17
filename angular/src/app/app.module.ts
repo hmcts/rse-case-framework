@@ -43,6 +43,8 @@ import {HumanisePipe} from "./services/humanise.pipe";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {AuthService} from "./services/auth.service";
 import {HeaderComponent} from "./components/header/header.component";
+import {environment} from "../environments/environment";
+import {ApiModule, BASE_PATH} from '../generated/client-lib';
 
 @NgModule({
   declarations: [
@@ -90,9 +92,11 @@ import {HeaderComponent} from "./components/header/header.component";
     ReactiveFormsModule,
     CdkStepperModule,
     CommonModule,
+    ApiModule,
   ],
-  providers: [AuthGuardService, AuthService],
-  bootstrap: [AppComponent]
+  providers: [AuthGuardService, AuthService,
+    { provide: BASE_PATH, useValue: environment.baseUrl }],
+bootstrap: [AppComponent]
 })
 export class AppModule { }
 

@@ -3,20 +3,20 @@ import {FormGroup} from "@angular/forms";
 import {CheckAnswersComponent} from "../../check-answers/types";
 import {ActivatedRoute} from "@angular/router";
 import {CaseService} from "../../../../services/case-service.service";
+import {CaseParty} from "../../../../../generated/client-lib";
 
 @Component({
   selector: 'app-party-details-answers',
   template: `
     <ng-container *ngFor="let type of ['claimants', 'defendants']">
     <h2 class="govuk-heading-m">{{type | titlecase}}</h2>
-
     <dl *ngIf="this.caseParties" class="govuk-summary-list govuk-!-margin-bottom-9">
       <div *ngFor="let party of filterParties(type); let i = index" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ partyName(party) }}
+          {{ partyName(party.data) }}
         </dt>
         <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
+          <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
             Change<span class="govuk-visually-hidden"> name</span>
           </a>
         </dd>
@@ -29,7 +29,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   onChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
-  private caseParties: any;
+  private caseParties: Array<CaseParty>;
 
   constructor(
     private caseService: CaseService,
@@ -38,8 +38,8 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   }
 
   ngOnInit(): void {
-    const caseId = this.route.snapshot.paramMap.get('id')
-    this.caseService.getCaseParties(caseId).subscribe( c => {
+    const caseId = this.route.snapshot.paramMap.get('case_id')
+    this.caseService.getCaseParties(Number(caseId)).subscribe(c => {
       this.caseParties = c
     });
   }

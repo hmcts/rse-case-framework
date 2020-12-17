@@ -30,6 +30,7 @@ export interface DynamicPageBuilder {
 export interface Event {
   steps: Array<StepType>;
   redirectTo?: string;
+  location?: string;
 }
 
 export class EventsBuilder {
@@ -63,11 +64,17 @@ export class EventBuilder {
   steps = new Array<StepType>();
   desc: string;
   private redirectTo: string;
+  private location: string;
   constructor(private parent: EventsBuilder) {
   }
 
   redirectToTab(tab: string): EventBuilder {
     this.redirectTo = tab;
+    return this;
+  }
+
+  atLocation(location: string): EventBuilder {
+    this.location = location;
     return this;
   }
 
@@ -106,6 +113,7 @@ export class EventBuilder {
     return {
       steps: this.steps,
       redirectTo: this.redirectTo,
+      location: this.location,
     };
   }
 

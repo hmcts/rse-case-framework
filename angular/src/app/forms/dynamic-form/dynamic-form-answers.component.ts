@@ -28,7 +28,7 @@ export interface DynamicFormCheckAnswer {
           }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
+          <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
             Change<span class="govuk-visually-hidden"> name</span>
           </a>
         </dd>

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {StepType} from "../../forms/components/stepper/form-stepper/types";
-import {EventList} from "../../events/events";
+import {Event, StepType} from '../../forms/components/stepper/form-stepper/types';
+import {EventList} from '../../events/events';
+import {CaseControllerService} from '../../../generated/client-lib';
 
 @Component({
   selector: 'app-create-event',
@@ -17,47 +18,50 @@ export class CreateEventComponent implements OnInit {
 
   caseId: string;
   private eventId: string;
+  private entityId: string;
+  private event: Event;
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
+    private caseService: CaseControllerService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.eventId = this.route.snapshot.queryParamMap.get('id');
-    this.route.paramMap.subscribe(x => this.caseId = x.get('case_id'))
-    if (null == this.eventId) {
-      this.eventId = "CreateClaim";
-    }
-    this.pages = EventList.EVENTS.get(this.eventId).steps
+    this.route.paramMap.subscribe(x => this.caseId = x.get('case_id'));
+    this.route.queryParamMap.subscribe(x => {
+      this.eventId = x.get('id') ?? 'CreateClaim';
+      this.entityId = x.get('entity_id') ?? this.caseId;
+      this.event = EventList.EVENTS.get(this.eventId);
+      this.pages = this.event.steps;
+    });
   }
 
-
   onSubmit(data): void {
-    const isFile = this.files.has('file')
+    const isFile = this.files.has('file');
     const payload = isFile
       ? this.files
       : {
         id: this.eventId,
-        data: data,
+        data,
       };
-    let url = 'cases';
-    if (this.caseId) {
-      url += '/' + this.caseId + (isFile
+    let url = '/web/' + (this.event.location ?? 'cases');
+    if (this.entityId) {
+      url += '/' + this.entityId + (isFile
         ? '/files'
-        : '/events')
+        : '/events');
     }
-    this.http.post(this.baseUrl + url, payload, { observe: 'response' , withCredentials: true })
+
+    this.http.post(this.baseUrl + url, payload, { observe: 'response' })
       .subscribe(resp => {
         const redirectTo = EventList.EVENTS.get(this.eventId).redirectTo;
 
         if (redirectTo) {
-          this.router.navigateByUrl(`/cases/${this.caseId}?tab=${redirectTo}`, {replaceUrl: true})
+          this.router.navigateByUrl(`/cases/${this.caseId}/${redirectTo}`, {replaceUrl: true})
         } else {
           this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true})
         }
       });
   }
-
 }

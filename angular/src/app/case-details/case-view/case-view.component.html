@@ -18,10 +18,12 @@
       <div class="govuk-grid-column-full">
         <mat-tab-group animationDuration="0ms" [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
           <mat-tab label="History" id="history-tab-button">
+            <h1 class="govuk-heading-l">Case History</h1>
             <app-case-history [history]="events"></app-case-history>
           </mat-tab>
           <mat-tab label="Parties">
-            <app-parties-tab [caseId]="case.id" *ngIf="case" [parties]="case.data.parties"></app-parties-tab>
+            <app-parties-tab [caseId]="case.id" *ngIf="case"></app-parties-tab>
+            
           </mat-tab>
           <mat-tab label="Claims">
             <app-claims-tab [caseId]="caseId"></app-claims-tab>
