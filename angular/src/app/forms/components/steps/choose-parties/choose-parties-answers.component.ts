@@ -3,13 +3,13 @@ import {FormGroup} from "@angular/forms";
 import {CheckAnswersComponent} from "../../check-answers/types";
 import {ActivatedRoute} from "@angular/router";
 import {CaseService} from "../../../../services/case-service.service";
+import {CaseParty} from "../../../../../generated/client-lib";
 
 @Component({
   selector: 'app-party-details-answers',
   template: `
     <ng-container *ngFor="let type of ['claimants', 'defendants']">
     <h2 class="govuk-heading-m">{{type | titlecase}}</h2>
-
     <dl *ngIf="this.caseParties" class="govuk-summary-list govuk-!-margin-bottom-9">
       <div *ngFor="let party of filterParties(type); let i = index" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -29,7 +29,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   onChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
-  private caseParties: any;
+  private caseParties: Array<CaseParty>;
 
   constructor(
     private caseService: CaseService,
