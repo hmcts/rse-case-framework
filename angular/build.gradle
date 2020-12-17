@@ -1,5 +1,18 @@
 import uk.gov.hmcts.AngularExec
 
+plugins {
+  id 'org.openapi.generator' version '4.3.1'
+}
+
+task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+  generatorName = "typescript-angular"
+  def producer = tasks.getByPath(':java:integrationTest').outputs
+  inputSpec = producer.files[0].getAbsolutePath()
+  outputDir = file('src/generated/client-lib').path
+}
+
+task build(dependsOn: buildTypescriptClient)
+
 project.mkdir('build/test')
 task test(type: AngularExec) {
   ngCommand 'ng test --watch=false'
@@ -14,4 +27,5 @@ task e2e(type: AngularExec) {
 }
 
 task check(dependsOn: ['test', 'e2e'])
+
 

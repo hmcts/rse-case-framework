@@ -16,7 +16,7 @@ public class UserController {
 
     @GetMapping("/userInfo")
     public UserInfo getUserInfo(
-       @Parameter(hidden = true) @AuthenticationPrincipal OidcUser principal) {
+        @Parameter(hidden = true) @AuthenticationPrincipal OidcUser principal) {
         return new UserInfo(principal.getName(),
             principal.getGivenName(),
             principal.getFamilyName(),

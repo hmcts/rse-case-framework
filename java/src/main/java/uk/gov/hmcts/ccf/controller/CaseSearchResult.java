@@ -10,7 +10,4 @@ class CaseSearchResult {
     private Long caseId;
     private CaseState state;
     private Long partyCount;
-//    public CaseSearchResult(Long caseId, CaseState state, Long partyCount) {
-//
-//    }
 }

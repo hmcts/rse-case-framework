@@ -2,8 +2,6 @@ package uk.gov.hmcts.ccf.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -44,13 +42,6 @@ import static org.jooq.impl.DSL.lower;
 public class CitizenController {
     @Autowired
     DefaultDSLContext jooq;
-
-    @Data
-    @AllArgsConstructor
-    class CitizenResponse {
-        boolean hasMore;
-        List<Citizen> citizens;
-    }
 
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens")
