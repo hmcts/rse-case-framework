@@ -44,7 +44,8 @@ import {AuthGuardService} from "./services/auth-guard.service";
 import {AuthService} from "./services/auth.service";
 import {HeaderComponent} from "./components/header/header.component";
 import {environment} from "../environments/environment";
-import {ApiModule, BASE_PATH} from "../generated/client-lib";
+// import {ApiModule, BASE_PATH} from "../generated/client-lib";
+import {ApiModule, BASE_PATH} from '../../build/client-lib';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,7 @@ import {ApiModule, BASE_PATH} from "../generated/client-lib";
     ApiModule,
   ],
   providers: [AuthGuardService, AuthService,
-    { provide: BASE_PATH, useValue: environment.baseUrl }],
+    { provide: BASE_PATH, useValue: 'http://localhost:4200'}],
 bootstrap: [AppComponent]
 })
 export class AppModule { }
