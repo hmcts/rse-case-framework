@@ -52,7 +52,8 @@ export class CreateEventComponent implements OnInit {
         ? '/files'
         : '/events');
     }
-    this.http.post(this.baseUrl + url, payload, { observe: 'response' })
+
+    this.http.post(this.baseUrl + '/web/' + url, payload, { observe: 'response' })
       .subscribe(resp => {
         const redirectTo = EventList.EVENTS.get(this.eventId).redirectTo;
 
