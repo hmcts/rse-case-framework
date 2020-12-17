@@ -90,6 +90,11 @@ public class TestDataGenerator implements Callback {
     }
 
     @Override
+    public String getCallbackName() {
+        return "Seed demo data";
+    }
+
+    @Override
     public boolean supports(org.flywaydb.core.api.callback.Event event, Context context) {
         return event == org.flywaydb.core.api.callback.Event.AFTER_MIGRATE;
     }
