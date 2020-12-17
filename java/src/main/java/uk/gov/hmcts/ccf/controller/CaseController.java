@@ -125,7 +125,6 @@ public class CaseController {
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               String userId) {
-        // TODO - investigate org.jooq.exception.NoDataFoundException: Cursor returned no rows
         CaseState state = jooq.select(CASES_WITH_STATES.STATE)
                 .from(CASES_WITH_STATES)
                 .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
