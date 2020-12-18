@@ -11,13 +11,13 @@ import {CitizenControllerService} from '../../../../generated/client-lib';
 })
 export class CitizenTabComponent implements OnInit {
 
-  @Input() caseId: any;
+  @Input() caseId: number;
   baseUrl = environment.baseUrl;
   citizens;
   page = 1;
   pageSize = 10;
   searchForm: FormGroup;
-  hasMore: any;
+  hasMore: boolean;
 
   constructor(
     private http: HttpClient,
