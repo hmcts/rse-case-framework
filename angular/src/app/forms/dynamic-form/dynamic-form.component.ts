@@ -7,6 +7,7 @@ export interface Question {
   type: string;
   title: string;
   validators?: ValidatorFn | ValidatorFn[];
+  // tslint:disable-next-line:no-any
   [key: string]: any;
 }
 

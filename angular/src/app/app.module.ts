@@ -41,7 +41,6 @@ import { ConfirmServiceComponent } from './forms/components/steps/confirm-servic
 import { ConfirmServiceAnswersComponent } from './forms/components/steps/confirm-service/confirm-service-answers.component';
 import {HumanisePipe} from './services/humanise.pipe';
 import {AuthGuardService} from './services/auth-guard.service';
-import {AuthService} from './services/auth.service';
 import {HeaderComponent} from './components/header/header.component';
 import {environment} from '../environments/environment';
 import {ApiModule, BASE_PATH} from '../generated/client-lib';
@@ -94,7 +93,7 @@ import {ApiModule, BASE_PATH} from '../generated/client-lib';
     CommonModule,
     ApiModule,
   ],
-  providers: [AuthGuardService, AuthService,
+  providers: [AuthGuardService,
     { provide: BASE_PATH, useValue: environment.baseUrl }],
 bootstrap: [AppComponent]
 })
