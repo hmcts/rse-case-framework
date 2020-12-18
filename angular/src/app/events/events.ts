@@ -32,8 +32,8 @@ export class EventList {
       .buildEvent()
     .event('CreateClaim')
       .dynamicPage('Claim references')
-        .question('claimantReference', 'text', 'Claimant\\'s legal representative\\'s reference', [Validators.required])
-        .question('defendantReference', 'text', 'Defendant\\'s legal representative\\'s reference', [Validators.required])
+        .question('claimantReference', 'text', 'Claimant\'s legal representative\'s reference', [Validators.required])
+        .question('defendantReference', 'text', 'Defendant\'s legal representative\'s reference', [Validators.required])
         .buildPage()
     .customPage(ChooseCourtComponent)
       .withAnswers(DynamicFormAnswersComponent, (x) => {

@@ -4,6 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {environment} from '../../../../../environments/environment';
+import {CitizenControllerService} from "../../../../../generated/client-lib";
 
 @Component({
   selector: 'app-purge-inactive',
@@ -13,12 +14,12 @@ import {environment} from '../../../../../environments/environment';
 export class PurgeInactiveComponent implements OnInit, StepComponent {
 
   constructor(
-    private http: HttpClient,
+    private citizens: CitizenControllerService,
     private route: ActivatedRoute,
   ) { }
 
   baseUrl = environment.baseUrl;
-  inactiveCount: any;
+  inactiveCount: number;
 
   form = new FormGroup({});
 
@@ -28,8 +29,8 @@ export class PurgeInactiveComponent implements OnInit, StepComponent {
     this.form.addControl('inactive_count', new FormControl());
     const id = this.route.snapshot.paramMap.get('id');
     if (null != id) {
-      this.http.get(this.baseUrl + `cases/${id}/citizens/inactive`).subscribe(result => {
-        this.inactiveCount = result.inactive_count;
+      this.citizens.countInactive(id).subscribe(result => {
+        this.inactiveCount = result;
         this.form.patchValue({
           inactive_count: this.inactiveCount
         });

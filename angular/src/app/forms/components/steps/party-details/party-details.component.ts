@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Form, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, Input, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {RadioInput} from '../../radio/radio.component';
 import {Question} from '../../../dynamic-form/dynamic-form.component';
 import {StepComponent} from '../../stepper/form-stepper/types';
@@ -33,27 +33,25 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   validate: boolean;
 
   static buildQuestions(): { [key: string]: Question[]} {
-    const result = {};
 
-    result.Individual  = [
-      { id: 'title', type: 'text' , title: 'Title', validators: Validators.required},
-      { id: 'firstName', type: 'text' , title: 'First name', validators: Validators.required},
-      { id: 'lastName', type: 'text' , title: 'Last name', validators: Validators.required},
-      { id: 'dateOfBirth', type: 'date' , title: 'Date of birth'},
+    const individualQuestions = [
+      {id: 'title', type: 'text', title: 'Title', validators: Validators.required},
+      {id: 'firstName', type: 'text', title: 'First name', validators: Validators.required},
+      {id: 'lastName', type: 'text', title: 'Last name', validators: Validators.required},
+      {id: 'dateOfBirth', type: 'date', title: 'Date of birth'},
     ];
-
-    result.Company = [
-      { id: 'name', type: 'text' , title: 'Company name', validators: Validators.required},
-    ];
-
-    result.Organisation = [
-      { id: 'name', type: 'text' , title: 'Organisation name', validators: Validators.required},
-    ];
-
-    result.SoleTrader = result.Individual.concat([
-      { id: 'tradingName', type: 'text' , title: 'Trading as'},
-    ]);
-    return result;
+    return {
+      Individual: individualQuestions,
+      Company: [
+        {id: 'name', type: 'text', title: 'Company name', validators: Validators.required},
+      ],
+      Organisation: [
+        {id: 'name', type: 'text', title: 'Organisation name', validators: Validators.required},
+      ],
+      SoleTrader: individualQuestions.concat([
+        {id: 'tradingName', type: 'text', title: 'Trading as'},
+      ]),
+    };
   }
 
   ngOnInit(): void {

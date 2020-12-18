@@ -78,14 +78,13 @@ public class CitizenController {
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens/inactive")
     @Transactional
-    public Map<String, Object> countInactive(@PathVariable("id") String caseId) {
+    public long countInactive(@PathVariable("id") String caseId) {
         Map<String, Object> result = Maps.newHashMap();
         int count = jooq.select(count())
             .from(CITIZEN)
             .where(CITIZEN.STATUS.eq("Inactive"))
             .fetch().get(0).value1();
-        result.put("inactive_count", count);
-        return result;
+        return count;
     }
 
     @PostMapping(path = "/cases/{caseId}/files")

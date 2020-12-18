@@ -17,6 +17,7 @@ export interface StepType {
   initialise?: (component: StepComponent) => void;
   answersType?: Type<CheckAnswersComponent>;
   answerInitialise?: (component: CheckAnswersComponent) => void;
+  form?: FormGroup,
   formGroupName?: string;
 }
 
