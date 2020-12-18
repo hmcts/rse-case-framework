@@ -3,7 +3,7 @@ import {FormGroup} from '@angular/forms';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../../../services/case-service.service';
-import {CaseParty} from '../../../../../generated/client-lib';
+import {CaseParty, Party} from '../../../../../generated/client-lib';
 
 @Component({
   selector: 'app-party-details-answers',
@@ -50,8 +50,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
     return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value);
   }
 
-  // tslint:disable-next-line:no-any
-  partyName(party: any): string {
+  partyName(party: Party): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':

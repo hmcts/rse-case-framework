@@ -35,8 +35,7 @@ export class PartiesTabComponent implements OnInit {
       });
   }
 
-  // tslint:disable-next-line:no-any
-  partyName(party: any): string {
+  partyName(party: Party): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':

@@ -65,8 +65,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
     return this.countParties(this.claimants) > 0 && this.countParties(this.defendants) > 0;
   }
 
-  // tslint:disable-next-line:no-any
-  partyName(party: any): string {
+  partyName(party: Party): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':

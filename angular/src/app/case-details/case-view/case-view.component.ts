@@ -56,7 +56,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   actions(): Array<string> {
-    return this.case.actions.sort();
+    return Array.from(this.case.actions.values()).sort();
   }
 
   // Update the address bar URL to track the active tab.
