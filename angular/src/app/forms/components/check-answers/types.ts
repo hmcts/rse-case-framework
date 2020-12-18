@@ -9,7 +9,7 @@ export interface CheckAnswersComponent {
 }
 
 @Directive({
-  selector: '[answerHost]',
+  selector: '[appCheckAnswerHost]',
 })
 export class CheckAnswerDirective {
   constructor(public viewContainerRef: ViewContainerRef) { }

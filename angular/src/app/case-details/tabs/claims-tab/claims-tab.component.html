@@ -13,7 +13,7 @@
     <ul class="claims">
       <li *ngFor="let claim of claims"
           [class.selected]="claim === selectedClaim"
-          (click)="onSelect(claim.claim_id)">
+          (click)="onSelect(claim.claimId)">
         {{claimantName(claim) | slice:0:15}} vs ...
       </li>
     </ul>
@@ -31,7 +31,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-      <h4 class="govuk-heading-s">£{{selectedClaim.lower_amount | number}} - £{{selectedClaim.higher_amount | number}}</h4>
+      <h4 class="govuk-heading-s">£{{selectedClaim.lowerAmount | number}} - £{{selectedClaim.higherAmount | number}}</h4>
     </div>
   </div>
 
@@ -46,7 +46,7 @@
         <tbody class="govuk-table__body">
         <tr *ngFor="let party of selectedClaim.parties.claimants" class="govuk-table__row">
           <td class="govuk-table__cell">
-          <a [routerLink]="['../../parties', party.party_id]">
+          <a [routerLink]="['../../parties', party.partyId]">
             {{partyName(party)}}
           </a>
           </td>
@@ -64,7 +64,7 @@
         <tbody class="govuk-table__body">
         <tr *ngFor="let party of selectedClaim.parties.defendants" class="govuk-table__row">
           <td class="govuk-table__cell">
-            <a [routerLink]="['../../parties', party.party_id]">
+            <a [routerLink]="['../../parties', party.partyId]">
               {{partyName(party)}}
             </a>
           </td>
@@ -82,7 +82,7 @@
     <div class="govuk-grid-column-full">
       <h4 class="govuk-heading-s">Available actions</h4>
       <a  routerLink="/cases/{{caseId}}/create-event"
-         [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claim_id}">
+         [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claimId}">
         <button class="govuk-button hmcts-menu__item claim-action" >Confirm service</button>
       </a>
     </div>

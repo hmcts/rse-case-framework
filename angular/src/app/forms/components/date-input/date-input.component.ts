@@ -23,7 +23,8 @@ export class DateInputComponent implements OnInit {
 
   ngOnInit(): void {
     this.group.valueChanges.subscribe(x => {
-      this.patchDate(this.group.controls.day.value, this.group.controls.month.value, this.group.controls.year.value);
+      this.patchDate(Number(this.group.controls.day.value), Number(this.group.controls.month.value),
+        Number(this.group.controls.year.value));
     });
 
     this.form.controls[this.input.id].setValidators(Validators.required);
@@ -31,7 +32,7 @@ export class DateInputComponent implements OnInit {
 
   patchDate(day: number, month: number, year: number): void {
     const date = new Date(year, month - 1, day);
-    if (date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day) {
+    if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
       this.form.controls[this.input.id].patchValue(date);
     } else {
       this.form.controls[this.input.id].patchValue(null);

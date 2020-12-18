@@ -1,6 +1,5 @@
 package uk.gov.hmcts.ccf.controller;
 
-import org.jooq.JSONFormat;
 import org.jooq.Record2;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
@@ -38,18 +37,14 @@ public class ClaimController {
     @Autowired
     DefaultDSLContext jooq;
 
-
-
     @GetMapping(path = "/cases/{caseId}/claims")
-    public String getClaims(@PathVariable("caseId") Long caseId) {
+    public List<Claim> getClaims(@PathVariable("caseId") Long caseId) {
         return jooq.select()
             .from(CLAIMS_WITH_STATES)
             .join(CLAIMS_WITH_PARTIES).using(CLAIMS_WITH_STATES.CLAIM_ID)
             .where(CLAIMS_WITH_STATES.CASE_ID.eq(caseId))
             .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.asc())
-            .fetch()
-            .formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)
-                .wrapSingleColumnRecords(false));
+            .fetchInto(Claim.class);
     }
 
     @GetMapping(path = "/claims/{claimId}/events")

@@ -6,7 +6,7 @@ import {
   ApiEventHistory,
   CaseActions,
   CaseControllerService, CaseParty,
-  CaseSearchResult,
+  CaseSearchResult, Claim,
   ClaimControllerService
 } from '../../generated/client-lib';
 
@@ -33,7 +33,7 @@ export class CaseService {
     return this.cases.getCase(caseId);
   }
 
-  public getCaseClaims(caseId: number): Observable<any> {
+  public getCaseClaims(caseId: number): Observable<Array<Claim>> {
     if (this.isTestEnv()) {
       return of([]);
     }
