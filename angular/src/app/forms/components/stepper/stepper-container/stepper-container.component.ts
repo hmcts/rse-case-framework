@@ -28,11 +28,11 @@ export class StepperContainerComponent extends CdkStepper implements OnInit {
     this.selectedIndex = Number(this.route.snapshot.queryParamMap.get('step'));
   }
 
-  onNext() {
+  onNext(): void {
     this.nextEvent.emit();
   }
 
-  onPrevious() {
+  onPrevious(): void {
     this.prevEvent.emit();
   }
 

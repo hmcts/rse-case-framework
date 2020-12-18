@@ -4,7 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {environment} from '../../../../../environments/environment';
-import {CitizenControllerService} from "../../../../../generated/client-lib";
+import {CitizenControllerService} from '../../../../../generated/client-lib';
 
 @Component({
   selector: 'app-purge-inactive',

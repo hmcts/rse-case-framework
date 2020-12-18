@@ -44,7 +44,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
     });
   }
 
-  filterParties(type) {
+  filterParties(type): CaseParty[] {
     // @ts-ignore
     return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value);
   }

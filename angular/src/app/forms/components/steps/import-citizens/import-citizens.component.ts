@@ -27,7 +27,7 @@ export class ImportCitizensComponent implements OnInit, StepComponent {
     return this.files.has('file');
   }
 
-  handleFileInput(files: FileList) {
+  handleFileInput(files: FileList): void {
     const file = files.item(0);
     if (file) {
       this.form.patchValue( {

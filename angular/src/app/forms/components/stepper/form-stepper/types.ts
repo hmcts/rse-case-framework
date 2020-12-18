@@ -17,7 +17,7 @@ export interface StepType {
   initialise?: (component: StepComponent) => void;
   answersType?: Type<CheckAnswersComponent>;
   answerInitialise?: (component: CheckAnswersComponent) => void;
-  form?: FormGroup,
+  form?: FormGroup;
   formGroupName?: string;
 }
 
@@ -89,7 +89,8 @@ export class EventBuilder {
         return this;
       }
 
-      withAnswers<Answers extends CheckAnswersComponent>(answersComponent: Type<Answers>, initialiser?: (component: Answers) => void) {
+      withAnswers<Answers extends CheckAnswersComponent>(answersComponent: Type<Answers>,
+                                                         initialiser?: (component: Answers) => void): this {
         step.answersType = answersComponent;
         step.answerInitialise = initialiser;
         return this;
@@ -103,7 +104,7 @@ export class EventBuilder {
       buildPage(): EventBuilder {
         return parent;
       }
-    };
+    }();
   }
 
   buildEvent(): EventsBuilder {
@@ -122,8 +123,8 @@ export class EventBuilder {
     const builder: EventBuilder = this;
     const questions = Array<Question>();
     const result = new class implements DynamicPageBuilder {
-      question(id: string, type: string, title: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
-        questions.push({ id, type, title, validators});
+      question(id: string, type: string, titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
+        questions.push({ id, type, title: titleStr, validators});
         return result;
       }
       questions(question: Question | Question[] ): DynamicPageBuilder {

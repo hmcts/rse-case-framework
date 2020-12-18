@@ -25,11 +25,11 @@ export class SearchCasesComponent implements OnInit {
     this.onSubmit({});
   }
 
-  onSubmit(data) {
+  onSubmit(data): void {
     this.caseService.searchCases(data).subscribe(x => this.caseList = x);
   }
 
-  createClicked() {
+  createClicked(): void {
     this.router.navigate(['/create-case']);
   }
 }

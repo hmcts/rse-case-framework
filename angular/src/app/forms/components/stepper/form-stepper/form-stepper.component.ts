@@ -44,7 +44,7 @@ export class FormStepperComponent implements OnInit {
     }
   }
 
-  onNext(event: any) {
+  onNext(event: any): void {
     // If on the answer's page.
     if (this.stepper.selectedIndex > this.children.length - 1) {
       // Merge the pages into a single map
@@ -67,12 +67,12 @@ export class FormStepperComponent implements OnInit {
     }
   }
 
-  onChange(index: number) {
+  onChange(index: number): void {
     this.stepper.selectedIndex = index;
     this.checkingAnswers = true;
   }
 
-  onPrevious($event: any) {
+  onPrevious($event: any): void {
     this.stepper.previous();
   }
 }

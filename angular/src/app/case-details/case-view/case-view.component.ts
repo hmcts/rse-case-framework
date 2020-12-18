@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {Component, ViewEncapsulation, OnInit} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
 import {CaseActions} from '../../../generated/client-lib';
 
@@ -55,12 +55,12 @@ export class CaseViewComponent implements OnInit {
 
   }
 
-  actions() {
+  actions(): Array<string> {
     return this.case.actions.sort();
   }
 
   // Update the address bar URL to track the active tab.
-  onTabChange($event) {
+  onTabChange($event): void {
     let value = 'history';
     for (const key in this.tabMap) {
       if (this.tabMap[key] == $event) {

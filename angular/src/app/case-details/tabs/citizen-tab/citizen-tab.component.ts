@@ -32,7 +32,7 @@ export class CitizenTabComponent implements OnInit {
     this.fetch();
   }
 
-  fetch() {
+  fetch(): void {
     if (!this.caseId) {
       return;
     }
@@ -43,21 +43,21 @@ export class CitizenTabComponent implements OnInit {
     });
   }
 
-  next() {
+  next(): void {
     this.page++;
     this.fetch();
   }
 
-  previous() {
+  previous(): void {
     this.page = Math.max(1, this.page - 1);
     this.fetch();
   }
 
-  startIndex() {
+  startIndex(): number {
     return Math.max(1, (this.page - 1) * this.pageSize);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.page = 1;
     this.fetch();
   }
