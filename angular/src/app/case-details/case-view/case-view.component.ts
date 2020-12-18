@@ -63,7 +63,7 @@ export class CaseViewComponent implements OnInit {
   onTabChange($event): void {
     let value = 'history';
     for (const key in this.tabMap) {
-      if (this.tabMap[key] == $event) {
+      if (this.tabMap[key] === $event) {
         value = key;
         break;
       }

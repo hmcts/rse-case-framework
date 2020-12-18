@@ -45,7 +45,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
     }
     // Can't have one sided case
     const ourSide = isClaimant ? this.claimants : this.defendants;
-    if (this.countParties(ourSide) == this.caseParties.length - 1 && !ourSide.controls[partyId].value) {
+    if (this.countParties(ourSide) === this.caseParties.length - 1 && !ourSide.controls[partyId].value) {
       return true;
     }
     return false;

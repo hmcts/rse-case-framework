@@ -4,7 +4,7 @@ import {Directive, EventEmitter, ViewContainerRef} from '@angular/core';
 export interface CheckAnswersComponent {
   form: FormGroup;
   index: number;
-  onChange: EventEmitter<number>;
+  answerChange: EventEmitter<number>;
   caseId?: any;
 }
 

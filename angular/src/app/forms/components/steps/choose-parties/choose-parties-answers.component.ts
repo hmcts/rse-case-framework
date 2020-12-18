@@ -9,27 +9,28 @@ import {CaseParty} from '../../../../../generated/client-lib';
   selector: 'app-party-details-answers',
   template: `
     <ng-container *ngFor="let type of ['claimants', 'defendants']">
-    <h2 class="govuk-heading-m">{{type | titlecase}}</h2>
-    <dl *ngIf="this.caseParties" class="govuk-summary-list govuk-!-margin-bottom-9">
-      <div *ngFor="let party of filterParties(type); let i = index" class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          {{ partyName(party.data) }}
-        </dt>
-        <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
-            Change<span class="govuk-visually-hidden"> name</span>
-          </a>
-        </dd>
-      </div>
-    </dl>
+      <h2 class="govuk-heading-m">{{type | titlecase}}</h2>
+      <dl *ngIf="this.caseParties" class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div *ngFor="let party of filterParties(type); let i = index" class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ partyName(party.data) }}
+          </dt>
+          <dd class="govuk-summary-list__actions">
+            <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="answerChange.emit(index)"
+               class="govuk-link" href="#">
+              Change<span class="govuk-visually-hidden"> name</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
     </ng-container>
   `
 })
 export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnInit {
-  onChange = new EventEmitter<number>();
+  answerChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
-  private caseParties: Array<CaseParty>;
+  caseParties: Array<CaseParty>;
 
   constructor(
     private caseService: CaseService,

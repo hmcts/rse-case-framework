@@ -63,7 +63,7 @@ export class CaseService {
   }
 
   private isTestEnv(): boolean {
-    return environment.baseUrl == '/assets/';
+    return environment.baseUrl === '/assets/';
   }
 
 }

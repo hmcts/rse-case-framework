@@ -5,7 +5,7 @@ import {CaseService} from '../services/case-service.service';
 import {CaseSearchResult} from '../../generated/client-lib';
 
 @Component({
-  selector: 'search-cases',
+  selector: 'app-search-cases',
   templateUrl: './search-cases.component.html',
   styleUrls: ['./search-cases.component.scss']
 })

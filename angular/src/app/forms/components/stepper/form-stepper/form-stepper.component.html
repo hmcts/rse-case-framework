@@ -5,7 +5,7 @@
   <cdk-step>
     <h1 class="govuk-heading-l">Check your answers</h1>
     <app-answer-section *ngFor="let page of pages; index as i"
-    [index]= "i" (onChange)="onChange($event)" [form]="page['form']" [step]="page">
+                        [index]= "i" (answerChange)="onChange($event)" [form]="page['form']" [step]="page">
     </app-answer-section>
   </cdk-step>
 </app-stepper-container>

@@ -25,7 +25,7 @@ export class FormStepperComponent implements OnInit {
   @Input() pages: Array<StepType> = [];
   @Input() files: FormData;
   @Input() caseId: string;
-  @Output() onSubmit = new EventEmitter<any>();
+  @Output() submitEvent = new EventEmitter<any>();
   validate = false;
   forms = new FormArray([]);
   answers: any;
@@ -50,7 +50,7 @@ export class FormStepperComponent implements OnInit {
       // Merge the pages into a single map
       const result = this.forms.controls.map(x => x.value)
         .reduce((a, b) => ({ ...a, ...b}), {});
-      this.onSubmit.emit(result);
+      this.submitEvent.emit(result);
     } else {
       const page = this.children.toArray()[this.stepper.selectedIndex];
       if (page.valid()) {
