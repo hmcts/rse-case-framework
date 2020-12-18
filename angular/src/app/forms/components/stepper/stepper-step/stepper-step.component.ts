@@ -5,9 +5,9 @@ import {
   OnInit, SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {FormGroup} from "@angular/forms";
-import {StepDirective} from "../step.directive";
-import {StepComponent, StepType} from "../form-stepper/types";
+import {FormGroup} from '@angular/forms';
+import {StepDirective} from '../step.directive';
+import {StepComponent, StepType} from '../form-stepper/types';
 
 @Component({
   selector: 'app-stepper-step',
@@ -18,7 +18,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
 
   @ViewChild(StepDirective, {static: true}) adHost: StepDirective;
   @Input() step: StepType;
-  @Input() validate: boolean = false;
+  @Input() validate = false;
   @Input() form: FormGroup;
   @Input() files: FormData;
   @Input() caseId: string;
@@ -52,7 +52,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
     if (!this.component) {
       return undefined;
     }
-    let result = this.component.valid();
+    const result = this.component.valid();
     return result;
   }
 

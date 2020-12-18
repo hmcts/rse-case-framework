@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { CaseService } from './case-service.service';
 import { HttpClientModule } from '@angular/common/http';
-import {environment} from "../../environments/environment";
-import {BASE_PATH} from "../../generated/client-lib";
+import {environment} from '../../environments/environment';
+import {BASE_PATH} from '../../generated/client-lib';
 
 describe('CaseServiceService', () => {
   let service: CaseService;

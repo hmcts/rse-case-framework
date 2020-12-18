@@ -4,8 +4,8 @@ import { SearchCasesComponent } from './search-cases.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import {BASE_PATH} from "../../generated/client-lib";
-import {environment} from "../../environments/environment";
+import {BASE_PATH} from '../../generated/client-lib';
+import {environment} from '../../environments/environment';
 
 describe('SearchCasesComponent', () => {
   let component: SearchCasesComponent;

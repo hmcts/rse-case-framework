@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router'
-import {CaseService} from "../services/case-service.service";
-import {CaseSearchResult} from "../../generated/client-lib";
+import { Router } from '@angular/router';
+import {CaseService} from '../services/case-service.service';
+import {CaseSearchResult} from '../../generated/client-lib';
 
 @Component({
-  selector: 'search-cases',
+  selector: 'app-search-cases',
   templateUrl: './search-cases.component.html',
   styleUrls: ['./search-cases.component.scss']
 })
@@ -22,14 +22,14 @@ export class SearchCasesComponent implements OnInit {
       caseName: '',
       id: '',
     });
-    this.onSubmit({})
+    this.onSubmit({});
   }
 
-  onSubmit(data) {
+  onSubmit(data): void {
     this.caseService.searchCases(data).subscribe(x => this.caseList = x);
   }
 
-  createClicked() {
+  createClicked(): void {
     this.router.navigate(['/create-case']);
   }
 }

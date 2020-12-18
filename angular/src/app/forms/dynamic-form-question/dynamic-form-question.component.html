@@ -1,4 +1,4 @@
-<div [formGroup]="form">
+<div *ngIf="question" [formGroup]="form">
     <div [ngSwitch]="question.type">
         <app-text-input *ngSwitchCase="'text'" [validate]="validate" [form]="form" [input]="question"></app-text-input>
         <app-radio *ngSwitchCase="'radio'" [form]="form" [input]="question"></app-radio>

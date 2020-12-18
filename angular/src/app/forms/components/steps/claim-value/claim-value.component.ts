@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {StepComponent} from "../../stepper/form-stepper/types";
-import {FormControl, FormGroup} from "@angular/forms";
+import {StepComponent} from '../../stepper/form-stepper/types';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-claim-value',
@@ -8,9 +8,11 @@ import {FormControl, FormGroup} from "@angular/forms";
   styleUrls: ['./claim-value.component.scss']
 })
 export class ClaimValueComponent implements OnInit, StepComponent {
-
-  @Input() form: FormGroup = new FormGroup({})
   constructor() { }
+
+  @Input() form: FormGroup = new FormGroup({});
+
+  validate: boolean;
 
   ngOnInit(): void {
     this.form.addControl('lowerValue', new FormControl(''));
@@ -21,7 +23,5 @@ export class ClaimValueComponent implements OnInit, StepComponent {
   valid(): boolean {
     return true;
   }
-
-  validate: boolean;
 
 }

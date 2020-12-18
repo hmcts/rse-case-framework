@@ -1,12 +1,13 @@
 import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup, ValidatorFn} from '@angular/forms';
-import {StepComponent} from "../components/stepper/form-stepper/types";
+import {StepComponent} from '../components/stepper/form-stepper/types';
 
 export interface Question {
   id: string;
   type: string;
   title: string;
-  validators?: ValidatorFn | ValidatorFn[]
+  validators?: ValidatorFn | ValidatorFn[];
+  // tslint:disable-next-line:no-any
   [key: string]: any;
 }
 
@@ -24,20 +25,20 @@ export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
   @Input() validate: boolean;
 
   ngOnInit(): void {
-    this.buildForm()
+    this.buildForm();
   }
 
   buildForm(): void {
     if (this.questions) {
       for (const question of this.questions) {
-        let c = new FormControl('', question.validators);
+        const c = new FormControl('', question.validators);
         this.form.addControl(question.id, c);
       }
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.buildForm()
+    this.buildForm();
   }
 
 

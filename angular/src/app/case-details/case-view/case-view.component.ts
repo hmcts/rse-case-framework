@@ -1,7 +1,7 @@
-import {Component, ViewEncapsulation, OnInit, Input} from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {Component, ViewEncapsulation, OnInit} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
-import {CaseActions} from "../../../generated/client-lib";
+import {ApiEventHistory, CaseActions} from '../../../generated/client-lib';
 
 
 @Component({
@@ -13,8 +13,8 @@ import {CaseActions} from "../../../generated/client-lib";
 export class CaseViewComponent implements OnInit {
   caseId: number;
   case: CaseActions;
-  events: any = [];
-  selectedValue: any;
+  events: Array<ApiEventHistory>;
+  selectedValue: string;
   selectedIndex: number;
   tabMap = {
     history: 0,
@@ -31,7 +31,7 @@ export class CaseViewComponent implements OnInit {
     SubmitAppeal: 'Submit an appeal',
     ImportCitizens: 'Import citizens',
     PurgeInactiveCitizens: 'Purge inactive citizens',
-  }
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +46,7 @@ export class CaseViewComponent implements OnInit {
       this.selectedIndex = this.tabMap[tab];
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result;
-        this.selectedValue = this.case.actions[0]
+        this.selectedValue = this.case.actions[0];
       });
       this.caseService.getCaseEvents(this.caseId).subscribe(result => {
         this.events = result;
@@ -55,15 +55,15 @@ export class CaseViewComponent implements OnInit {
 
   }
 
-  actions() {
-    return this.case.actions.sort()
+  actions(): Array<string> {
+    return Array.from(this.case.actions.values()).sort();
   }
 
   // Update the address bar URL to track the active tab.
-  onTabChange($event) {
+  onTabChange($event): void {
     let value = 'history';
     for (const key in this.tabMap) {
-      if (this.tabMap[key] == $event) {
+      if (this.tabMap[key] === $event) {
         value = key;
         break;
       }

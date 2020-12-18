@@ -1,5 +1,10 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "src/generated/**"
+    ]
+  },
   "rules": {
     "align": {
       "options": [
@@ -63,6 +68,7 @@
       "timeEnd",
       "trace"
     ],
+    "no-any": true,
     "no-empty": false,
     "no-inferrable-types": [
       true,

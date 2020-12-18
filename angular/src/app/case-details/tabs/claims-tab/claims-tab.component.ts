@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEventHistory} from "../../../../generated/client-lib";
+import {ApiEventHistory, Claim, Party} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-claims-tab',
@@ -9,9 +9,9 @@ import {ApiEventHistory} from "../../../../generated/client-lib";
   styleUrls: ['./claims-tab.component.scss']
 })
 export class ClaimsTabComponent implements OnInit {
-  claims: Array<any>;
+  claims: Array<Claim>;
   @Input() caseId = 1;
-  selectedClaim: any;
+  selectedClaim: Claim;
   private history: Array<ApiEventHistory>;
 
   constructor(
@@ -25,7 +25,7 @@ export class ClaimsTabComponent implements OnInit {
       this.claims = x;
       this.route.paramMap.subscribe(params => {
         if (this.claims.length > 0) {
-          const claimId = params.get('entity_id') ?? this.claims[0].claim_id;
+          const claimId = Number(params.get('entity_id') ?? this.claims[0].claimId);
           const tab = params.get('case_tab');
           if (tab === 'claims') {
             this.onSelect(claimId);
@@ -35,21 +35,21 @@ export class ClaimsTabComponent implements OnInit {
     });
   }
 
-  partyName(party: any): string {
+  partyName(party: Party): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
-        return party.name
+        return party.name;
       default:
-        return party.title + ' ' + party.firstName + ' ' + party.lastName
+        return party.title + ' ' + party.firstName + ' ' + party.lastName;
     }
   }
 
-  claimantName(claim: any): string {
+  claimantName(claim: Claim): string {
     return this.partyName(claim.parties.claimants[0]);
   }
 
-  claimName(claim: any): string {
+  claimName(claim: Claim): string {
     return this.partyName(claim.parties.claimants[0])
       + (claim.parties.claimants.length > 1 ? ' et al' : '')
       + ' vs '
@@ -57,11 +57,9 @@ export class ClaimsTabComponent implements OnInit {
       + (claim.parties.defendants.length > 1 ? ' et al' : '');
   }
 
-  onSelect(claimId: any): void {
-    if (claimId) {
-      this.selectedClaim = this.claims.find(x => x.claim_id == claimId);
-      this.caseService.getClaimEvents(claimId).subscribe(x => this.history = x);
-      this.router.navigateByUrl(`/cases/${this.caseId}/claims/${claimId}`);
-    }
+  onSelect(claimId: number): void {
+    this.selectedClaim = this.claims.find(x => x.claimId === claimId);
+    this.caseService.getClaimEvents(claimId).subscribe(x => this.history = x);
+    this.router.navigateByUrl(`/cases/${this.caseId}/claims/${claimId}`);
   }
 }

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PartiesTabComponent } from './parties-tab.component';
-import {HttpClientModule} from "@angular/common/http";
-import {RouterModule} from "@angular/router";
+import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
 
 describe('Parties tab', () => {
   let component: PartiesTabComponent;

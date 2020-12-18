@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {StepComponent} from "../../stepper/form-stepper/types";
+import {StepComponent} from '../../stepper/form-stepper/types';
 
 @Component({
   selector: 'app-choose-court',
@@ -9,15 +9,15 @@ import {StepComponent} from "../../stepper/form-stepper/types";
 })
 export class ChooseCourtComponent implements OnInit, StepComponent {
 
+  constructor() { }
+
   @Input() form: FormGroup = new FormGroup({});
 
-  constructor() { }
+  validate: boolean;
 
   ngOnInit(): void {
     this.form.addControl('applicantPreferredCourt', new FormControl());
   }
-
-  validate: boolean;
 
   valid(): boolean {
     return this.form.valid;

@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {StepComponent} from "../../stepper/form-stepper/types";
-import {FormControl, FormGroup} from "@angular/forms";
-import {CaseService} from "../../../../services/case-service.service";
-import {CaseParty} from "../../../../../generated/client-lib";
+import {StepComponent} from '../../stepper/form-stepper/types';
+import {FormControl, FormGroup} from '@angular/forms';
+import {CaseService} from '../../../../services/case-service.service';
+import {CaseParty, Party} from '../../../../../generated/client-lib';
 
 @Component({
   selector: 'app-choose-parties',
@@ -10,29 +10,31 @@ import {CaseParty} from "../../../../../generated/client-lib";
   styleUrls: ['./choose-parties.component.scss']
 })
 export class ChoosePartiesComponent implements OnInit, StepComponent {
-  caseParties: Array<CaseParty> = [];
-  @Input() caseId = '1';
-  @Input() parties: any;
-  @Input() form: FormGroup = new FormGroup({})
-  defendants = new FormGroup({})
-  claimants = new FormGroup({})
 
   constructor(
     private caseService: CaseService,
   ) { }
+  caseParties: Array<CaseParty> = [];
+  @Input() caseId = '1';
+  @Input() parties: Array<Party>;
+  @Input() form: FormGroup = new FormGroup({});
+  defendants = new FormGroup({});
+  claimants = new FormGroup({});
+
+  validate: boolean;
 
   ngOnInit(): void {
     this.caseService.getCaseParties(Number(this.caseId)).subscribe(caseParties => {
       this.caseParties = caseParties;
-      this.claimants.reset()
-      this.defendants.reset()
+      this.claimants.reset();
+      this.defendants.reset();
       for (const party of this.caseParties) {
         this.claimants.addControl(String(party.partyId), new FormControl(false));
         this.defendants.addControl(String(party.partyId), new FormControl(false));
       }
     });
-    this.form.addControl('claimants', this.claimants)
-    this.form.addControl('defendants', this.defendants)
+    this.form.addControl('claimants', this.claimants);
+    this.form.addControl('defendants', this.defendants);
   }
 
   isCheckBoxDisabled(isClaimant: boolean, partyId: number): boolean {
@@ -43,7 +45,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
     }
     // Can't have one sided case
     const ourSide = isClaimant ? this.claimants : this.defendants;
-    if (this.countParties(ourSide) == this.caseParties.length - 1 && !ourSide.controls[partyId].value) {
+    if (this.countParties(ourSide) === this.caseParties.length - 1 && !ourSide.controls[partyId].value) {
       return true;
     }
     return false;
@@ -63,15 +65,13 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
     return this.countParties(this.claimants) > 0 && this.countParties(this.defendants) > 0;
   }
 
-  validate: boolean;
-
-  partyName(party: any) : string {
+  partyName(party: Party): string {
     switch (party.partyType) {
       case 'Company':
       case 'Organisation':
-        return party.name
+        return party.name;
       default:
-        return party.title + ' ' + party.firstName + ' ' + party.lastName
+        return party.title + ' ' + party.firstName + ' ' + party.lastName;
     }
   }
 }

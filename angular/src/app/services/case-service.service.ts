@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, of} from "rxjs";
-import {environment} from "../../environments/environment";
+import {Observable, of} from 'rxjs';
+import {environment} from '../../environments/environment';
 import {
   ApiEventHistory,
   CaseActions,
   CaseControllerService, CaseParty,
-  CaseSearchResult,
+  CaseSearchResult, Claim,
   ClaimControllerService
 } from '../../generated/client-lib';
 
@@ -33,7 +33,7 @@ export class CaseService {
     return this.cases.getCase(caseId);
   }
 
-  public getCaseClaims(caseId: number): Observable<any> {
+  public getCaseClaims(caseId: number): Observable<Array<Claim>> {
     if (this.isTestEnv()) {
       return of([]);
     }
@@ -63,7 +63,7 @@ export class CaseService {
   }
 
   private isTestEnv(): boolean {
-    return environment.baseUrl == '/assets/';
+    return environment.baseUrl === '/assets/';
   }
 
 }

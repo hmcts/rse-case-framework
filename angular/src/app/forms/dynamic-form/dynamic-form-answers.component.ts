@@ -1,6 +1,6 @@
-import {Component, Input, EventEmitter, Output, OnInit} from "@angular/core";
-import {FormGroup} from "@angular/forms";
-import {CheckAnswersComponent} from "../components/check-answers/types";
+import {Component, Input, EventEmitter, Output, OnInit} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {CheckAnswersComponent} from '../components/check-answers/types';
 
 export interface DynamicFormCheckAnswer {
   title: string;
@@ -22,13 +22,14 @@ export interface DynamicFormCheckAnswer {
         <dd class="govuk-summary-list__value">
           {{ question.type == 'currency' ? '£' : ''}}
           {{
-            question.type == 'date'
-              ? (form.controls[question.id]?.value | date:'mediumDate')
-          : form.controls[question.id]?.value
+          question.type == 'date'
+            ? (form.controls[question.id]?.value | date:'mediumDate')
+            : form.controls[question.id]?.value
           }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="onChange.emit(index)" class="govuk-link" href="#">
+          <a [routerLink]="" queryParamsHandling="merge" id="change-{{i}}" (click)="answerChange.emit(index)"
+             class="govuk-link" href="#">
             Change<span class="govuk-visually-hidden"> name</span>
           </a>
         </dd>
@@ -37,10 +38,10 @@ export interface DynamicFormCheckAnswer {
   `
 })
 export class DynamicFormAnswersComponent implements CheckAnswersComponent {
-  @Output() onChange = new EventEmitter<number>();
+  @Output() answerChange = new EventEmitter<number>();
   @Input() index: number;
   @Input() form: FormGroup;
-  @Input() questions: DynamicFormCheckAnswer[]
+  @Input() questions: DynamicFormCheckAnswer[];
   @Input() title: string;
 
 }

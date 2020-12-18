@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../environments/environment";
-import {FormControl, FormGroup} from "@angular/forms";
-import {CitizenControllerService} from "../../../../generated/client-lib";
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../../environments/environment';
+import {FormControl, FormGroup} from '@angular/forms';
+import {CitizenControllerService} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-citizen-tab',
@@ -11,13 +11,13 @@ import {CitizenControllerService} from "../../../../generated/client-lib";
 })
 export class CitizenTabComponent implements OnInit {
 
-  @Input() caseId: any;
+  @Input() caseId: number;
   baseUrl = environment.baseUrl;
-  citizens
+  citizens;
   page = 1;
   pageSize = 10;
   searchForm: FormGroup;
-  hasMore: any;
+  hasMore: boolean;
 
   constructor(
     private http: HttpClient,
@@ -28,11 +28,11 @@ export class CitizenTabComponent implements OnInit {
     this.searchForm = new FormGroup({
       forename: new FormControl(),
       surname: new FormControl(),
-    })
+    });
     this.fetch();
   }
 
-  fetch() {
+  fetch(): void {
     if (!this.caseId) {
       return;
     }
@@ -43,21 +43,21 @@ export class CitizenTabComponent implements OnInit {
     });
   }
 
-  next() {
+  next(): void {
     this.page++;
-    this.fetch()
+    this.fetch();
   }
 
-  previous() {
-    this.page = Math.max(1, this.page - 1)
-    this.fetch()
+  previous(): void {
+    this.page = Math.max(1, this.page - 1);
+    this.fetch();
   }
 
-  startIndex() {
-    return Math.max(1, (this.page - 1) * this.pageSize)
+  startIndex(): number {
+    return Math.max(1, (this.page - 1) * this.pageSize);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.page = 1;
     this.fetch();
   }

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import {Question} from '../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-dynamic-form-question',
@@ -8,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class DynamicFormQuestionComponent {
 
-  @Input() question: any = {}
+  @Input() question: Question;
   @Input() form: FormGroup;
   @Input() validate: boolean;
 

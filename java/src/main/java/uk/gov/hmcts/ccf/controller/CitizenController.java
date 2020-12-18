@@ -46,13 +46,13 @@ public class CitizenController {
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens")
     @Transactional
-    public CitizenResponse getCitizens(@PathVariable("id") String id,
+    public CitizenResponse getCitizens(@PathVariable("id") Long id,
                                            @RequestHeader("search-query") String base64JsonQuery,
                                            @RequestParam("page") Integer page) {
         byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
         Condition condition = DSL.trueCondition()
-            .and(CITIZEN.CASE_ID.eq(Long.valueOf(id)));
+            .and(CITIZEN.CASE_ID.eq(id));
         String forename = query.get("forename");
         if (!StringUtils.isEmpty(forename)) {
             condition = condition.and(lower(CITIZEN.FORENAME).like("%" + forename.toLowerCase() + "%"));
@@ -78,14 +78,13 @@ public class CitizenController {
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens/inactive")
     @Transactional
-    public Map<String, Object> countInactive(@PathVariable("id") String caseId) {
+    public long countInactive(@PathVariable("id") String caseId) {
         Map<String, Object> result = Maps.newHashMap();
         int count = jooq.select(count())
             .from(CITIZEN)
             .where(CITIZEN.STATUS.eq("Inactive"))
             .fetch().get(0).value1();
-        result.put("inactive_count", count);
-        return result;
+        return count;
     }
 
     @PostMapping(path = "/cases/{caseId}/files")

@@ -1,8 +1,8 @@
 import {Component, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {StepComponent, StepType} from "../../stepper/form-stepper/types";
-import {StepDirective} from "../../stepper/step.directive";
-import {FormGroup} from "@angular/forms";
-import {CheckAnswerDirective, CheckAnswersComponent} from "../types";
+import {StepComponent, StepType} from '../../stepper/form-stepper/types';
+import {StepDirective} from '../../stepper/step.directive';
+import {FormGroup} from '@angular/forms';
+import {CheckAnswerDirective, CheckAnswersComponent} from '../types';
 
 @Component({
   selector: 'app-answer-section',
@@ -15,8 +15,8 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
   @Input() step: StepType;
   @Input() form: FormGroup;
   @Input() index: number;
-  @Input() caseId: any;
-  @Output() onChange = new EventEmitter<number>();
+  @Input() caseId: number;
+  @Output() answerChange = new EventEmitter<number>();
   component: CheckAnswersComponent;
 
   constructor(
@@ -39,7 +39,7 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
     }
     this.component.caseId = this.caseId;
     this.component.index = this.index;
-    this.component.onChange.subscribe((x) => this.onChange.emit(x));
+    this.component.answerChange.subscribe((x) => this.answerChange.emit(x));
     this.component.form = this.form;
   }
 

@@ -1,7 +1,7 @@
 import uk.gov.hmcts.AngularExec
 
 plugins {
-  id 'org.openapi.generator' version '4.3.1'
+  id 'org.openapi.generator' version '5.0.0-beta3'
 }
 
 task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
@@ -12,6 +12,9 @@ task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.
   def outDir = file('src/generated/client-lib')
   outputDir = outDir.path
   outputs.dir outDir
+  configOptions = [
+    taggedUnions: "true"
+  ]
 }
 
 task build(dependsOn: buildTypescriptClient)
@@ -27,6 +30,14 @@ task e2e(type: AngularExec) {
   outputs.dir file('build/e2e')
 }
 
-task check(dependsOn: ['test', 'e2e'])
+task lint(type: AngularExec) {
+  ngCommand 'ng lint'
+  outputs.dir file('build/lint')
+}
+
+e2e.shouldRunAfter lint
+test.shouldRunAfter lint
+
+task check(dependsOn: ['lint', 'test', 'e2e'])
 
 

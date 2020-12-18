@@ -76,7 +76,7 @@ class CaseControllerSpecification extends Specification {
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString()
         then:
-        new File("build/open-api.yaml").write(f)
+        new File("build/open-api.yaml").write(JsonOutput.prettyPrint(f))
     }
 
     def "A case can be created"() {
