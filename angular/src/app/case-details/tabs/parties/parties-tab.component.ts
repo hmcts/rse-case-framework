@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CaseParty} from '../../../../generated/client-lib';
+import {CaseParty, Claim, Party, PartyClaims} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-parties-tab',
@@ -12,9 +12,9 @@ export class PartiesTabComponent implements OnInit {
 
   @Input() caseId = '1';
   parties: Array<CaseParty>;
-  party: any;
+  party: Party;
   currentTab: string;
-  private claims: any;
+  private claims: PartyClaims;
   constructor(
     private caseService: CaseService,
     private route: ActivatedRoute,
@@ -35,6 +35,7 @@ export class PartiesTabComponent implements OnInit {
       });
   }
 
+  // tslint:disable-next-line:no-any
   partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':

@@ -50,6 +50,7 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
     return this.caseParties.filter(x => this.form.controls[type].controls[x.party_id]?.value);
   }
 
+  // tslint:disable-next-line:no-any
   partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':

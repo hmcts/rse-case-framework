@@ -25,10 +25,9 @@ export class FormStepperComponent implements OnInit {
   @Input() pages: Array<StepType> = [];
   @Input() files: FormData;
   @Input() caseId: string;
-  @Output() submitEvent = new EventEmitter<any>();
+  @Output() submitEvent = new EventEmitter<void>();
   validate = false;
   forms = new FormArray([]);
-  answers: any;
   checkingAnswers = false;
 
   ngOnInit(): void {
@@ -44,7 +43,7 @@ export class FormStepperComponent implements OnInit {
     }
   }
 
-  onNext(event: any): void {
+  onNext(): void {
     // If on the answer's page.
     if (this.stepper.selectedIndex > this.children.length - 1) {
       // Merge the pages into a single map
@@ -72,7 +71,7 @@ export class FormStepperComponent implements OnInit {
     this.checkingAnswers = true;
   }
 
-  onPrevious($event: any): void {
+  onPrevious(): void {
     this.stepper.previous();
   }
 }

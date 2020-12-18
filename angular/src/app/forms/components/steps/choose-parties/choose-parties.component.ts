@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {StepComponent} from '../../stepper/form-stepper/types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CaseService} from '../../../../services/case-service.service';
-import {CaseParty} from '../../../../../generated/client-lib';
+import {CaseParty, Party} from '../../../../../generated/client-lib';
 
 @Component({
   selector: 'app-choose-parties',
@@ -16,7 +16,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   ) { }
   caseParties: Array<CaseParty> = [];
   @Input() caseId = '1';
-  @Input() parties: any;
+  @Input() parties: Array<Party>;
   @Input() form: FormGroup = new FormGroup({});
   defendants = new FormGroup({});
   claimants = new FormGroup({});
@@ -65,6 +65,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
     return this.countParties(this.claimants) > 0 && this.countParties(this.defendants) > 0;
   }
 
+  // tslint:disable-next-line:no-any
   partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':

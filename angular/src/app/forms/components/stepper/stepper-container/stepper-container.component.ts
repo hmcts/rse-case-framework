@@ -21,9 +21,9 @@ export class StepperContainerComponent extends CdkStepper implements OnInit {
     super(dir, changeDetectorRef);
   }
 
-  @Output() nextEvent = new EventEmitter<any>();
-  @Output() prevEvent = new EventEmitter<any>();
-  @Output() submitEvent = new EventEmitter<any>();
+  @Output() nextEvent = new EventEmitter<void>();
+  @Output() prevEvent = new EventEmitter<void>();
+  @Output() submitEvent = new EventEmitter<void>();
   ngOnInit(): void {
     this.selectedIndex = Number(this.route.snapshot.queryParamMap.get('step'));
   }

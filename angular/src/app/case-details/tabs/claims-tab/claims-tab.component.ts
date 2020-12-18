@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEventHistory, Claim} from '../../../../generated/client-lib';
+import {ApiEventHistory, Claim, Party} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-claims-tab',
@@ -35,6 +35,7 @@ export class ClaimsTabComponent implements OnInit {
     });
   }
 
+  // tslint:disable-next-line:no-any
   partyName(party: any): string {
     switch (party.partyType) {
       case 'Company':
@@ -45,11 +46,11 @@ export class ClaimsTabComponent implements OnInit {
     }
   }
 
-  claimantName(claim: any): string {
+  claimantName(claim: Claim): string {
     return this.partyName(claim.parties.claimants[0]);
   }
 
-  claimName(claim: any): string {
+  claimName(claim: Claim): string {
     return this.partyName(claim.parties.claimants[0])
       + (claim.parties.claimants.length > 1 ? ' et al' : '')
       + ' vs '

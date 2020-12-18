@@ -1,4 +1,4 @@
-<app-stepper-container (prevEvent)="onPrevious($event)" (nextEvent)="onNext($event)">
+<app-stepper-container (prevEvent)="onPrevious()" (nextEvent)="onNext()">
     <cdk-step *ngFor="let page of pages; index as i">
       <app-stepper-step [caseId]="caseId" [files]="files" [form]="page['form']" [validate]="validate" [step]="page"></app-stepper-step>
     </cdk-step>

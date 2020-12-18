@@ -2,7 +2,6 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-confirm-service-answers',
