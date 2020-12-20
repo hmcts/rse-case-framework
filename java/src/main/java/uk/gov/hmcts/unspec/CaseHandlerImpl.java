@@ -18,7 +18,6 @@ import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
-import uk.gov.hmcts.unspec.model.Claim;
 import uk.gov.hmcts.unspec.model.UnspecCase;
 import uk.gov.hmcts.unspec.repository.CaseRepository;
 
@@ -66,10 +65,6 @@ public class CaseHandlerImpl {
         if (defendantIds.size() == 0) {
             throw new IllegalArgumentException("Must have at least one claimant!");
         }
-
-        Claim c = new Claim();
-        c.setLowerValue(claim.getLowerValue());
-        c.setHigherValue(claim.getHigherValue());
 
         Long claimId = jooq.insertInto(CLAIMS, CLAIMS.CASE_ID, CLAIMS.LOWER_AMOUNT, CLAIMS.HIGHER_AMOUNT)
                 .values(context.getEntityId(), claim.getLowerValue(), claim.getHigherValue())
