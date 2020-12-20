@@ -9,7 +9,6 @@ create type event as enum (
     'CreateClaim',
     'AddParty',
     'AddClaim',
-    'AddNotes',
     'CloseCase',
     'ImportCitizens',
     'PurgeInactiveCitizens',
@@ -30,11 +29,6 @@ create table events(
   state case_state not null,
   user_id varchar not null references users(user_id),
   unique(case_id, sequence_number)
-);
-
-create table unspec_cases(
-    case_id bigint references cases(case_id) not null primary key,
-    data jsonb not null
 );
 
 CREATE TYPE claim_state AS ENUM ('Issued', 'Stayed', 'ServiceConfirmed');
@@ -107,7 +101,7 @@ create table citizen(
 create view cases_with_states as
 with latest_events as (
     select case_id, max(events.sequence_number) as latest_seq
-    from unspec_cases
+    from cases
              join events using (case_id)
     group by case_id
 )

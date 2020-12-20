@@ -15,11 +15,9 @@ import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
-import uk.gov.hmcts.unspec.event.AddNotes;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 import uk.gov.hmcts.unspec.model.UnspecCase;
-import uk.gov.hmcts.unspec.repository.CaseRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -36,13 +34,9 @@ public class CaseHandlerImpl {
     @Autowired
     DefaultDSLContext jooq;
 
-    @Autowired
-    CaseRepository repository;
-
     public StateMachine<CaseState, Event> build() {
         StateMachine<CaseState, Event> result = new StateMachine<>();
         result.initialState(CaseState.Created, this::onCreate)
-                .addUniversalEvent(Event.AddNotes, this::addNotes)
                 .addEvent(CaseState.Created, Event.AddParty, this::addParty)
                 .addEvent(CaseState.Created, Event.AddClaim, this::addClaim)
                 .addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
@@ -97,12 +91,6 @@ public class CaseHandlerImpl {
                 .execute();
     }
 
-    private void addNotes(StateMachine.TransitionContext context, AddNotes notes) {
-        UnspecCase c = repository.load(context.getEntityId());
-        c.getNotes().add(notes.getNotes());
-        repository.save(c);
-    }
-
     @SneakyThrows
     private void onCreate(StateMachine.TransitionContext context, CreateClaim request) {
         String ref = request.getClaimantReference();
@@ -119,8 +107,6 @@ public class CaseHandlerImpl {
 
         UnspecCase data = new UnspecCase(context.getEntityId());
         data.setCourtLocation(request.getApplicantPreferredCourt());
-
-        repository.save(data);
 
         List<Long> partyIds = jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
                 .values(context.getEntityId(), JSONB.valueOf(
