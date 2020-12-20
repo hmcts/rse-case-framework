@@ -17,7 +17,6 @@ import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
-import uk.gov.hmcts.unspec.model.UnspecCase;
 
 import java.util.List;
 import java.util.Map;
@@ -104,9 +103,6 @@ public class CaseHandlerImpl {
                 throw new RuntimeException();
             }
         }
-
-        UnspecCase data = new UnspecCase(context.getEntityId());
-        data.setCourtLocation(request.getApplicantPreferredCourt());
 
         List<Long> partyIds = jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
                 .values(context.getEntityId(), JSONB.valueOf(
