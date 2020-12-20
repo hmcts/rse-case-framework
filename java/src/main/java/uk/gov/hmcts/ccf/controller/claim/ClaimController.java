@@ -1,5 +1,7 @@
-package uk.gov.hmcts.ccf.controller;
+package uk.gov.hmcts.ccf.controller.claim;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jooq.Record2;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
@@ -36,6 +38,17 @@ public class ClaimController {
 
     @Autowired
     DefaultDSLContext jooq;
+
+    @Data
+    @NoArgsConstructor
+    public static class Claim {
+        Long claimId;
+        Long caseId;
+        Long lowerAmount;
+        Long higherAmount;
+        ClaimState state;
+        ClaimParties parties;
+    }
 
     @GetMapping(path = "/cases/{caseId}/claims")
     public List<Claim> getClaims(@PathVariable("caseId") Long caseId) {

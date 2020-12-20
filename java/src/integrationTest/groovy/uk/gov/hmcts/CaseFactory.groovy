@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import uk.gov.hmcts.ccf.api.CaseActions
 import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.CaseController
+import uk.gov.hmcts.ccf.controller.kase.CaseController
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.event.CreateClaim

@@ -1,7 +1,10 @@
-package uk.gov.hmcts.ccf.controller;
+package uk.gov.hmcts.ccf.controller.kase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.jooq.Condition;
 import org.jooq.generated.enums.CaseState;
@@ -27,6 +30,7 @@ import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.ccf.api.CaseActions;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
+import uk.gov.hmcts.unspec.dto.Party;
 
 import java.net.URI;
 import java.util.Base64;
@@ -54,6 +58,14 @@ public class CaseController {
 
     @Autowired
     DefaultDSLContext jooq;
+
+    @AllArgsConstructor
+    @Data
+    static class CaseSearchResult {
+        private Long caseId;
+        private CaseState state;
+        private Long partyCount;
+    }
 
     @SneakyThrows
     @GetMapping(path = "/search")
@@ -102,6 +114,21 @@ public class CaseController {
             .into(ApiEventHistory.class);
 
         return result;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class CaseParty {
+        Long partyId;
+        Party data;
+        PartyClaims claims;
+
+        @NoArgsConstructor
+        @Data
+        static class PartyClaims {
+            List<Long> claimant;
+            List<Long> defendant;
+        }
     }
 
     @GetMapping(path = "/cases/{caseId}/parties")

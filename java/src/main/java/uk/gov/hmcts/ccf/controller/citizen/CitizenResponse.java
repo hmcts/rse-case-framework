@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf.controller;
+package uk.gov.hmcts.ccf.controller.citizen;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.controller.CitizenController
+import uk.gov.hmcts.ccf.controller.citizen.CitizenController
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf.controller;
+package uk.gov.hmcts.ccf.controller.citizen;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
