@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf;
+package uk.gov.hmcts.ccf.config;
 
 import com.google.common.base.Strings;
 import lombok.SneakyThrows;
