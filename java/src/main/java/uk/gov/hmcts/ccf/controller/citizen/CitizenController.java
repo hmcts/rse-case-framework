@@ -2,6 +2,8 @@ package uk.gov.hmcts.ccf.controller.citizen;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -117,5 +119,13 @@ public class CitizenController {
         jooq.delete(CITIZEN)
             .where(CITIZEN.STATUS.eq("Inactive"))
             .execute();
+    }
+
+    @Data
+    @AllArgsConstructor
+    static
+    class CitizenResponse {
+        boolean hasMore;
+        List<Citizen> citizens;
     }
 }
