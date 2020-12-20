@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.ccf.api.CaseActions;
@@ -158,7 +157,7 @@ public class CaseController {
                 .fetchOne().value1();
 
         StateMachine<CaseState, Event> statemachine = getStatemachine(state);
-        TransitionContext context = new TransitionContext(userId, caseId);
+        StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, caseId);
         statemachine.handleEvent(context, Event.valueOf(event.getId()), event.getData());
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))

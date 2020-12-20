@@ -9,6 +9,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -139,5 +140,13 @@ public class StateMachine<StateT, EventT> {
         private final EventT event;
         private Class clazz;
         private BiConsumer consumer;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class TransitionContext {
+        private String userId;
+        private Long entityId;
     }
 }

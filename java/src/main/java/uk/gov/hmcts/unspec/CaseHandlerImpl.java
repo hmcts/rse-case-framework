@@ -12,7 +12,6 @@ import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
@@ -53,7 +52,7 @@ public class CaseHandlerImpl {
     }
 
     @SneakyThrows
-    public void addClaim(TransitionContext context, AddClaim claim) {
+    public void addClaim(StateMachine.TransitionContext context, AddClaim claim) {
         List<Long> claimantIds = claim.getClaimants().entrySet().stream().filter((x) -> x.getValue())
                 .map(x -> x.getKey())
                 .collect(Collectors.toUnmodifiableList());
@@ -97,20 +96,20 @@ public class CaseHandlerImpl {
     }
 
     @SneakyThrows
-    private void addParty(TransitionContext context, Party party) {
+    private void addParty(StateMachine.TransitionContext context, Party party) {
         jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
                 .values(context.getEntityId(), JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
                 .execute();
     }
 
-    private void addNotes(TransitionContext context, AddNotes notes) {
+    private void addNotes(StateMachine.TransitionContext context, AddNotes notes) {
         UnspecCase c = repository.load(context.getEntityId());
         c.getNotes().add(notes.getNotes());
         repository.save(c);
     }
 
     @SneakyThrows
-    private void onCreate(TransitionContext context, CreateClaim request) {
+    private void onCreate(StateMachine.TransitionContext context, CreateClaim request) {
         String ref = request.getClaimantReference();
         if (ref == null || ref.length() == 0 || ref.contains("@")) {
             throw new IllegalArgumentException("Invalid reference!");
@@ -146,7 +145,7 @@ public class CaseHandlerImpl {
 
     }
 
-    private void closeCase(TransitionContext context, CloseCase t) {
+    private void closeCase(StateMachine.TransitionContext context, CloseCase t) {
 
     }
 }

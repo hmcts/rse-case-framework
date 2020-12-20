@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.TransitionContext;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
@@ -92,7 +91,7 @@ public class ClaimController {
             .fetchSingle();
 
         StateMachine<ClaimState, ClaimEvent> statemachine = build(record.component2());
-        TransitionContext context = new TransitionContext(userId, claimId);
+        StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, claimId);
         statemachine.handleEvent(context, ClaimEvent.valueOf(event.getId()), event.getData());
         return ResponseEntity.created(URI.create("/claims/" + claimId))
             .body("");
@@ -107,11 +106,11 @@ public class ClaimController {
         return result;
     }
 
-    public void onCreate(TransitionContext transitionContext, CreateClaim c) {
+    public void onCreate(StateMachine.TransitionContext transitionContext, CreateClaim c) {
 
     }
 
-    public void confirmService(TransitionContext context, ConfirmService service) {
+    public void confirmService(StateMachine.TransitionContext context, ConfirmService service) {
         jooq.insertInto(CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.USER_ID)
             .values(context.getEntityId(), ClaimEvent.ConfirmService, ClaimState.ServiceConfirmed, context.getUserId())
             .execute();

@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.TransitionContext
+import uk.gov.hmcts.ccf.StateMachine
+
 import uk.gov.hmcts.ccf.api.ApiEventCreation
 import uk.gov.hmcts.ccf.api.CaseActions
 import uk.gov.hmcts.ccf.controller.kase.CaseController
@@ -147,7 +148,7 @@ class CaseControllerSpecification extends Specification {
         def response = factory.CreateCase(userId).getBody()
         def parties = controller.getParties(response.getId())
         Long partyId = parties[0].partyId
-        handler.addClaim(TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
+        handler.addClaim(StateMachine.TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
                         .defendants(Map.of(partyId, true))
                         .claimants(Map.of(partyId, true)).build())
