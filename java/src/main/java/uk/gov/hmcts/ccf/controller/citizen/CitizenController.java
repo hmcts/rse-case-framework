@@ -123,8 +123,7 @@ public class CitizenController {
 
     @Data
     @AllArgsConstructor
-    static
-    class CitizenResponse {
+    static class CitizenResponse {
         boolean hasMore;
         List<Citizen> citizens;
     }

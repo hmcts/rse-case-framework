@@ -1,5 +1,6 @@
 package uk.gov.hmcts.ccf.controller.claim;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jooq.Record2;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.api.ApiEventCreation;
 import uk.gov.hmcts.ccf.api.ApiEventHistory;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
+import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URI;
@@ -122,5 +124,13 @@ public class ClaimController {
                 CLAIM_EVENTS.USER_ID)
             .values(eventId, claimId, state, userId)
             .execute();
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ClaimParties {
+        List<Party> claimants;
+        List<Party> defendants;
     }
 }
