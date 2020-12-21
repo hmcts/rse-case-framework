@@ -24,7 +24,6 @@ export class CaseViewComponent implements OnInit {
   };
 
   eventDescriptions = {
-    AddNotes: 'Add case notes',
     CloseCase: 'Close the case',
     AddParty: 'Add a party',
     AddClaim: 'Create a new claim',

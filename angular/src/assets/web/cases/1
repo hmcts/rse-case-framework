@@ -2,7 +2,6 @@
         "id": "1",
         "state": "Open",
         "actions": [
-                "AddNotes",
                 "SubmitForHearing"
         ],
         "data": {

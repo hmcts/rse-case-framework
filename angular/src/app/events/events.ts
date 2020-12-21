@@ -15,11 +15,6 @@ import {Validators} from '@angular/forms';
 export class EventList {
 
   public static readonly EVENTS = new EventsBuilder()
-    .event('AddNotes')
-      .dynamicPage('Add case notes')
-        .question('notes', 'text', 'Enter notes')
-        .buildPage()
-      .buildEvent()
     .event('CloseCase')
       .dynamicPage('Close the case')
         .question('reason', 'text', 'Reason for closure')

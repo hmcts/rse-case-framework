@@ -12,7 +12,6 @@ export class CaseHistoryComponent implements OnInit {
   eventDescriptions = {
     CreateClaim: 'Case opened',
     ClaimIssued: 'Claim Issued',
-    AddNotes: 'Case notes added',
     AddClaim: 'New claim created',
     CloseCase: 'Case closed',
     AddParty: 'Party added',
