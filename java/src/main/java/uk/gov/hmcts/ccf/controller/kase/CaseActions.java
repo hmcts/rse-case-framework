@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf.api;
+package uk.gov.hmcts.ccf.controller.kase;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

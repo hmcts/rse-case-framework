@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.api.ApiEventCreation
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
 import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.unspec.dto.ConfirmService
 

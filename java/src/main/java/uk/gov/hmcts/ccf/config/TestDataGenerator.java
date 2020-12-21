@@ -10,7 +10,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.ccf.api.ApiEventCreation;
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.Company;

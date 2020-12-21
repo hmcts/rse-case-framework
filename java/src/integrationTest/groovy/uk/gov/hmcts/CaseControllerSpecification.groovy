@@ -19,8 +19,8 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 import uk.gov.hmcts.ccf.StateMachine
 
-import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.api.CaseActions
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
+import uk.gov.hmcts.ccf.controller.kase.CaseActions
 import uk.gov.hmcts.ccf.controller.kase.CaseController
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
