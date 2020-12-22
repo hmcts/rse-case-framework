@@ -46,7 +46,7 @@ import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.table;
 
 @RestController
-@RequestMapping("/web")
+@RequestMapping("/web/cases")
 public class CaseController {
 
     @Autowired
@@ -88,7 +88,7 @@ public class CaseController {
             .fetchInto(CaseSearchResult.class);
     }
 
-    @GetMapping(path = "/cases/{caseId}")
+    @GetMapping(path = "/{caseId}")
     public CaseActions getCase(@PathVariable("caseId") Long caseId) {
         CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
             .from(CASES_WITH_STATES)
@@ -99,7 +99,7 @@ public class CaseController {
         return new CaseActions(caseId, currentState, statemachine.getAvailableActions(currentState));
     }
 
-    @GetMapping(path = "/cases/{caseId}/events")
+    @GetMapping(path = "/{caseId}/events")
     public List<ApiEventHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
         List<ApiEventHistory> result = jooq.select()
             .from(CASE_HISTORY)
@@ -127,7 +127,7 @@ public class CaseController {
         }
     }
 
-    @GetMapping(path = "/cases/{caseId}/parties")
+    @GetMapping(path = "/{caseId}/parties")
     public List<CaseParty> getParties(@PathVariable("caseId") Long caseId) {
         return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
@@ -137,7 +137,7 @@ public class CaseController {
                 .fetchInto(CaseParty.class);
     }
 
-    @PostMapping(path = "/cases/{caseId}/events")
+    @PostMapping(path = "/{caseId}/events")
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
@@ -161,7 +161,7 @@ public class CaseController {
                 .body("");
     }
 
-    @PostMapping(path = "/cases")
+    @PostMapping
     @Transactional
     public ResponseEntity<CaseActions> createCase(@RequestBody ApiEventCreation event,
                                                   @AuthenticationPrincipal OidcUser user) {
