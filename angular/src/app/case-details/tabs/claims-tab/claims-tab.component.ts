@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEventHistory, Claim, Party} from '../../../../generated/client-lib';
+import {Claim, ClaimHistory, Party} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-claims-tab',
@@ -12,7 +12,7 @@ export class ClaimsTabComponent implements OnInit {
   claims: Array<Claim>;
   @Input() caseId = 1;
   selectedClaim: Claim;
-  private history: Array<ApiEventHistory>;
+  private history: Array<ClaimHistory>;
 
   constructor(
     private caseService: CaseService,

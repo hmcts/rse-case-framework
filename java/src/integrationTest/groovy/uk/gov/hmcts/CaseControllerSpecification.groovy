@@ -121,6 +121,7 @@ class CaseControllerSpecification extends Specification {
         def events = controller.getCaseEvents(response.getId())
         def event = events.get(0)
 
+
         expect: "Case has events for case and claim creation"
         events.size() == 2
         LocalDate.now() == event.getTimestamp().toLocalDate()

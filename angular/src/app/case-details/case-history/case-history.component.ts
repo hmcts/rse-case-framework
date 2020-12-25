@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ApiEventHistory} from '../../../generated/client-lib';
+import {CaseHistory} from '../../../generated/client-lib';
 
 @Component({
   selector: 'app-case-history',
@@ -8,7 +8,7 @@ import {ApiEventHistory} from '../../../generated/client-lib';
 })
 export class CaseHistoryComponent implements OnInit {
 
-  @Input() history: Array<ApiEventHistory>;
+  @Input() history: Array<CaseHistory>;
   eventDescriptions = {
     CreateClaim: 'Case opened',
     ClaimIssued: 'Claim Issued',

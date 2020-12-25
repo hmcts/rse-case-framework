@@ -56,6 +56,9 @@ create table claim_events(
   timestamp timestamp default now()
 );
 
+create view claim_history as
+    select * from claim_events join users using(user_id);
+
 -- View for claims with their current states.
 create view claims_with_states as
 with latest_events as (
@@ -145,7 +148,12 @@ from parties_by_type
 group by claim_id;
 
 create view case_history as
-select case_id, user_id, id::text, timestamp from events
-union all
-select case_id, user_id, id::text, timestamp from claim_events
-join claims using (claim_id);
+with history as (
+    select case_id, user_id, id::text, timestamp
+    from events
+    union all
+    select case_id, user_id, id::text, timestamp
+    from claim_events
+    join claims using (claim_id)
+)
+select * from history join users using (user_id);

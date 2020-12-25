@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.jooq.Condition;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
+import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
@@ -41,7 +42,6 @@ import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
-import static org.jooq.generated.Tables.USERS;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.table;
@@ -101,16 +101,12 @@ public class CaseController {
     }
 
     @GetMapping(path = "/{caseId}/events")
-    public List<ApiEventHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
-        List<ApiEventHistory> result = jooq.select()
+    public List<CaseHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
+        return jooq.select()
             .from(CASE_HISTORY)
-            .join(USERS).using(USERS.USER_ID)
             .where(CASE_HISTORY.CASE_ID.eq(caseId))
             .orderBy(CASE_HISTORY.TIMESTAMP.desc())
-            .fetch()
-            .into(ApiEventHistory.class);
-
-        return result;
+            .fetchInto(CaseHistory.class);
     }
 
     @Data

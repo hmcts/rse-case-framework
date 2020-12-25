@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
-import {ApiEventHistory, CaseActions} from '../../../generated/client-lib';
+import {CaseActions, CaseHistory} from '../../../generated/client-lib';
 
 
 @Component({
@@ -13,7 +13,7 @@ import {ApiEventHistory, CaseActions} from '../../../generated/client-lib';
 export class CaseViewComponent implements OnInit {
   caseId: number;
   case: CaseActions;
-  events: Array<ApiEventHistory>;
+  events: Array<CaseHistory>;
   selectedValue: string;
   selectedIndex: number;
   tabMap = {

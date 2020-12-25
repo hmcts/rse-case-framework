@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.jooq.Record2;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
+import org.jooq.generated.tables.pojos.ClaimHistory;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation;
-import uk.gov.hmcts.ccf.controller.kase.ApiEventHistory;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CreateClaim;
@@ -31,7 +31,7 @@ import java.util.List;
 import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
-import static org.jooq.generated.Tables.USERS;
+import static org.jooq.generated.Tables.CLAIM_HISTORY;
 
 @RestController
 @RequestMapping("/web")
@@ -62,16 +62,13 @@ public class ClaimController {
     }
 
     @GetMapping(path = "/claims/{claimId}/events")
-    public List<ApiEventHistory> getClaimEvents(@PathVariable("claimId") Long claimId) {
-        List<ApiEventHistory> result = jooq.select()
-            .from(CLAIM_EVENTS)
-            .join(USERS).using(USERS.USER_ID)
-            .where(CLAIM_EVENTS.CLAIM_ID.eq(claimId))
-            .orderBy(CLAIM_EVENTS.TIMESTAMP.desc())
+    public List<ClaimHistory> getClaimEvents(@PathVariable("claimId") Long claimId) {
+        return jooq.select()
+            .from(CLAIM_HISTORY)
+            .where(CLAIM_HISTORY.CLAIM_ID.eq(claimId))
+            .orderBy(CLAIM_HISTORY.TIMESTAMP.desc())
             .fetch()
-            .into(ApiEventHistory.class);
-
-        return result;
+            .into(ClaimHistory.class);
     }
 
     @PostMapping(path = "/claims/{claimId}/events")
