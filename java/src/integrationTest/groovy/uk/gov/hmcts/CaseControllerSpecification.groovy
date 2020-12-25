@@ -20,7 +20,6 @@ import spock.lang.Specification
 import uk.gov.hmcts.ccf.StateMachine
 
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.kase.CaseActions
 import uk.gov.hmcts.ccf.controller.kase.CaseController
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
@@ -90,7 +89,7 @@ class CaseControllerSpecification extends Specification {
         def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-        CaseActions a = new ObjectMapper().readValue(json, CaseActions.class)
+        CaseController.CaseActions a = new ObjectMapper().readValue(json, CaseController.CaseActions.class)
 
         expect:
         a.getState() == CaseState.Created

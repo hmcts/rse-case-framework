@@ -33,6 +33,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.jooq.generated.Tables.CASES;
 import static org.jooq.generated.Tables.CASES_WITH_STATES;
@@ -159,6 +160,15 @@ public class CaseController {
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), userId);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
                 .body("");
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class CaseActions {
+        private Long id;
+        private CaseState state;
+        private Set<String> actions;
     }
 
     @PostMapping
