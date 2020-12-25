@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {StepComponent} from '../../stepper/form-stepper/types';
+import {StepComponent} from '../../stepper/linear-stepper/types';
 
 @Component({
   selector: 'app-choose-court',

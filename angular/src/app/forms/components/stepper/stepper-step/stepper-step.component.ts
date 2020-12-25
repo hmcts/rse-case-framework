@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {StepDirective} from '../step.directive';
-import {StepComponent, StepType} from '../form-stepper/types';
+import {StepComponent, StepType} from '../linear-stepper/types';
 
 @Component({
   selector: 'app-stepper-step',

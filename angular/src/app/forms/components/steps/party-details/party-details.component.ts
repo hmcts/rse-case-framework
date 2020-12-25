@@ -2,7 +2,7 @@ import {Component, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {RadioInput} from '../../radio/radio.component';
 import {Question} from '../../../dynamic-form/dynamic-form.component';
-import {StepComponent} from '../../stepper/form-stepper/types';
+import {StepComponent} from '../../stepper/linear-stepper/types';
 
 @Component({
   selector: 'app-party-details',

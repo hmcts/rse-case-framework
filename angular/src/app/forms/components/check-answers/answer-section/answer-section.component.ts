@@ -1,5 +1,5 @@
 import {Component, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {StepComponent, StepType} from '../../stepper/form-stepper/types';
+import {StepComponent, StepType} from '../../stepper/linear-stepper/types';
 import {StepDirective} from '../../stepper/step.directive';
 import {FormGroup} from '@angular/forms';
 import {CheckAnswerDirective, CheckAnswersComponent} from '../types';

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {StepComponent} from '../../stepper/form-stepper/types';
+import {StepComponent} from '../../stepper/linear-stepper/types';
 import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({

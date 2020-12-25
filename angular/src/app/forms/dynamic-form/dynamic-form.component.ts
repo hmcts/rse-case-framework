@@ -1,6 +1,6 @@
 import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup, ValidatorFn} from '@angular/forms';
-import {StepComponent} from '../components/stepper/form-stepper/types';
+import {StepComponent} from '../components/stepper/linear-stepper/types';
 
 export interface Question {
   id: string;

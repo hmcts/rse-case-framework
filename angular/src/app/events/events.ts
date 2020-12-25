@@ -1,4 +1,4 @@
-import {EventsBuilder} from '../forms/components/stepper/form-stepper/types';
+import {EventsBuilder} from '../forms/components/stepper/linear-stepper/types';
 import {ChooseCourtComponent} from '../forms/components/steps/choose-court/choose-court.component';
 import {DynamicFormAnswersComponent} from '../forms/dynamic-form/dynamic-form-answers.component';
 import {PartyDetailsComponent} from '../forms/components/steps/party-details/party-details.component';

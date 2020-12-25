@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {StepComponent} from '../../stepper/form-stepper/types';
+import {StepComponent} from '../../stepper/linear-stepper/types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CaseService} from '../../../../services/case-service.service';
 import {CaseParty, Party} from '../../../../../generated/client-lib';

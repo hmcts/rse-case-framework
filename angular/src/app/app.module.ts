@@ -24,7 +24,7 @@ import {CommonModule} from '@angular/common';
 import {StepDirective} from './forms/components/stepper/step.directive';
 import {StepperContainerComponent} from './forms/components/stepper/stepper-container/stepper-container.component';
 import {StepperStepComponent} from './forms/components/stepper/stepper-step/stepper-step.component';
-import {FormStepperComponent} from './forms/components/stepper/form-stepper/form-stepper.component';
+import {LinearStepperComponent} from './forms/components/stepper/linear-stepper/linear-stepper.component';
 import { AnswerSectionComponent } from './forms/components/check-answers/answer-section/answer-section.component';
 import {CheckAnswerDirective} from './forms/components/check-answers/types';
 import {PartyDetailsAnswersComponent} from './forms/components/steps/party-details/party-details-answers.component';
@@ -65,7 +65,7 @@ import {ApiModule, BASE_PATH} from '../generated/client-lib';
     ChooseCourtComponent,
     StepperContainerComponent,
     StepperStepComponent,
-    FormStepperComponent,
+    LinearStepperComponent,
     AnswerSectionComponent,
     CheckAnswerDirective,
     DateInputComponent,

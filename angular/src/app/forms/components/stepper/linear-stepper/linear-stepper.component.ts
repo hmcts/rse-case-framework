@@ -14,11 +14,11 @@ import {StepperContainerComponent} from '../stepper-container/stepper-container.
 import {StepperStepComponent} from '../stepper-step/stepper-step.component';
 
 @Component({
-  selector: 'app-form-stepper',
-  templateUrl: './form-stepper.component.html',
-  styleUrls: ['./form-stepper.component.scss']
+  selector: 'app-linear-stepper',
+  templateUrl: './linear-stepper.component.html',
+  styleUrls: ['./linear-stepper.component.scss']
 })
-export class FormStepperComponent implements OnInit {
+export class LinearStepperComponent implements OnInit {
 
   @ViewChild(StepperContainerComponent, { static: true}) stepper: StepperContainerComponent;
   @ViewChildren(StepperStepComponent) children: QueryList<StepperStepComponent>;

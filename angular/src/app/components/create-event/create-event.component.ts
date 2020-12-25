@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {Event, StepType} from '../../forms/components/stepper/form-stepper/types';
+import {Event, StepType} from '../../forms/components/stepper/linear-stepper/types';
 import {EventList} from '../../events/events';
 import {CaseControllerService} from '../../../generated/client-lib';
 
