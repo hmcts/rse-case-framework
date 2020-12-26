@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Event, StepType} from '../../forms/components/stepper/linear-stepper/types';
 import {EventList} from '../../events/events';
-import {CaseControllerService} from '../../../generated/client-lib';
+import {CaseControllerService, Claim} from '../../../generated/client-lib';
 
 @Component({
   selector: 'app-create-event',
