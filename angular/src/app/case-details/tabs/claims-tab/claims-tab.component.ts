@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Claim, ClaimHistory, Party} from '../../../../generated/client-lib';
+import {ClaimHistory} from '../../../../generated/client-lib/model/claimHistory';
+import {Claim, Party} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-claims-tab',

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CaseHistory} from '../../../generated/client-lib';
+import {CaseHistory} from '../../../generated/client-lib/model/caseHistory';
 
 @Component({
   selector: 'app-case-history',

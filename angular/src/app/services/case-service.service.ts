@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {ClaimHistory} from '../../generated/client-lib/model/claimHistory';
 import {
   CaseActions,
-  CaseControllerService, CaseHistory, CaseParty,
-  CaseSearchResult, Claim,
-  ClaimControllerService, ClaimHistory
+  CaseControllerService,
+  CaseParty,
+  CaseSearchResult,
+  Claim,
+  ClaimControllerService
 } from '../../generated/client-lib';
+import {CaseHistory} from '../../generated/client-lib/model/caseHistory';
 
 @Injectable({
   providedIn: 'root'

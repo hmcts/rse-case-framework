@@ -14,6 +14,7 @@
       <li *ngFor="let claim of claims"
           [class.selected]="claim === selectedClaim"
           (click)="onSelect(claim.claimId)">
+        {{ claim.baz }}
         {{claimantName(claim) | slice:0:15}} vs ...
       </li>
     </ul>

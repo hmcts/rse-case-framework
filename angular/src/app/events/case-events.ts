@@ -1,15 +1,14 @@
-import {EventsBuilder} from "../forms/components/stepper/linear-stepper/types";
-import {Validators} from "@angular/forms";
-import {ChooseCourtComponent} from "../forms/components/steps/choose-court/choose-court.component";
-import {DynamicFormAnswersComponent} from "../forms/dynamic-form/dynamic-form-answers.component";
-import {PartyDetailsComponent} from "../forms/components/steps/party-details/party-details.component";
-import {PartyDetailsAnswersComponent} from "../forms/components/steps/party-details/party-details-answers.component";
-import {ChoosePartiesComponent} from "../forms/components/steps/choose-parties/choose-parties.component";
-import {ChoosePartiesAnswersComponent} from "../forms/components/steps/choose-parties/choose-parties-answers.component";
-import {ClaimValueComponent} from "../forms/components/steps/claim-value/claim-value.component";
-import {ImportCitizensComponent} from "../forms/components/steps/import-citizens/import-citizens.component";
-import {PurgeInactiveComponent} from "../forms/components/steps/purge-inactive/purge-inactive.component";
-import {Claim} from "../../generated/client-lib";
+import {EventsBuilder} from '../forms/components/stepper/linear-stepper/types';
+import {Validators} from '@angular/forms';
+import {ChooseCourtComponent} from '../forms/components/steps/choose-court/choose-court.component';
+import {DynamicFormAnswersComponent} from '../forms/dynamic-form/dynamic-form-answers.component';
+import {PartyDetailsComponent} from '../forms/components/steps/party-details/party-details.component';
+import {PartyDetailsAnswersComponent} from '../forms/components/steps/party-details/party-details-answers.component';
+import {ChoosePartiesComponent} from '../forms/components/steps/choose-parties/choose-parties.component';
+import {ChoosePartiesAnswersComponent} from '../forms/components/steps/choose-parties/choose-parties-answers.component';
+import {ClaimValueComponent} from '../forms/components/steps/claim-value/claim-value.component';
+import {ImportCitizensComponent} from '../forms/components/steps/import-citizens/import-citizens.component';
+import {PurgeInactiveComponent} from '../forms/components/steps/purge-inactive/purge-inactive.component';
 
 export class CaseEvents {
 
