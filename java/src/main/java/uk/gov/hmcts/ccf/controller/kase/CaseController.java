@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccf.controller.kase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -138,7 +139,7 @@ public class CaseController {
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
-                                              @AuthenticationPrincipal OidcUser user) {
+                                              @Parameter(hidden = true) @AuthenticationPrincipal OidcUser user) {
         return createEvent(caseId, event, user.getSubject());
     }
 
@@ -170,11 +171,11 @@ public class CaseController {
     @PostMapping
     @Transactional
     public ResponseEntity<CaseActions> createCase(@RequestBody ApiEventCreation event,
-                                                  @AuthenticationPrincipal OidcUser user) {
+                                                  @Parameter(hidden = true) @AuthenticationPrincipal OidcUser user) {
         return createCase(event, user.getSubject());
     }
 
-    public ResponseEntity<CaseActions> createCase(@RequestBody ApiEventCreation event, String userId) {
+    public ResponseEntity<CaseActions> createCase(ApiEventCreation event, String userId) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();

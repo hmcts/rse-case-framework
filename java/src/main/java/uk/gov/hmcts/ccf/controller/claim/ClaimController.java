@@ -1,5 +1,6 @@
 package uk.gov.hmcts.ccf.controller.claim;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -75,7 +76,7 @@ public class ClaimController {
     @Transactional
     public ResponseEntity<String> createEvent(@PathVariable("claimId") Long claimId,
                                               @RequestBody ApiEventCreation event,
-                                              @AuthenticationPrincipal OidcUser user) {
+                                              @Parameter(hidden = true) @AuthenticationPrincipal OidcUser user) {
         return createEvent(claimId, event, user.getSubject());
     }
 
