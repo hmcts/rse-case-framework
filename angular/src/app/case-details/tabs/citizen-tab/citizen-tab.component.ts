@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../../environments/environment';
 import {FormControl, FormGroup} from '@angular/forms';
-import {CitizenControllerService} from '../../../../generated/client-lib';
+import {Citizen, CitizenControllerService} from '../../../../generated/client-lib';
 
 @Component({
   selector: 'app-citizen-tab',
@@ -13,7 +13,7 @@ export class CitizenTabComponent implements OnInit {
 
   @Input() caseId: number;
   baseUrl = environment.baseUrl;
-  citizens;
+  citizens: Array<Citizen>;
   page = 1;
   pageSize = 10;
   searchForm: FormGroup;

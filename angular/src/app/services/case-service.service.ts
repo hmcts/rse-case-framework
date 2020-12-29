@@ -27,8 +27,8 @@ export class CaseService {
   ) {
   }
 
-  searchCases(data): Observable<Array<CaseSearchResult>> {
-    const query = btoa(JSON.stringify(data));
+  searchCases(data: string): Observable<Array<CaseSearchResult>> {
+    const query = btoa(data);
     return this.cases.searchCases(query);
   }
 

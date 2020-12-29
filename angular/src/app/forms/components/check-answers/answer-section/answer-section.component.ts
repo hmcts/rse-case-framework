@@ -39,7 +39,7 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
     }
     this.component.caseId = this.caseId;
     this.component.index = this.index;
-    this.component.answerChange.subscribe((x) => this.answerChange.emit(x));
+    this.component.answerChange.subscribe((x: number) => this.answerChange.emit(x));
     this.component.form = this.form;
   }
 

@@ -38,7 +38,8 @@ export class CreateEventComponent implements OnInit {
     });
   }
 
-  onSubmit(data): void {
+  // tslint:disable-next-line:no-any
+  onSubmit(data: any): void {
     const isFile = this.files.has('file');
     const payload = isFile
       ? this.files

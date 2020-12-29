@@ -13,4 +13,5 @@ public class DemoApplication {
         OidcWaiter.waitForOidcServer();
         SpringApplication.run(DemoApplication.class, args);
     }
+
 }
