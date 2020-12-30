@@ -11,11 +11,11 @@ import {Utils} from '../../../services/helper';
 })
 export class PartiesTabComponent implements OnInit {
 
-  @Input() caseId = '1';
+  @Input() caseId = 1;
   parties: Array<CaseParty>;
   party: Party;
   currentTab: string;
-  private claims: PartyClaims;
+  claims: PartyClaims;
   constructor(
     private caseService: CaseService,
     private route: ActivatedRoute,

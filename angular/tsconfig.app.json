@@ -5,7 +5,10 @@
     "outDir": "./out-tsc/app",
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "types": []
+    "types": [],
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
   },
   "files": [
     "src/main.ts",

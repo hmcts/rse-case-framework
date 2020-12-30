@@ -3,11 +3,11 @@
 </legend>
 
 <div class="govuk-form-group" [class.govuk-form-group--error]="validate && !valid()">
-  <label class="govuk-label" for="file-upload-1">
+  <label class="govuk-label">
     Upload a CSV file
   </label>
   <span *ngIf="validate && !valid()" id="file-upload-1-error" class="govuk-error-message">You must select a CSV file</span>
   <input class="govuk-file-upload" id="file" name="file-upload-1" type="file"
          accept=".csv"
-         (change)="handleFileInput($event.target.files)">
+         (change)="handleFileInput($any($event).target.files)">
 </div>

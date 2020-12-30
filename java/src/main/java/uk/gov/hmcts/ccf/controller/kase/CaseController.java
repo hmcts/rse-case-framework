@@ -165,7 +165,7 @@ public class CaseController {
     public static class CaseActions {
         private Long id;
         private CaseState state;
-        private Set<String> actions;
+        private Set<Event> actions;
     }
 
     @PostMapping

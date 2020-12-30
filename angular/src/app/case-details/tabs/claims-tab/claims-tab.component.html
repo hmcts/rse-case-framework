@@ -14,7 +14,6 @@
       <li *ngFor="let claim of claims"
           [class.selected]="claim === selectedClaim"
           (click)="onSelect(claim.claimId)">
-        {{ claim.baz }}
         {{claimantName(claim) | slice:0:15}} vs ...
       </li>
     </ul>
@@ -94,7 +93,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <h4 class="govuk-heading-s">Claim history</h4>
-      <app-case-history [history]="history"></app-case-history>
+      <app-case-history [history]="$any(history)"></app-case-history>
     </div>
   </div>
 </div>

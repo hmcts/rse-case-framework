@@ -25,7 +25,7 @@ public class StateMachine<StateT, EventT> {
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
-    private Table<String, String, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
+    private Table<String, EventT, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
 
     private Class clazz;
     private BiConsumer initialHandler;
@@ -52,7 +52,7 @@ public class StateMachine<StateT, EventT> {
     }
 
     public void handleFileUpload(String state, Long caseId, EventT event, MultipartFile file) {
-        BiConsumer<Long, MultipartFile> handler = this.uploadHandlers.get(state, event.toString());
+        BiConsumer<Long, MultipartFile> handler = this.uploadHandlers.get(state, event);
         if (handler != null) {
             handler.accept(caseId, file);
         } else {
@@ -106,21 +106,21 @@ public class StateMachine<StateT, EventT> {
 
     public <T> StateMachine<StateT, EventT> addFileUploadEvent(StateT state, EventT event,
                                                                BiConsumer<Long, MultipartFile> consumer) {
-        uploadHandlers.put(state.toString(), event.toString(), consumer);
+        uploadHandlers.put(state.toString(), event, consumer);
         return this;
     }
 
-    public Set<String> getAvailableActions(StateT state) {
+    public Set<EventT> getAvailableActions(StateT state) {
         return getAvailableActions(state.toString());
     }
 
-    public Set<String> getAvailableActions(String state) {
-        Set<String> result = Sets.newHashSet();
+    public Set<EventT> getAvailableActions(String state) {
+        Set<EventT> result = Sets.newHashSet();
         for (TransitionRecord transitionRecord : transitions.get(state)) {
-            result.add(transitionRecord.getEvent().toString());
+            result.add(transitionRecord.getEvent());
         }
         for (TransitionRecord universalEvent : universalEvents) {
-            result.add(universalEvent.getEvent().toString());
+            result.add(universalEvent.getEvent());
         }
 
         result.addAll(this.uploadHandlers.columnKeySet());

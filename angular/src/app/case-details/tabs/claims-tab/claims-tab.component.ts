@@ -14,7 +14,7 @@ export class ClaimsTabComponent implements OnInit {
   claims: Array<Claim>;
   @Input() caseId = 1;
   selectedClaim: Claim;
-  private history: Array<ClaimHistory>;
+  history: Array<ClaimHistory>;
 
   constructor(
     private caseService: CaseService,

@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
 import {CaseActions, CaseHistory} from '../../../generated/client-lib';
 import {Utils} from '../../services/helper';
+import ActionsEnum = CaseActions.ActionsEnum;
 
 
 @Component({
@@ -24,13 +25,14 @@ export class CaseViewComponent implements OnInit {
     'citizens',
   ];
 
-  eventDescriptions = {
+  eventDescriptions: { [k in ActionsEnum]: string } = {
+    CreateClaim: 'Create a claim',
     CloseCase: 'Close the case',
     AddParty: 'Add a party',
     AddClaim: 'Create a new claim',
     SubmitAppeal: 'Submit an appeal',
     ImportCitizens: 'Import citizens',
-    PurgeInactiveCitizens: 'Purge inactive citizens',
+    PurgeInactiveCitizens: 'Purge inactive citizens'
   };
 
   constructor(
@@ -55,7 +57,7 @@ export class CaseViewComponent implements OnInit {
 
   }
 
-  actions(): Array<string> {
+  actions(): Array<CaseActions.ActionsEnum> {
     return Array.from(this.case.actions.values()).sort();
   }
 

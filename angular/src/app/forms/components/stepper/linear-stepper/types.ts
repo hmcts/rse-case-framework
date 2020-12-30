@@ -18,7 +18,7 @@ export interface StepType {
   initialise?: (component: StepComponent) => void;
   answersType?: Type<CheckAnswersComponent>;
   answerInitialise?: (component: CheckAnswersComponent) => void;
-  form?: FormGroup;
+  form: FormGroup;
   formGroupName?: string;
 }
 
@@ -82,7 +82,7 @@ export class EventBuilder {
 
   customPage<Step extends StepComponent>(component: Type<Step>): CustomStepBuilder<Step> {
     const parent = this;
-    const step: StepType = {type: component};
+    const step: StepType = {type: component, form: new FormGroup({})};
     parent.steps.push(step);
     return new class implements CustomStepBuilder<Step> {
       withInitializer(initialiser: (component: Step) => void): CustomStepBuilder<Step> {

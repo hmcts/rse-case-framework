@@ -9,7 +9,7 @@ import {Utils} from '../../../../services/helper';
   template: `
       <h3 class="govuk-heading-m">Confirm service for claim {{ caseName }} </h3>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-          <div *ngFor="let key of ['name', 'role']" class="govuk-summary-list__row">
+          <div *ngFor="let key of ['name', 'role']; let i = index" class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                   {{key | titlecase }}
               </dt>
