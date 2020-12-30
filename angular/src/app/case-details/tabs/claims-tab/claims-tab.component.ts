@@ -3,6 +3,7 @@ import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ClaimHistory} from '../../../../generated/client-lib/model/claimHistory';
 import {Claim, Party} from '../../../../generated/client-lib';
+import {Utils} from '../../../services/helper';
 
 @Component({
   selector: 'app-claims-tab',
@@ -59,7 +60,7 @@ export class ClaimsTabComponent implements OnInit {
   }
 
   onSelect(claimId: number): void {
-    this.selectedClaim = this.claims.find(x => x.claimId === claimId);
+    this.selectedClaim = Utils.notNull(this.claims.find(x => x.claimId === claimId));
     this.caseService.getClaimEvents(claimId).subscribe(x => this.history = x);
     this.router.navigateByUrl(`/cases/${this.caseId}/claims/${claimId}`);
   }

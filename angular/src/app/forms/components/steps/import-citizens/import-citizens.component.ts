@@ -13,7 +13,7 @@ export class ImportCitizensComponent implements OnInit, StepComponent {
 
   @Input() files = new FormData();
   form: FormGroup = new FormGroup({});
-  fileToUpload: File = null;
+  fileToUpload: File;
 
   validate: boolean;
 

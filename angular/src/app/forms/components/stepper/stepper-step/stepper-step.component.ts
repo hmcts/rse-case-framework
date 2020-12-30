@@ -49,11 +49,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
   }
 
   valid(): boolean {
-    if (!this.component) {
-      return undefined;
-    }
-    const result = this.component.valid();
-    return result;
+    return this.component.valid();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -3,6 +3,7 @@ import {FormGroup, ValidatorFn} from '@angular/forms';
 import {DynamicFormComponent, Question} from '../../../dynamic-form/dynamic-form.component';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {DynamicFormAnswersComponent} from '../../../dynamic-form/dynamic-form-answers.component';
+import {Utils} from '../../../../services/helper';
 
 export interface StepComponent {
   validate: boolean;
@@ -46,7 +47,7 @@ export class EventsBuilder {
     const result = new Map<string, Event>();
 
     for (const key of this.result.keys()) {
-      result.set(key, this.result.get(key).get());
+      result.set(key, Utils.notNull(this.result.get(key)).get());
     }
     return result;
   }

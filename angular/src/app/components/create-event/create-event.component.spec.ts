@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CreateEventComponent } from './create-event.component';
-import {RouterModule} from '@angular/router';
+import {ActivatedRoute, RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
+import {of} from 'rxjs';
 
 describe('CreateEventComponent', () => {
   let component: CreateEventComponent;
@@ -15,6 +16,15 @@ describe('CreateEventComponent', () => {
         RouterModule.forRoot([], { relativeLinkResolution: 'legacy' }),
         HttpClientModule
       ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({ get: (key) => 'CreateClaim' }),
+            queryParamMap: of({ get: (key) => 'CreateClaim' })
+          }
+        }
+      ]
     })
     .compileComponents();
   }));

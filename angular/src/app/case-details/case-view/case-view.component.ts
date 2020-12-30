@@ -2,6 +2,7 @@ import {Component, ViewEncapsulation, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
 import {CaseActions, CaseHistory} from '../../../generated/client-lib';
+import {Utils} from '../../services/helper';
 
 
 @Component({
@@ -41,7 +42,7 @@ export class CaseViewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
       this.caseId = Number(x.get('case_id'));
-      const tab = x.get('case_tab');
+      const tab = Utils.notNull(x.get('case_tab'));
       this.selectedIndex = this.tabs.indexOf(tab);
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result;

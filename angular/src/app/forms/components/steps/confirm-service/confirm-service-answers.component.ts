@@ -2,6 +2,7 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {Utils} from '../../../../services/helper';
 
 @Component({
   selector: 'app-confirm-service-answers',
@@ -37,8 +38,7 @@ export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersCompo
 
   ngOnInit(): void {
     const entityId = this.route.snapshot.queryParamMap.get('entity_id');
-    this.caseName = entityId;
-
+    this.caseName = Utils.notNull(entityId);
   }
 
 }
