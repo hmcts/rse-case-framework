@@ -2,13 +2,25 @@ import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges
 import {FormControl, FormGroup, ValidatorFn} from '@angular/forms';
 import {StepComponent} from '../components/stepper/linear-stepper/types';
 
-export interface Question {
+interface Question {
   id: string;
-  type: string;
   title: string;
   validators?: ValidatorFn | ValidatorFn[];
-  // tslint:disable-next-line:no-any
-  [key: string]: any;
+}
+
+export type QuestionType = TextQuestion | DateQuestion | RadioQuestion;
+
+export interface TextQuestion extends Question {
+  type: 'text';
+}
+
+export interface DateQuestion extends Question {
+  type: 'date';
+}
+
+export interface RadioQuestion extends Question {
+  type: 'radio';
+  choices: [string, string][];
 }
 
 @Component({
@@ -19,8 +31,7 @@ export interface Question {
 export class DynamicFormComponent implements OnInit, OnChanges, StepComponent {
 
   @Input() form: FormGroup = new FormGroup({});
-  type = 'radio';
-  @Input() questions: Question[];
+  @Input() questions: QuestionType[];
   @Input() title: string;
   @Input() validate: boolean;
 

@@ -1,7 +1,6 @@
 import {Component, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RadioInput} from '../../radio/radio.component';
-import {Question} from '../../../dynamic-form/dynamic-form.component';
+import {QuestionType, RadioQuestion} from '../../../dynamic-form/dynamic-form.component';
 import {StepComponent} from '../../stepper/linear-stepper/types';
 
 @Component({
@@ -16,8 +15,10 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   @Input() partyType = 'Claimant';
   @Input() form: FormGroup = new FormGroup({});
 
-  input: RadioInput = {
+  input: RadioQuestion = {
     title: '',
+    id: '',
+    type: 'radio',
     choices: [
       [ 'Individual', 'Individual'],
       ['Company', 'Company'],
@@ -28,13 +29,13 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
 
   partyTypeControl: FormControl;
 
-  partyTypeQuestions: { [key: string]: Question[]};
+  partyTypeQuestions: { [key: string]: QuestionType[]};
 
   validate: boolean;
 
-  static buildQuestions(): { [key: string]: Question[]} {
+  static buildQuestions(): { [key: string]: QuestionType[]} {
 
-    const individualQuestions = [
+    const individualQuestions: QuestionType[] = [
       {id: 'title', type: 'text', title: 'Title', validators: Validators.required},
       {id: 'firstName', type: 'text', title: 'First name', validators: Validators.required},
       {id: 'lastName', type: 'text', title: 'Last name', validators: Validators.required},
@@ -62,7 +63,7 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   }
 
   valid(): boolean {
-    const questions: Question[] = this.partyTypeQuestions[this.partyTypeControl.value];
+    const questions: QuestionType[] = this.partyTypeQuestions[this.partyTypeControl.value];
     for (const question of questions) {
       const control = this.form.controls[question.id];
       if (!control?.valid) {

@@ -1,6 +1,6 @@
 import {Type} from '@angular/core';
 import {FormGroup, ValidatorFn} from '@angular/forms';
-import {DynamicFormComponent, Question} from '../../../dynamic-form/dynamic-form.component';
+import {DynamicFormComponent, QuestionType} from '../../../dynamic-form/dynamic-form.component';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {DynamicFormAnswersComponent} from '../../../dynamic-form/dynamic-form-answers.component';
 import {Utils} from '../../../../services/helper';
@@ -24,7 +24,7 @@ export interface StepType {
 
 export interface DynamicPageBuilder {
   question(id: string, type: string, title: string, validators?: ValidatorFn[] ): DynamicPageBuilder;
-  questions(question: Question | Question[]): DynamicPageBuilder;
+  questions(question: QuestionType | QuestionType[]): DynamicPageBuilder;
 
   buildPage(): EventBuilder;
 }
@@ -122,13 +122,13 @@ export class EventBuilder {
 
   dynamicPage(title: string): DynamicPageBuilder {
     const builder: EventBuilder = this;
-    const questions = Array<Question>();
+    const questions = Array<QuestionType>();
     const result = new class implements DynamicPageBuilder {
-      question(id: string, type: string, titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
+      question(id: string, type: 'text' | 'date', titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
         questions.push({ id, type, title: titleStr, validators});
         return result;
       }
-      questions(question: Question | Question[] ): DynamicPageBuilder {
+      questions(question: QuestionType | QuestionType[] ): DynamicPageBuilder {
         if (question instanceof Array) {
           for (const q of question) {
             questions.push(q);

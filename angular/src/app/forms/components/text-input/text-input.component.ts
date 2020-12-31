@@ -1,10 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {Question} from '../../dynamic-form/dynamic-form.component';
-
-export interface TextInput extends Question{
-  title: string;
-}
+import {TextQuestion} from '../../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-text-input',
@@ -13,7 +9,7 @@ export interface TextInput extends Question{
 })
 export class TextInputComponent implements OnInit {
 
-  @Input() input: TextInput = { id: '', title: '', type: 'text'};
+  @Input() input: TextQuestion;
   @Input() form: FormGroup;
   @Input() validate: boolean;
 
