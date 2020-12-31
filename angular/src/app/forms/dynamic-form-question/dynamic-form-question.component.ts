@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {QuestionType, RadioQuestion} from '../dynamic-form/dynamic-form.component';
+import {Question, RadioQuestion} from '../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-dynamic-form-question',
@@ -9,7 +9,7 @@ import {QuestionType, RadioQuestion} from '../dynamic-form/dynamic-form.componen
 })
 export class DynamicFormQuestionComponent {
 
-  @Input() question: QuestionType;
+  @Input() question: Question;
   @Input() form: FormGroup;
   @Input() validate: boolean;
 
