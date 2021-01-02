@@ -18,17 +18,12 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   @Input() partyType = 'Claimant';
   @Input() form: FormGroup = new FormGroup({});
 
-  input: RadioQuestion = {
-    title: '',
-    id: '',
-    type: 'radio',
-    choices: [
-      [ 'Individual', 'Individual'],
-      ['Company', 'Company'],
-      [ 'Organisation', 'Organisation'],
-      ['SoleTrader', 'Sole Trader' ]
-    ],
-  };
+  choices: [
+    [ 'Individual', 'Individual'],
+    ['Company', 'Company'],
+    [ 'Organisation', 'Organisation'],
+    ['SoleTrader', 'Sole Trader' ]
+  ];
 
   partyTypeControl: FormControl;
 
@@ -63,7 +58,6 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
 
   ngOnInit(): void {
     this.partyTypeQuestions = PartyDetailsComponent.buildQuestions();
-    this.input.title = 'Select type of ' + this.partyType;
     this.partyTypeControl = new FormControl('Individual');
     this.form.addControl('partyType', this.partyTypeControl);
   }

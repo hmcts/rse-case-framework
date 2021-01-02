@@ -11,8 +11,8 @@ export class RadioComponent {
 
 constructor() { }
 
-  values = ['Individual', 'Company'];
-  @Input() input: RadioQuestion;
+  @Input() title: string;
+  @Input() choices: [string, string][];
   @Input() form: FormGroup;
   @Input() control: FormControl;
 
