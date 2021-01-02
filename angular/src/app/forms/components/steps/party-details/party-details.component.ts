@@ -2,7 +2,7 @@ import {Component, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Question, RadioQuestion} from '../../../dynamic-form/dynamic-form.component';
 import {StepComponent} from '../../stepper/linear-stepper/types';
-import {Party} from "../../../../../generated/client-lib";
+import {PartyType} from '../../../../../typings';
 
 @Component({
   selector: 'app-party-details',
@@ -30,11 +30,11 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
 
   partyTypeControl: FormControl;
 
-  partyTypeQuestions: { [k in Party['partyType']]: Question[]};
+  partyTypeQuestions: { [k in PartyType]: Question[]};
 
   validate: boolean;
 
-  static buildQuestions(): { [k in Party['partyType']]: Question[]} {
+  static buildQuestions(): { [k in PartyType]: Question[]} {
 
     const individualQuestions: Question[] = [
       {id: 'title', type: 'text', title: 'Title', validators: Validators.required},
@@ -64,7 +64,7 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   }
 
   valid(): boolean {
-    const partyType: Party['partyType'] = this.partyTypeControl.value;
+    const partyType: PartyType = this.partyTypeControl.value;
     const questions: Question[] = this.partyTypeQuestions[partyType];
     for (const question of questions) {
       const control = this.form.controls[question.id];
