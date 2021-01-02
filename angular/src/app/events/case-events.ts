@@ -93,7 +93,4 @@ export class CaseEvents {
       .buildPage()
     .buildEvent()
     .toMap();
-
-  foo(): void {
-  }
 }
