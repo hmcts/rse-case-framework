@@ -18,7 +18,7 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   @Input() partyType = 'Claimant';
   @Input() form: FormGroup = new FormGroup({});
 
-  choices: [
+  choices: Array<[PartyType, string]> = [
     [ 'Individual', 'Individual'],
     ['Company', 'Company'],
     [ 'Organisation', 'Organisation'],
