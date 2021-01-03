@@ -1,7 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CaseService} from '../../../services/case-service.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEventHistory, Claim, Party} from '../../../../generated/client-lib';
+import {ClaimHistory} from '../../../../generated/client-lib/model/claimHistory';
+import {Claim, Party} from '../../../../generated/client-lib';
+import {Utils} from '../../../services/helper';
 
 @Component({
   selector: 'app-claims-tab',
@@ -12,7 +14,7 @@ export class ClaimsTabComponent implements OnInit {
   claims: Array<Claim>;
   @Input() caseId = 1;
   selectedClaim: Claim;
-  private history: Array<ApiEventHistory>;
+  history: Array<ClaimHistory>;
 
   constructor(
     private caseService: CaseService,
@@ -58,7 +60,7 @@ export class ClaimsTabComponent implements OnInit {
   }
 
   onSelect(claimId: number): void {
-    this.selectedClaim = this.claims.find(x => x.claimId === claimId);
+    this.selectedClaim = Utils.notNull(this.claims.find(x => x.claimId === claimId));
     this.caseService.getClaimEvents(claimId).subscribe(x => this.history = x);
     this.router.navigateByUrl(`/cases/${this.caseId}/claims/${claimId}`);
   }

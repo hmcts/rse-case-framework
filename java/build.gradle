@@ -99,4 +99,12 @@ bootRun {
 tasks.withType(Checkstyle) {
     exclude '**/org/jooq/**'
 }
+tasks {
+    generateJooqClasses {
+        customizeGenerator {
+            generate = new org.jooq.meta.jaxb.Generate()
+                    .withImmutablePojos(true)
+        }
+    }
+}
 

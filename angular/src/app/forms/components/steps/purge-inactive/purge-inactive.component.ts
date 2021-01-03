@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit} from '@angular/core';
-import {StepComponent} from '../../stepper/form-stepper/types';
+import {StepComponent} from '../../stepper/linear-stepper/types';
 import {FormControl, FormGroup} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';

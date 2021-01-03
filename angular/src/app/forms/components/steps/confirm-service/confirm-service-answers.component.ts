@@ -2,13 +2,14 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {Utils} from '../../../../services/helper';
 
 @Component({
   selector: 'app-confirm-service-answers',
   template: `
       <h3 class="govuk-heading-m">Confirm service for claim {{ caseName }} </h3>
       <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-          <div *ngFor="let key of ['name', 'role']" class="govuk-summary-list__row">
+          <div *ngFor="let key of ['name', 'role']; let i = index" class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
                   {{key | titlecase }}
               </dt>
@@ -37,8 +38,7 @@ export class ConfirmServiceAnswersComponent implements OnInit, CheckAnswersCompo
 
   ngOnInit(): void {
     const entityId = this.route.snapshot.queryParamMap.get('entity_id');
-    this.caseName = entityId;
-
+    this.caseName = Utils.notNull(entityId);
   }
 
 }

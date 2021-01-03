@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {Question} from '../dynamic-form/dynamic-form.component';
+import {Question, RadioQuestion} from '../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-dynamic-form-question',

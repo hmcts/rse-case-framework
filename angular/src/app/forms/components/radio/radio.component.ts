@@ -1,10 +1,6 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-
-export interface RadioInput {
-  title: string;
-  choices: [string, string][];
-}
+import {RadioQuestion} from '../../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-radio',
@@ -15,8 +11,8 @@ export class RadioComponent {
 
 constructor() { }
 
-  values = ['Individual', 'Company'];
-  @Input() input: RadioInput = { title: '', choices: []};
+  @Input() title: string;
+  @Input() choices: [string, string][];
   @Input() form: FormGroup;
   @Input() control: FormControl;
 

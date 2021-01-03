@@ -1,7 +1,10 @@
-package uk.gov.hmcts.ccf.controller;
+package uk.gov.hmcts.ccf.controller.citizen;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -91,7 +94,7 @@ public class CitizenController {
     @Transactional
     public ResponseEntity<String> fileUpload(@PathVariable("caseId") Long caseId,
                                              @RequestParam("file") MultipartFile file,
-                                             @AuthenticationPrincipal  OidcUser user) {
+                                             @Parameter(hidden = true) @AuthenticationPrincipal  OidcUser user) {
         bulkImport(caseId, file);
         return ResponseEntity.created(URI.create("/cases/" + caseId))
             .body("");
@@ -117,5 +120,12 @@ public class CitizenController {
         jooq.delete(CITIZEN)
             .where(CITIZEN.STATUS.eq("Inactive"))
             .execute();
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class CitizenResponse {
+        boolean hasMore;
+        List<Citizen> citizens;
     }
 }

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {StepDirective} from '../step.directive';
-import {StepComponent, StepType} from '../form-stepper/types';
+import {StepComponent, StepType} from '../linear-stepper/types';
 
 @Component({
   selector: 'app-stepper-step',
@@ -49,11 +49,7 @@ export class StepperStepComponent implements OnInit, OnChanges {
   }
 
   valid(): boolean {
-    if (!this.component) {
-      return undefined;
-    }
-    const result = this.component.valid();
-    return result;
+    return this.component.valid();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

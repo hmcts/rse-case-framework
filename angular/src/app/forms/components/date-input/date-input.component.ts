@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {Question} from '../../dynamic-form/dynamic-form.component';
+import {DateQuestion} from '../../dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-date-input',
@@ -10,7 +10,7 @@ import {Question} from '../../dynamic-form/dynamic-form.component';
 export class DateInputComponent implements OnInit {
 
   @Input() form: FormGroup;
-  @Input() input: Question;
+  @Input() input: DateQuestion;
   @Input() validate: boolean;
 
   group = new FormGroup({

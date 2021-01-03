@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {ClaimHistory} from '../../generated/client-lib/model/claimHistory';
 import {
-  ApiEventHistory,
   CaseActions,
-  CaseControllerService, CaseParty,
-  CaseSearchResult, Claim,
+  CaseControllerService,
+  CaseParty,
+  CaseSearchResult,
+  Claim,
   ClaimControllerService
 } from '../../generated/client-lib';
+import {CaseHistory} from '../../generated/client-lib/model/caseHistory';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +27,8 @@ export class CaseService {
   ) {
   }
 
-  searchCases(data): Observable<Array<CaseSearchResult>> {
-    const query = btoa(JSON.stringify(data));
+  searchCases(data: string): Observable<Array<CaseSearchResult>> {
+    const query = btoa(data);
     return this.cases.searchCases(query);
   }
 
@@ -40,7 +43,7 @@ export class CaseService {
     return this.claims.getClaims(caseId);
   }
 
-  public getClaimEvents(claimId: number): Observable<Array<ApiEventHistory>> {
+  public getClaimEvents(claimId: number): Observable<Array<ClaimHistory>> {
     if (this.isTestEnv()) {
       return of([]);
     }
@@ -54,7 +57,7 @@ export class CaseService {
     return this.cases.getParties(caseId);
   }
 
-  public getCaseEvents(caseId: number): Observable<Array<ApiEventHistory>> {
+  public getCaseEvents(caseId: number): Observable<Array<CaseHistory>> {
     // TODO - find alternative to assets folder that supports nesting.
     if (this.isTestEnv()) {
       return of([]);

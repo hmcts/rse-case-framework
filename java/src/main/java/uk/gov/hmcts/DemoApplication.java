@@ -2,7 +2,7 @@ package uk.gov.hmcts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import uk.gov.hmcts.ccf.OidcWaiter;
+import uk.gov.hmcts.ccf.config.OidcWaiter;
 
 @SpringBootApplication
 @SuppressWarnings({"checkstyle:hideutilityclassconstructor"})
@@ -13,4 +13,5 @@ public class DemoApplication {
         OidcWaiter.waitForOidcServer();
         SpringApplication.run(DemoApplication.class, args);
     }
+
 }

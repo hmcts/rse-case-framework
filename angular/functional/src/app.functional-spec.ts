@@ -91,7 +91,7 @@ describe('workspace-project App', () => {
   });
 
   it('can create a case event', () => {
-    browser.get(browser.baseUrl + '/cases/1/create-event?id=AddNotes');
+    browser.get(browser.baseUrl + '/cases/1/create-event?id=CloseCase');
     element(by.id('submit-button')).click();
     // Change answers
     element(by.id('change-0')).click();

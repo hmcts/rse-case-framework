@@ -1,19 +1,15 @@
-package uk.gov.hmcts;
+package uk.gov.hmcts
 
-import groovy.json.JsonSlurper
+
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState
-import org.jooq.generated.enums.Event
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.TransitionContext
-import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.Claim
-import uk.gov.hmcts.ccf.controller.ClaimController;
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
+import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.unspec.dto.ConfirmService
-import uk.gov.hmcts.unspec.event.CloseCase;
 
 @SpringBootTest
 @Transactional
@@ -29,7 +25,7 @@ class ClaimControllerSpec extends Specification {
         given:
         def response = factory.CreateCase().getBody()
         def claims = controller.getClaims(response.getId())
-        Claim claim = claims[0]
+        ClaimController.Claim claim = claims[0]
 
         expect: "Case has single claim"
         claims.size() == 1

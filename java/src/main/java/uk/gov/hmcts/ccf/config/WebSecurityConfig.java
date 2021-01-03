@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf;
+package uk.gov.hmcts.ccf.config;
 
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;

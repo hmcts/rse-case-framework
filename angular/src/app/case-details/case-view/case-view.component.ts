@@ -1,7 +1,9 @@
 import {Component, ViewEncapsulation, OnInit} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../services/case-service.service';
-import {ApiEventHistory, CaseActions} from '../../../generated/client-lib';
+import {CaseActions, CaseHistory} from '../../../generated/client-lib';
+import {Utils} from '../../services/helper';
+import ActionsEnum = CaseActions.ActionsEnum;
 
 
 @Component({
@@ -13,24 +15,24 @@ import {ApiEventHistory, CaseActions} from '../../../generated/client-lib';
 export class CaseViewComponent implements OnInit {
   caseId: number;
   case: CaseActions;
-  events: Array<ApiEventHistory>;
+  events: Array<CaseHistory>;
   selectedValue: string;
   selectedIndex: number;
-  tabMap = {
-    history: 0,
-    parties: 1,
-    claims: 2,
-    citizens: 3,
-  };
+  tabs = [
+    'history',
+    'parties',
+    'claims',
+    'citizens',
+  ];
 
-  eventDescriptions = {
-    AddNotes: 'Add case notes',
+  eventDescriptions: { [k in ActionsEnum]: string } = {
+    CreateClaim: 'Create a claim',
     CloseCase: 'Close the case',
     AddParty: 'Add a party',
     AddClaim: 'Create a new claim',
     SubmitAppeal: 'Submit an appeal',
     ImportCitizens: 'Import citizens',
-    PurgeInactiveCitizens: 'Purge inactive citizens',
+    PurgeInactiveCitizens: 'Purge inactive citizens'
   };
 
   constructor(
@@ -42,11 +44,11 @@ export class CaseViewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
       this.caseId = Number(x.get('case_id'));
-      const tab = x.get('case_tab');
-      this.selectedIndex = this.tabMap[tab];
+      const tab = Utils.notNull(x.get('case_tab'));
+      this.selectedIndex = this.tabs.indexOf(tab);
       this.caseService.getCase(this.caseId).subscribe(result => {
         this.case = result;
-        this.selectedValue = this.case.actions[0];
+        this.selectedValue = this.case.actions.values().next().value;
       });
       this.caseService.getCaseEvents(this.caseId).subscribe(result => {
         this.events = result;
@@ -55,20 +57,13 @@ export class CaseViewComponent implements OnInit {
 
   }
 
-  actions(): Array<string> {
+  actions(): Array<CaseActions.ActionsEnum> {
     return Array.from(this.case.actions.values()).sort();
   }
 
   // Update the address bar URL to track the active tab.
-  onTabChange($event): void {
-    let value = 'history';
-    for (const key in this.tabMap) {
-      if (this.tabMap[key] === $event) {
-        value = key;
-        break;
-      }
-    }
-
+  onTabChange($event: number): void {
+    const value = this.tabs[$event];
     const currentTab = this.route.snapshot.paramMap.get('case_tab');
     if (currentTab !== value) {
       this.router.navigateByUrl(`/cases/${this.caseId}/${value}`);

@@ -3,6 +3,7 @@ import {FormGroup, ValidatorFn} from '@angular/forms';
 import {DynamicFormComponent, Question} from '../../../dynamic-form/dynamic-form.component';
 import {CheckAnswersComponent} from '../../check-answers/types';
 import {DynamicFormAnswersComponent} from '../../../dynamic-form/dynamic-form-answers.component';
+import {Utils} from '../../../../services/helper';
 
 export interface StepComponent {
   validate: boolean;
@@ -17,7 +18,7 @@ export interface StepType {
   initialise?: (component: StepComponent) => void;
   answersType?: Type<CheckAnswersComponent>;
   answerInitialise?: (component: CheckAnswersComponent) => void;
-  form?: FormGroup;
+  form: FormGroup;
   formGroupName?: string;
 }
 
@@ -46,7 +47,7 @@ export class EventsBuilder {
     const result = new Map<string, Event>();
 
     for (const key of this.result.keys()) {
-      result.set(key, this.result.get(key).get());
+      result.set(key, Utils.notNull(this.result.get(key)).get());
     }
     return result;
   }
@@ -81,7 +82,7 @@ export class EventBuilder {
 
   customPage<Step extends StepComponent>(component: Type<Step>): CustomStepBuilder<Step> {
     const parent = this;
-    const step: StepType = {type: component};
+    const step: StepType = {type: component, form: new FormGroup({})};
     parent.steps.push(step);
     return new class implements CustomStepBuilder<Step> {
       withInitializer(initialiser: (component: Step) => void): CustomStepBuilder<Step> {
@@ -123,7 +124,7 @@ export class EventBuilder {
     const builder: EventBuilder = this;
     const questions = Array<Question>();
     const result = new class implements DynamicPageBuilder {
-      question(id: string, type: string, titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
+      question(id: string, type: 'text' | 'date', titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
         questions.push({ id, type, title: titleStr, validators});
         return result;
       }

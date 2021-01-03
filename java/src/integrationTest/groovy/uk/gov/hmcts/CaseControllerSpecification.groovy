@@ -3,31 +3,26 @@ package uk.gov.hmcts
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.generated.enums.CaseState
-import org.jooq.generated.enums.ClaimState
+import org.jooq.generated.enums.Event
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.TransitionContext
-import uk.gov.hmcts.ccf.api.CaseActions
-import uk.gov.hmcts.ccf.api.ApiEventCreation
-import uk.gov.hmcts.ccf.api.UserInfo
-import uk.gov.hmcts.ccf.controller.CaseController
+import uk.gov.hmcts.ccf.StateMachine
+
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
+import uk.gov.hmcts.ccf.controller.kase.CaseController
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
-import uk.gov.hmcts.unspec.dto.ConfirmService
-import org.jooq.generated.enums.Event
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal
@@ -94,7 +89,7 @@ class CaseControllerSpecification extends Specification {
         def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-        CaseActions a = new ObjectMapper().readValue(json, CaseActions.class)
+        CaseController.CaseActions a = new ObjectMapper().readValue(json, CaseController.CaseActions.class)
 
         expect:
         a.getState() == CaseState.Created
@@ -126,6 +121,7 @@ class CaseControllerSpecification extends Specification {
         def events = controller.getCaseEvents(response.getId())
         def event = events.get(0)
 
+
         expect: "Case has events for case and claim creation"
         events.size() == 2
         LocalDate.now() == event.getTimestamp().toLocalDate()
@@ -152,7 +148,7 @@ class CaseControllerSpecification extends Specification {
         def response = factory.CreateCase(userId).getBody()
         def parties = controller.getParties(response.getId())
         Long partyId = parties[0].partyId
-        handler.addClaim(TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
+        handler.addClaim(StateMachine.TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
                         .defendants(Map.of(partyId, true))
                         .claimants(Map.of(partyId, true)).build())

@@ -11,8 +11,8 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
-import uk.gov.hmcts.ccf.api.UserInfo
-import uk.gov.hmcts.ccf.controller.UserController
+import uk.gov.hmcts.ccf.controller.user.UserInfo
+import uk.gov.hmcts.ccf.controller.user.UserController
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get

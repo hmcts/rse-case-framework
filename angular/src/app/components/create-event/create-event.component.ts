@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {Event, StepType} from '../../forms/components/stepper/form-stepper/types';
+import {Event, StepType} from '../../forms/components/stepper/linear-stepper/types';
 import {EventList} from '../../events/events';
 import {CaseControllerService} from '../../../generated/client-lib';
+import {Utils} from '../../services/helper';
 
 @Component({
   selector: 'app-create-event',
@@ -29,16 +30,22 @@ export class CreateEventComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(x => this.caseId = x.get('case_id'));
+    this.route.paramMap.subscribe(x => {
+      const id = x.get('case_id');
+      if (id) {
+        this.caseId = id;
+      }
+    });
     this.route.queryParamMap.subscribe(x => {
       this.eventId = x.get('id') ?? 'CreateClaim';
       this.entityId = x.get('entity_id') ?? this.caseId;
-      this.event = EventList.EVENTS.get(this.eventId);
+      this.event = Utils.notNull(EventList.EVENTS.get(this.eventId));
       this.pages = this.event.steps;
     });
   }
 
-  onSubmit(data): void {
+  // tslint:disable-next-line:no-any
+  onSubmit(data: any): void {
     const isFile = this.files.has('file');
     const payload = isFile
       ? this.files
@@ -55,12 +62,12 @@ export class CreateEventComponent implements OnInit {
 
     this.http.post(this.baseUrl + url, payload, { observe: 'response' })
       .subscribe(resp => {
-        const redirectTo = EventList.EVENTS.get(this.eventId).redirectTo;
+        const redirectTo = Utils.notNull(EventList.EVENTS.get(this.eventId)).redirectTo;
 
         if (redirectTo) {
           this.router.navigateByUrl(`/cases/${this.caseId}/${redirectTo}`, {replaceUrl: true});
         } else {
-          this.router.navigateByUrl(resp.headers.get('location'), {replaceUrl: true});
+          this.router.navigateByUrl(Utils.notNull(resp.headers.get('location')), {replaceUrl: true});
         }
       });
   }

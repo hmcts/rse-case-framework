@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import { Router } from '@angular/router';
 import {CaseService} from '../services/case-service.service';
 import {CaseSearchResult} from '../../generated/client-lib';
@@ -14,7 +14,7 @@ export class SearchCasesComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private caseService: CaseService,
               private router: Router) { }
-  searchForm;
+  searchForm: FormGroup;
   caseList: Array<CaseSearchResult>;
   ngOnInit(): void {
     this.searchForm = this.formBuilder.group({
@@ -22,11 +22,11 @@ export class SearchCasesComponent implements OnInit {
       caseName: '',
       id: '',
     });
-    this.onSubmit({});
+    this.onSubmit();
   }
 
-  onSubmit(data): void {
-    this.caseService.searchCases(data).subscribe(x => this.caseList = x);
+  onSubmit(): void {
+    this.caseService.searchCases(JSON.stringify(this.searchForm.value)).subscribe(x => this.caseList = x);
   }
 
   createClicked(): void {
