@@ -4,12 +4,18 @@ plugins {
   id 'org.openapi.generator' version '5.0.0-beta3'
 }
 
-task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+def outDir = file('src/generated/client-lib')
+
+task cleanTypescriptClient(type: Delete) {
+  delete outDir
+}
+
+task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask,
+  dependsOn: cleanTypescriptClient) {
   generatorName = "typescript-angular"
   def producer = tasks.getByPath(':java:integrationTest').outputs
   inputs.files producer
   inputSpec = producer.files[0].getAbsolutePath()
-  def outDir = file('src/generated/client-lib')
   outputDir = outDir.path
   outputs.dir outDir
   configOptions = [
