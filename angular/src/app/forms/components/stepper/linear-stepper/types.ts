@@ -24,7 +24,6 @@ export interface StepType {
 
 export interface DynamicPageBuilder {
   question(id: string, type: string, title: string, validators?: ValidatorFn[] ): DynamicPageBuilder;
-  questions(question: Question | Question[]): DynamicPageBuilder;
 
   buildPage(): EventBuilder;
 }
@@ -126,16 +125,6 @@ export class EventBuilder {
     const result = new class implements DynamicPageBuilder {
       question(id: string, type: 'text' | 'date', titleStr: string, validators: ValidatorFn[] = Array()): DynamicPageBuilder {
         questions.push({ id, type, title: titleStr, validators});
-        return result;
-      }
-      questions(question: Question | Question[] ): DynamicPageBuilder {
-        if (question instanceof Array) {
-          for (const q of question) {
-            questions.push(q);
-          }
-        } else{
-          questions.push(question);
-        }
         return result;
       }
 
