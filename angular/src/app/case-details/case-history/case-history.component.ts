@@ -7,7 +7,7 @@ import {AllCaseEvents} from '../../events/events';
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss']
 })
-export class CaseHistoryComponent implements OnInit {
+export class CaseHistoryComponent {
 
   @Input() history: Array<CaseHistory>;
   eventDescriptions: { [k in AllCaseEvents ]: string } = {
@@ -24,9 +24,6 @@ export class CaseHistoryComponent implements OnInit {
     ResponseFiled: 'Response filed',
   };
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   getDescription(id: AllCaseEvents): string {
     return this.eventDescriptions[id];
