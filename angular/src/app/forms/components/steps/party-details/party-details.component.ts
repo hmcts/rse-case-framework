@@ -19,10 +19,10 @@ export class PartyDetailsComponent implements OnInit, StepComponent {
   @Input() form: FormGroup = new FormGroup({});
 
   choices: Array<[PartyType, string]> = [
-    [ 'Individual', 'Individual'],
-    ['Company', 'Company'],
-    [ 'Organisation', 'Organisation'],
-    ['SoleTrader', 'Sole Trader' ]
+    [ 'Individual', $localize`Individual`],
+    ['Company', $localize`Company`],
+    [ 'Organisation', $localize`Organisation`],
+    ['SoleTrader', $localize`Sole Trader` ]
   ];
 
   partyTypeControl: FormControl;

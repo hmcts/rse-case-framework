@@ -26,13 +26,13 @@ export class CaseViewComponent implements OnInit {
   ];
 
   eventDescriptions: { [k in ActionsEnum]: string } = {
-    CreateClaim: 'Create a claim',
-    CloseCase: 'Close the case',
-    AddParty: 'Add a party',
-    AddClaim: 'Create a new claim',
-    SubmitAppeal: 'Submit an appeal',
-    ImportCitizens: 'Import citizens',
-    PurgeInactiveCitizens: 'Purge inactive citizens'
+    CreateClaim: $localize`Create a claim`,
+    CloseCase: $localize`Close the case`,
+    AddParty: $localize`Add a party`,
+    AddClaim: $localize`Create a new claim`,
+    SubmitAppeal: $localize`Submit an appeal`,
+    ImportCitizens: $localize`Import citizens`,
+    PurgeInactiveCitizens: $localize`Purge inactive citizens`
   };
 
   constructor(

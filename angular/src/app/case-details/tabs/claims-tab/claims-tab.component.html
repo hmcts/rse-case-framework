@@ -1,9 +1,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-three-quarters">
-    <h1 class="govuk-heading-l">Claims</h1>
+    <h1 class="govuk-heading-l" i18n>Claims</h1>
   </div>
   <div class="govuk-grid-column-one-quarter">
-    <a routerLink="/cases/{{caseId}}/create-event" [queryParams]="{id: 'AddClaim'}"><button class="govuk-button hmcts-menu__item" >Create claim</button></a>
+    <a routerLink="/cases/{{caseId}}/create-event" [queryParams]="{id: 'AddClaim'}"><button class="govuk-button hmcts-menu__item" i18n>Create claim</button></a>
   </div>
 </div>
 
@@ -40,7 +40,7 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header govuk-!-width-one-half">Claimants</th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-half" i18n>Claimants</th>
         </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -58,7 +58,7 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header govuk-!-width-one-half">Defendants</th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-half" i18n>Defendants</th>
         </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -80,10 +80,10 @@
   </div>
   <div *ngIf="selectedClaim.state == 'Issued'" class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h4 class="govuk-heading-s">Available actions</h4>
+      <h4 class="govuk-heading-s" i18n>Available actions</h4>
       <a  routerLink="/cases/{{caseId}}/create-event"
          [queryParams]="{id: 'ConfirmService', entity_id: selectedClaim.claimId}">
-        <button class="govuk-button hmcts-menu__item claim-action" >Confirm service</button>
+        <button class="govuk-button hmcts-menu__item claim-action"  i18n>Confirm service</button>
       </a>
     </div>
   </div>
@@ -92,7 +92,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h4 class="govuk-heading-s">Claim history</h4>
+      <h4 class="govuk-heading-s" i18n>Claim history</h4>
       <app-case-history [history]="$any(history)"></app-case-history>
     </div>
   </div>
