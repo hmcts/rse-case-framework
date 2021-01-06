@@ -28,9 +28,7 @@ export class CaseHistoryComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // tslint:disable-next-line:no-any
-  getDescription(id: any): string {
-    // @ts-ignore
+  getDescription(id: AllCaseEvents): string {
     return this.eventDescriptions[id];
   }
 }
