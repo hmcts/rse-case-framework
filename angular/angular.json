@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "localize": false,
+            "localize": ["en-US"],
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
