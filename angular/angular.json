@@ -14,16 +14,16 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": "en-US",
+        "sourceLocale": "en-GB",
         "locales": {
-          "cy": "src/locale/messages.cy.xlf"
+          "cy-GB": "src/locale/messages.cy.xlf"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "localize": ["en-US"],
+            "localize": ["en-GB"],
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -41,8 +41,8 @@
             "scripts": []
           },
           "configurations": {
-            "cy": {
-              "localize": ["cy"],
+            "cy-GB": {
+              "localize": ["cy-GB"],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -102,8 +102,8 @@
             "proxyConfig": "proxy.conf.docker.json"
           },
           "configurations": {
-            "cy": {
-              "browserTarget": "angular:build:cy"
+            "cy-GB": {
+              "browserTarget": "angular:build:cy-GB"
             },
             "production": {
               "browserTarget": "angular:build:production"
