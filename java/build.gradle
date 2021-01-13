@@ -89,7 +89,7 @@ bootJar {
 }
 
 bootRun {
-    args '--generate-data=true', '--database-host=localhost'
+    args '--generate-data=true', '--database-host=localhost', '--server.port=9998'
     jvmArgs "-noverify" // Improves dev startup time
     if (project.hasProperty('args')) {
         args project.args.split(',')

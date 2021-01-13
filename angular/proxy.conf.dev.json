@@ -6,7 +6,7 @@
       "/oauth2",
       "/web"
     ],
-    "target": "http://host.docker.internal:8080",
+    "target": "http://host.docker.internal:9998",
     "secure": false
   }
 ]
