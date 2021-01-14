@@ -22,7 +22,7 @@ describe('workspace-project App', () => {
     element(by.id('password')).sendKeys('p');
     element(by.id('kc-login')).click();
     browser.wait(protractor.ExpectedConditions.presenceOf($('#title-header')), 10000);
-    expect(page.getTitleText()).toEqual('Unspecified Claims');
+    expect(page.getTitleText()).toEqual('Manage Cases');
   });
 
   it('displays the case list', () => {

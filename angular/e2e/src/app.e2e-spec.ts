@@ -11,7 +11,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Unspecified Claims');
+    expect(page.getTitleText()).toEqual('Manage Cases');
   });
 
   it('displays the case list', () => {

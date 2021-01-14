@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
     expose:
-      - 55432
+      - 5432
   backend:
     build:
       context: java
