@@ -1,0 +1,8 @@
+
+// Width of main container
+$hmcts-page-width: 1220px;
+
+// TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
+.govuk-width-container, #content {
+  max-width: 1220px;
+}
