@@ -7,7 +7,7 @@ import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
-import org.jooq.generated.enums.PartyType;
+import org.jooq.generated.enums.PartyRole;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,11 +69,11 @@ public class CaseHandlerImpl {
             .execute();
 
         List<Object[]> claimParties = claimantIds.stream().map(x -> {
-            return new Object[]{claimId, x, PartyType.claimant};
+            return new Object[]{claimId, x, PartyRole.claimant};
         }).collect(Collectors.toList());
 
         claimParties.addAll(defendantIds.stream().map(x -> {
-            return new Object[]{claimId, x, PartyType.defendant};
+            return new Object[]{claimId, x, PartyRole.defendant};
         }).collect(Collectors.toList()));
 
 

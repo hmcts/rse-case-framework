@@ -10,6 +10,11 @@ export class CaseListComponent implements OnInit {
 
   constructor() { }
   @Input() caseList: Array<CaseSearchResult>;
+  stateNames: { [k in CaseSearchResult.StateEnum]: string} = {
+    Created: $localize`Created`,
+    Stayed: $localize`Stayed`,
+    Closed: $localize`Closed`,
+  };
   ngOnInit(): void {
   }
 }

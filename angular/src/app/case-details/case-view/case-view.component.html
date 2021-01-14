@@ -17,18 +17,17 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         <mat-tab-group animationDuration="0ms" [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
-          <mat-tab label="History" id="history-tab-button">
-            <h1 class="govuk-heading-l">Case History</h1>
+          <mat-tab i18n-label label="History" id="history-tab-button">
+            <h1 class="govuk-heading-l" i18n>Case History</h1>
             <app-case-history [history]="events"></app-case-history>
           </mat-tab>
-          <mat-tab label="Parties">
+          <mat-tab i18n-label label="Parties">
             <app-parties-tab [caseId]="case.id" *ngIf="case"></app-parties-tab>
-
           </mat-tab>
-          <mat-tab label="Claims">
+          <mat-tab i18n-label label="Claims">
             <app-claims-tab [caseId]="caseId"></app-claims-tab>
           </mat-tab>
-          <mat-tab label="Citizens">
+          <mat-tab i18n-label label="Citizens">
             <app-citizen-tab [caseId]="caseId"></app-citizen-tab>
           </mat-tab>
         </mat-tab-group>
