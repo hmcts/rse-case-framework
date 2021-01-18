@@ -5,7 +5,7 @@
         <a routerLink="/cases" class="govuk-back-link">Back</a>
         <a routerLink="/cases/{{caseId}}/create-event"
            [queryParams]="{id: selectedValue }">
-          <button class="govuk-button hmcts-menu__item" id="create-event-button"  style="float:right">Start</button>
+          <button class="govuk-button hmcts-menu__item" id="create-event-button"  style="float:right">Go</button>
         </a>
         <span style="float: right;" *ngIf="case">
                     <select [(ngModel)]="selectedValue" class="govuk-select" id="sort" name="sort" >

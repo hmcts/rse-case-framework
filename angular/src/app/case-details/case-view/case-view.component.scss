@@ -1,5 +1,9 @@
 @import "node_modules/govuk-frontend/govuk/base";
 
+.govuk-width-container {
+ max-width: 1220px;
+}
+
 body {
       @include govuk-font($size: 19);
       @include govuk-text-colour;
@@ -8,8 +12,7 @@ body {
   padding: 30px 20px
 }
 .mat-tab-label-content {
-    // background-color: red;
-    background-color: govuk-colour("light-grey", $legacy: "grey-4");
+    background-color: #dee0e2;
       padding: 10px 20px;
 }
 .basic-container {
@@ -30,15 +33,11 @@ body {
   .mat-tab-labels {
     .mat-tab-label {
       opacity: 1;
-      padding: 5px;
+      padding: 5px 5px 7px;
       border-bottom: none;
-      color: #333;
-      text-decoration: underline;
+      color: #1d70b8;
       min-width: 50px;
-    //   padding: 10px 20px;
       @include govuk-font($size: 19);
-      @include govuk-text-colour;
-    //   background-color: #f3f2f1;
     }
     .mat-tab-label-active {
       @extend .mat-tab-label;
@@ -46,6 +45,7 @@ body {
       border-top: 1px solid $govuk-border-colour;
       border-left: 1px solid $govuk-border-colour;
       border-right: 1px solid $govuk-border-colour;
+
       div {
           background-color: white;
       }
@@ -56,12 +56,6 @@ body {
     border: 1px solid $govuk-border-colour;
     padding: 10px;
   }
-
-/**  Copyright 2019 Google LLC. All Rights Reserved.
-    Use of this source code is governed by an MIT-style license that
-    can be found in the LICENSE file at http://angular.io/license */
-
-
 
 .mat-tab-nav-bar, .mat-tab-header {
     border-bottom: none
