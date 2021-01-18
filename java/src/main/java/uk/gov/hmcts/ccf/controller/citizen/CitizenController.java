@@ -49,13 +49,13 @@ public class CitizenController {
     @SneakyThrows
     @GetMapping(path = "/cases/{id}/citizens")
     @Transactional
-    public CitizenResponse getCitizens(@PathVariable("id") Long id,
+    public CitizenResponse getCitizens(@PathVariable("id") String id,
                                            @RequestHeader("search-query") String base64JsonQuery,
                                            @RequestParam("page") Integer page) {
         byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
         Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
         Condition condition = DSL.trueCondition()
-            .and(CITIZEN.CASE_ID.eq(id));
+            .and(CITIZEN.CASE_ID.eq(Long.valueOf(id)));
         String forename = query.get("forename");
         if (!StringUtils.isEmpty(forename)) {
             condition = condition.and(lower(CITIZEN.FORENAME).like("%" + forename.toLowerCase() + "%"));

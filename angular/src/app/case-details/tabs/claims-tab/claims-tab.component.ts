@@ -12,7 +12,7 @@ import {Utils} from '../../../services/helper';
 })
 export class ClaimsTabComponent implements OnInit {
   claims: Array<Claim>;
-  @Input() caseId = 1;
+  @Input() caseId = '1';
   selectedClaim: Claim;
   history: Array<ClaimHistory>;
 

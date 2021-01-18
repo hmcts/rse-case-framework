@@ -11,7 +11,7 @@ import {Citizen, CitizenControllerService} from '../../../../generated/client-li
 })
 export class CitizenTabComponent implements OnInit {
 
-  @Input() caseId: number;
+  @Input() caseId: string;
   baseUrl = environment.baseUrl;
   citizens: Array<Citizen>;
   page = 1;

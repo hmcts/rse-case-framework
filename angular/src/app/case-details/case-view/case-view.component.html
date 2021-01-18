@@ -1,4 +1,4 @@
-<div class="govuk-width-container">
+<div *ngIf="case" class="govuk-width-container">
   <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
@@ -22,7 +22,7 @@
             <app-case-history [history]="events"></app-case-history>
           </mat-tab>
           <mat-tab i18n-label label="Parties">
-            <app-parties-tab [caseId]="case.id" *ngIf="case"></app-parties-tab>
+            <app-parties-tab [caseId]="$any(case.id)" *ngIf="case"></app-parties-tab>
           </mat-tab>
           <mat-tab i18n-label label="Claims">
             <app-claims-tab [caseId]="caseId"></app-claims-tab>

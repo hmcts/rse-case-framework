@@ -53,20 +53,20 @@ public class ClaimController {
     }
 
     @GetMapping(path = "/cases/{caseId}/claims")
-    public List<Claim> getClaims(@PathVariable("caseId") Long caseId) {
+    public List<Claim> getClaims(@PathVariable("caseId") String caseId) {
         return jooq.select()
             .from(CLAIMS_WITH_STATES)
             .join(CLAIMS_WITH_PARTIES).using(CLAIMS_WITH_STATES.CLAIM_ID)
-            .where(CLAIMS_WITH_STATES.CASE_ID.eq(caseId))
+            .where(CLAIMS_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.asc())
             .fetchInto(Claim.class);
     }
 
     @GetMapping(path = "/claims/{claimId}/events")
-    public List<ClaimHistory> getClaimEvents(@PathVariable("claimId") Long claimId) {
+    public List<ClaimHistory> getClaimEvents(@PathVariable("claimId") String claimId) {
         return jooq.select()
             .from(CLAIM_HISTORY)
-            .where(CLAIM_HISTORY.CLAIM_ID.eq(claimId))
+            .where(CLAIM_HISTORY.CLAIM_ID.eq(Long.valueOf(claimId)))
             .orderBy(CLAIM_HISTORY.TIMESTAMP.desc())
             .fetch()
             .into(ClaimHistory.class);

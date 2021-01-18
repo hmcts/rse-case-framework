@@ -4,6 +4,7 @@ import {CheckAnswersComponent} from '../../check-answers/types';
 import {ActivatedRoute} from '@angular/router';
 import {CaseService} from '../../../../services/case-service.service';
 import {CaseParty, Party} from '../../../../../generated/client-lib';
+import {Utils} from '../../../../services/helper';
 
 @Component({
   selector: 'app-party-details-answers',
@@ -39,8 +40,8 @@ export class ChoosePartiesAnswersComponent implements CheckAnswersComponent, OnI
   }
 
   ngOnInit(): void {
-    const caseId = this.route.snapshot.paramMap.get('case_id');
-    this.caseService.getCaseParties(Number(caseId)).subscribe(c => {
+    const caseId = Utils.caseId(this.route.snapshot.paramMap.get('case_id'));
+    this.caseService.getCaseParties(caseId).subscribe(c => {
       this.caseParties = c;
     });
   }

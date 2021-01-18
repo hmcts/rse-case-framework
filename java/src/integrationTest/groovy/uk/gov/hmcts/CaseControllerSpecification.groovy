@@ -118,7 +118,7 @@ class CaseControllerSpecification extends Specification {
     def "A new case has a creation event"() {
         given:
         def response = factory.CreateCase().getBody()
-        def events = controller.getCaseEvents(response.getId())
+        def events = controller.getCaseEvents(String.valueOf(response.getId()))
         def event = events.get(0)
 
 
@@ -132,8 +132,8 @@ class CaseControllerSpecification extends Specification {
     def "A new case has two parties"() {
         given:
         def response = factory.CreateCase().getBody()
-        def s = controller.getParties(response.getId());
-        def parties = controller.getParties(response.getId())
+        def s = controller.getParties(String.valueOf(response.getId()));
+        def parties = controller.getParties(String.valueOf(response.getId()))
 
         expect: "Case has two parties"
         parties.size() == 2
@@ -146,7 +146,7 @@ class CaseControllerSpecification extends Specification {
         when:
         def userId = factory.createUser()
         def response = factory.CreateCase(userId).getBody()
-        def parties = controller.getParties(response.getId())
+        def parties = controller.getParties(String.valueOf(response.getId()))
         Long partyId = parties[0].partyId
         handler.addClaim(StateMachine.TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
@@ -167,7 +167,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, userId)
 
         expect:
-        controller.getCase(id).state == CaseState.Closed
+        controller.getCase(String.valueOf(id)).state == CaseState.Closed
     }
 
     def "A closed case can be reopened"() {
@@ -181,7 +181,7 @@ class CaseControllerSpecification extends Specification {
         controller.createEvent(id, event, userId)
 
         expect:
-        controller.getCase(id).state == CaseState.Stayed
+        controller.getCase(String.valueOf(id)).state == CaseState.Stayed
     }
 
 

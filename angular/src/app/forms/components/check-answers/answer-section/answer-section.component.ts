@@ -15,7 +15,7 @@ export class AnswerSectionComponent implements OnInit, CheckAnswersComponent {
   @Input() step: StepType;
   @Input() form: FormGroup;
   @Input() index: number;
-  @Input() caseId: number;
+  @Input() caseId: string;
   @Output() answerChange = new EventEmitter<number>();
   component: CheckAnswersComponent;
 

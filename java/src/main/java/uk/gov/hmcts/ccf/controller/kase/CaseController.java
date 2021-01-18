@@ -91,21 +91,21 @@ public class CaseController {
     }
 
     @GetMapping(path = "/{caseId}")
-    public CaseActions getCase(@PathVariable("caseId") Long caseId) {
+    public CaseActions getCase(@PathVariable("caseId") String caseId) {
         CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
             .from(CASES_WITH_STATES)
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
 
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
-        return new CaseActions(caseId, currentState, statemachine.getAvailableActions(currentState));
+        return new CaseActions(Long.valueOf(caseId), currentState, statemachine.getAvailableActions(currentState));
     }
 
     @GetMapping(path = "/{caseId}/events")
-    public List<CaseHistory> getCaseEvents(@PathVariable("caseId") Long caseId) {
+    public List<CaseHistory> getCaseEvents(@PathVariable("caseId") String caseId) {
         return jooq.select()
             .from(CASE_HISTORY)
-            .where(CASE_HISTORY.CASE_ID.eq(caseId))
+            .where(CASE_HISTORY.CASE_ID.eq(Long.valueOf(caseId)))
             .orderBy(CASE_HISTORY.TIMESTAMP.desc())
             .fetchInto(CaseHistory.class);
     }
@@ -126,11 +126,11 @@ public class CaseController {
     }
 
     @GetMapping(path = "/{caseId}/parties")
-    public List<CaseParty> getParties(@PathVariable("caseId") Long caseId) {
+    public List<CaseParty> getParties(@PathVariable("caseId") String caseId) {
         return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
                 .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
-                .where(PARTIES.CASE_ID.eq(caseId))
+                .where(PARTIES.CASE_ID.eq(Long.valueOf(caseId)))
                 .orderBy(PARTIES.CASE_ID.asc())
                 .fetchInto(CaseParty.class);
     }

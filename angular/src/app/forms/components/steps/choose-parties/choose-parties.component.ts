@@ -24,7 +24,7 @@ export class ChoosePartiesComponent implements OnInit, StepComponent {
   validate: boolean;
 
   ngOnInit(): void {
-    this.caseService.getCaseParties(Number(this.caseId)).subscribe(caseParties => {
+    this.caseService.getCaseParties(this.caseId).subscribe(caseParties => {
       this.caseParties = caseParties;
       this.claimants.reset();
       this.defendants.reset();

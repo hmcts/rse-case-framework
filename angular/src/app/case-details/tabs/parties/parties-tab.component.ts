@@ -11,7 +11,7 @@ import {Utils} from '../../../services/helper';
 })
 export class PartiesTabComponent implements OnInit {
 
-  @Input() caseId = 1;
+  @Input() caseId = '1';
   parties: Array<CaseParty>;
   party: Party;
   currentTab: string;
@@ -23,7 +23,7 @@ export class PartiesTabComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.caseService.getCaseParties(Number(this.caseId))
+    this.caseService.getCaseParties(this.caseId)
       .subscribe(x =>  {
         this.parties = x;
         this.route.paramMap.subscribe(params => {

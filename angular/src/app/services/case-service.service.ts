@@ -32,11 +32,11 @@ export class CaseService {
     return this.cases.searchCases(query);
   }
 
-  public getCase(caseId: number): Observable<CaseActions> {
+  public getCase(caseId: string): Observable<CaseActions> {
     return this.cases.getCase(caseId);
   }
 
-  public getCaseClaims(caseId: number): Observable<Array<Claim>> {
+  public getCaseClaims(caseId: string): Observable<Array<Claim>> {
     if (this.isTestEnv()) {
       return of([]);
     }
@@ -47,17 +47,17 @@ export class CaseService {
     if (this.isTestEnv()) {
       return of([]);
     }
-    return this.claims.getClaimEvents(claimId);
+    return this.claims.getClaimEvents(String(claimId));
   }
 
-  public getCaseParties(caseId: number): Observable<Array<CaseParty>> {
+  public getCaseParties(caseId: string): Observable<Array<CaseParty>> {
     if (this.isTestEnv()) {
       return of([]);
     }
     return this.cases.getParties(caseId);
   }
 
-  public getCaseEvents(caseId: number): Observable<Array<CaseHistory>> {
+  public getCaseEvents(caseId: string): Observable<Array<CaseHistory>> {
     // TODO - find alternative to assets folder that supports nesting.
     if (this.isTestEnv()) {
       return of([]);

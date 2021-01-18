@@ -6,4 +6,8 @@ export class Utils {
     }
     return val;
   }
+
+  static caseId(val: string | undefined | null): string {
+    return this.notNull(val).split('-').join('');
+  }
 }

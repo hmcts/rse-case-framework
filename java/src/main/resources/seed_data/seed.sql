@@ -1,5 +1,8 @@
 
-with surnames as (
+with case_ids as (
+    select max(case_id) as case_id from cases
+),
+surnames as (
     values
     ('Smith'),
     ('Brown'),
@@ -35,7 +38,7 @@ with surnames as (
          ('Arthur')
      )
 insert into citizen select
-                        2542345663454321,
+                        case_ids.case_id,
                         'Mr',
                         forename.column1 as forname,
                         surname.column1 as surname,
@@ -43,7 +46,7 @@ insert into citizen select
                         case when round(random()*100) + 1 between 0 and 75 then 'Active'
                              else 'Inactive'
                             end
-from forenames forename, surnames surname, surnames x, surnames y, surnames z
+from case_ids, forenames forename, surnames surname, surnames x, surnames y, surnames z
 limit 120000;
 
 analyze;

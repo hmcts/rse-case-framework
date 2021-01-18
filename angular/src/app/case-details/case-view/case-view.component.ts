@@ -13,7 +13,7 @@ import ActionsEnum = CaseActions.ActionsEnum;
   encapsulation: ViewEncapsulation.None
 })
 export class CaseViewComponent implements OnInit {
-  caseId: number;
+  caseId: string;
   case: CaseActions;
   events: Array<CaseHistory>;
   selectedValue: string;
@@ -43,7 +43,7 @@ export class CaseViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(x => {
-      this.caseId = Number(x.get('case_id'));
+      this.caseId = Utils.caseId(x.get('case_id'));
       const tab = Utils.notNull(x.get('case_tab'));
       this.selectedIndex = this.tabs.indexOf(tab);
       this.caseService.getCase(this.caseId).subscribe(result => {
@@ -54,7 +54,6 @@ export class CaseViewComponent implements OnInit {
         this.events = result;
       });
     });
-
   }
 
   actions(): Array<CaseActions.ActionsEnum> {

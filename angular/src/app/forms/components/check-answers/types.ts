@@ -5,7 +5,7 @@ export interface CheckAnswersComponent {
   form: FormGroup;
   index: number;
   answerChange: EventEmitter<number>;
-  caseId?: number;
+  caseId?: string;
 }
 
 @Directive({

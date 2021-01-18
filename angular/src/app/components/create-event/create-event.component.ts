@@ -33,7 +33,7 @@ export class CreateEventComponent implements OnInit {
     this.route.paramMap.subscribe(x => {
       const id = x.get('case_id');
       if (id) {
-        this.caseId = id;
+        this.caseId = Utils.caseId(id);
       }
     });
     this.route.queryParamMap.subscribe(x => {
