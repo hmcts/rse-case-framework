@@ -59,7 +59,7 @@ public class CaseController {
 
     @AllArgsConstructor
     @Data
-    static class CaseSearchResult {
+    public static class CaseSearchResult {
         private Long caseId;
         private CaseState state;
         private Long partyCount;
