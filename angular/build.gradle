@@ -13,7 +13,7 @@ task cleanTypescriptClient(type: Delete) {
 task buildTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask,
   dependsOn: cleanTypescriptClient) {
   generatorName = "typescript-angular"
-  def producer = tasks.getByPath(':java:integrationTest').outputs
+  def producer = tasks.getByPath(':java:backend:integrationTest').outputs
   inputs.files producer
   inputSpec = producer.files[0].getAbsolutePath()
   outputDir = outDir.path

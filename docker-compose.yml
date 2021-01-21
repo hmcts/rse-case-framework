@@ -10,7 +10,7 @@ services:
       - 5432
   backend:
     build:
-      context: java
+      context: java/backend
       dockerfile: Dockerfile
     environment:
       IDAM_URI: http://keycloak:8080/auth/realms/rse

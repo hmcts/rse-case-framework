@@ -1,4 +1,4 @@
-task build(dependsOn: ['java:bootJar', ':angular:build'])
+task build(dependsOn: [':java:backend:bootJar', ':angular:build'])
 
 task functionalTest(type: Exec, dependsOn: [build]) {
     environment 'NG_COMMAND', 'ng e2e --configuration local --protractor-config functional/protractor.conf.js'
