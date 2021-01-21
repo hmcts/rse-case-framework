@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: springBootVersion
 
+    implementation('org.springframework.boot:spring-boot-starter-hateoas')
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'net.jodah:typetools:0.6.2'
