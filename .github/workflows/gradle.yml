@@ -15,7 +15,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: prebuild
-      run: docker-compose build --parallel db frontend keycloak
     - name: Check
       run: ./gradlew check -is
