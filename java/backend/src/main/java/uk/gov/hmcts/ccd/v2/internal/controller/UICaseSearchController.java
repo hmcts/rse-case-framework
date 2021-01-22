@@ -1,9 +1,6 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Condition;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,11 +18,7 @@ import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewItem;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseSearchResultViewResource;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,5 +80,5 @@ public class UICaseSearchController {
                     .build())
                 .build())
             .build());
-        }
+    }
 }
