@@ -67,7 +67,7 @@ dependencies {
 }
 
 compileJava {
-//    options.compilerArgs << "-Werror"
+    options.compilerArgs << "-Werror"
 }
 
 configurations.integrationTestImplementation.extendsFrom(configurations.testImplementation)
