@@ -2,18 +2,19 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CommonField;
 import uk.gov.hmcts.ccd.domain.model.common.CaseFieldPathUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
+@Builder
 public class FieldTypeDefinition implements Serializable {
 
     public static final String COLLECTION = "Collection";
@@ -32,18 +33,18 @@ public class FieldTypeDefinition implements Serializable {
     public static final String DATETIME = "DateTime";
     public static final String DATE = "Date";
 
-    private String id = null;
-    private String type = null;
-    private BigDecimal min = null;
-    private BigDecimal max = null;
+    private String id;
+    private String type;
+    private BigDecimal min;
+    private BigDecimal max;
     @JsonProperty("regular_expression")
-    private String regularExpression = null;
+    private String regularExpression;
     @JsonProperty("fixed_list_items")
-    private List<FixedListItemDefinition> fixedListItemDefinitions = new ArrayList<>();
+    private List<FixedListItemDefinition> fixedListItemDefinitions;
     @JsonProperty("complex_fields")
-    private List<CaseFieldDefinition> complexFields = new ArrayList<>();
+    private List<CaseFieldDefinition> complexFields;
     @JsonProperty("collection_field_type")
-    private FieldTypeDefinition collectionFieldTypeDefinition = null;
+    private FieldTypeDefinition collectionFieldTypeDefinition;
 
     public String getType() {
         return type;

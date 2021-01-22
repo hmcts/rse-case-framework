@@ -28,4 +28,13 @@ class CCDEndpointSpec extends Specification {
         jurisdictions.size() == 1
         jurisdictions[0].caseTypeDefinitions.size() == 1
     }
+
+    def "returns workbasket inputs"() {
+        given:
+        def inputs = controller.getWorkbasketInputsDetails("NFD").getBody().workbasketInputs
+        expect:
+        inputs.size() == 1
+        inputs[0].label != null
+        inputs[0].field != null
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseTypeDefinition;
+import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
+import uk.gov.hmcts.ccd.domain.model.search.Field;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.BannerViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.JurisdictionConfigViewResource;
@@ -31,9 +33,24 @@ public class UIDefinitionController {
         }
     )
     public ResponseEntity<WorkbasketInputsViewResource> getWorkbasketInputsDetails(@PathVariable("caseTypeId")
-                                                                                           String caseTypeId) {
-
-        throw new RuntimeException();
+                                                                                       String caseTypeId) {
+        return ResponseEntity.ok(
+            WorkbasketInputsViewResource.builder()
+                .workbasketInput(
+                    WorkbasketInputsViewResource.WorkbasketInputView.builder()
+                        .label("Urgent Case")
+                        .field(Field.builder()
+                            .id("Urgent Case")
+                            .type(
+                                FieldTypeDefinition.builder()
+                                    .id("YesOrNo")
+                                    .type("YesOrNo")
+                                    .build()
+                            )
+                            .build()
+                        )
+                        .build()
+                ).build());
     }
 
     @GetMapping(

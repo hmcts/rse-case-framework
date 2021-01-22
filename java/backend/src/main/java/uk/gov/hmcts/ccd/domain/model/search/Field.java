@@ -1,8 +1,10 @@
 package uk.gov.hmcts.ccd.domain.model.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
 
+@Builder
 public class Field {
     private String id;
     private String elementPath;
