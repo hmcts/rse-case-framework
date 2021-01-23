@@ -32,10 +32,23 @@ func fetchJsonArray(host string, req *http.Request) []interface{} {
 
 	client := &http.Client{
 	}
-	resp, _ := client.Do(proxyReq)
-	data, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(proxyReq)
+	if err != nil {
+		var res []interface{}
+		return res
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		var res []interface{}
+		return res
+	}
 	var arr []interface{}
-	_ = json.Unmarshal(data, &arr)
+	err = json.Unmarshal(data, &arr)
+	if err != nil {
+		var res []interface{}
+		return res
+	}
 	return arr
 }
 

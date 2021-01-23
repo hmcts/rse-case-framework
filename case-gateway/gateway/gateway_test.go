@@ -34,7 +34,10 @@ func CheckRequest(t *testing.T, expectedRoot string, url string) {
 	res, _ := http.Get("http://localhost:9650" + url)
 	body, _ := ioutil.ReadAll(res.Body)
 
-	expected, _ := ioutil.ReadFile("static/" + expectedRoot + url)
+	expected, err := ioutil.ReadFile("static/" + expectedRoot + url)
+	if err != nil {
+		panic(err)
+	}
 	require.JSONEq(t, string(expected), string(body))
 }
 
@@ -53,5 +56,12 @@ func TestRoutesDivorceWBI(t *testing.T) {
 func TestRoutesNFDWBI(t *testing.T) {
 	const expectedRoot = "independent-responses"
 	resource := "/data/internal/case-types/NFD/work-basket-inputs"
+	CheckRequest(t, expectedRoot, resource)
+}
+
+func TestHandlesIndieDown(t *testing.T) {
+	IndependentHost = "localhost:32"
+	const expectedRoot = "ccd-responses"
+	resource := "/aggregated/caseworkers/:uid/jurisdictions"
 	CheckRequest(t, expectedRoot, resource)
 }
