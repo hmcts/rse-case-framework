@@ -29,25 +29,22 @@ func init() {
 	go main()
 }
 
-
-func TestGetJurisdictions(t *testing.T) {
-	const expectedRoot = "static/expected-responses";
-	resource := "/aggregated/caseworkers/:uid/jurisdictions"
-	res, _ := http.Get("http://localhost:9650" + resource + "?access=read")
+func CheckRequest(t *testing.T, expectedRoot string, url string) {
+	res, _ := http.Get("http://localhost:9650" + url)
 	body, _ := ioutil.ReadAll(res.Body)
 
-	expected, _ := ioutil.ReadFile(expectedRoot + resource);
-
+	expected, _ := ioutil.ReadFile("static/" + expectedRoot + url)
 	require.JSONEq(t, string(expected), string(body))
 }
 
+func TestGetJurisdictions(t *testing.T) {
+	const expectedRoot = "expected-responses"
+	resource := "/aggregated/caseworkers/:uid/jurisdictions"
+	CheckRequest(t, expectedRoot, resource)
+}
+
 func TestRoutesDivorceWBI(t *testing.T) {
+	const expectedRoot = "ccd-responses"
 	resource := "/data/internal/case-types/DIVORCE/work-basket-inputs"
-	res, _ := http.Get("http://localhost:9650" + resource)
-	body, _ := ioutil.ReadAll(res.Body)
-
-	const expectedRoot = "static/ccd-responses";
-	expected, _ := ioutil.ReadFile(expectedRoot + resource);
-
-	require.JSONEq(t, string(expected), string(body))
+	CheckRequest(t, expectedRoot, resource)
 }
