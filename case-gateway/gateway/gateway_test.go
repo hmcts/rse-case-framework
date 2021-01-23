@@ -5,38 +5,28 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"testing"
 )
 
 var fs = http.FileServer(http.Dir("./static"))
 
+func serveFolder(path string, port int) {
+	r1 := http.NewServeMux()
+	fs := http.FileServer(http.Dir(path))
+	r1.Handle("/", fs)
+
+	err := http.ListenAndServe("localhost:" + strconv.Itoa(port), r1)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func init() {
 
 	// CCD
-	go func() {
-		r1 := http.NewServeMux()
-		fs := http.FileServer(http.Dir("static/ccd-responses"))
-		r1.Handle("/", fs)
-
-		err := http.ListenAndServe("localhost:6000", r1)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	// Independent service
-	go func() {
-		r1 := http.NewServeMux()
-		fs := http.FileServer(http.Dir("static/independent-responses"))
-		r1.Handle("/", fs)
-
-		log.Println("Listening on :6000...")
-		err := http.ListenAndServe("localhost:7000", r1)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
+	go serveFolder("static/ccd-responses", 6000)
+	go serveFolder("static/independent-responses", 7000)
 	go main()
 }
 
