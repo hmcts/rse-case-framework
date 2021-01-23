@@ -40,11 +40,17 @@ func fetchJsonArray(host string, req *http.Request) []interface{} {
 
 // Given a request send it to the appropriate url
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
-	if strings.Contains(strings.ToLower(req.URL.Path), "/jurisdictions") {
+	path := strings.ToLower(req.URL.Path)
+	if strings.Contains(path, "/jurisdictions") {
 		first := fetchJsonArray("localhost:6000", req)
 		second := fetchJsonArray("localhost:7000", req)
 		result := append(first, second...)
 		json.NewEncoder(res).Encode(result)
+		return
+	}
+
+	if strings.Contains(path, "/nfd") {
+		serveReverseProxy("http://localhost:7000", res, req)
 		return
 	}
 

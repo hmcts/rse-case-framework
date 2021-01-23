@@ -48,3 +48,9 @@ func TestRoutesDivorceWBI(t *testing.T) {
 	resource := "/data/internal/case-types/DIVORCE/work-basket-inputs"
 	CheckRequest(t, expectedRoot, resource)
 }
+
+func TestRoutesNFDWBI(t *testing.T) {
+	const expectedRoot = "independent-responses"
+	resource := "/data/internal/case-types/NFD/work-basket-inputs"
+	CheckRequest(t, expectedRoot, resource)
+}
