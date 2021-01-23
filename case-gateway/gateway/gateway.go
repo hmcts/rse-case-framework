@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 )
 
 func serveReverseProxy(target string, res http.ResponseWriter, req *http.Request) {
@@ -39,11 +40,15 @@ func fetchJsonArray(host string, req *http.Request) []interface{} {
 
 // Given a request send it to the appropriate url
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
-	first := fetchJsonArray("localhost:6000", req);
-	second := fetchJsonArray("localhost:7000", req);
+	if strings.Contains(strings.ToLower(req.URL.Path), "/jurisdictions") {
+		first := fetchJsonArray("localhost:6000", req)
+		second := fetchJsonArray("localhost:7000", req)
+		result := append(first, second...)
+		json.NewEncoder(res).Encode(result)
+		return
+	}
 
-	result := append(first, second...)
-	json.NewEncoder(res).Encode(result)
+	serveReverseProxy("http://localhost:6000", res, req)
 }
 
 func main() {

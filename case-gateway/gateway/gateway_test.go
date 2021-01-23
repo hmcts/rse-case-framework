@@ -23,16 +23,15 @@ func serveFolder(path string, port int) {
 }
 
 func init() {
-
 	// CCD
 	go serveFolder("static/ccd-responses", 6000)
 	go serveFolder("static/independent-responses", 7000)
 	go main()
 }
 
-const expectedRoot = "static/expected-responses";
 
 func TestGetJurisdictions(t *testing.T) {
+	const expectedRoot = "static/expected-responses";
 	resource := "/aggregated/caseworkers/:uid/jurisdictions"
 	res, _ := http.Get("http://localhost:9650" + resource + "?access=read")
 	body, _ := ioutil.ReadAll(res.Body)
@@ -40,5 +39,15 @@ func TestGetJurisdictions(t *testing.T) {
 	expected, _ := ioutil.ReadFile(expectedRoot + resource);
 
 	require.JSONEq(t, string(expected), string(body))
+}
 
+func TestRoutesDivorceWBI(t *testing.T) {
+	resource := "/data/internal/case-types/DIVORCE/work-basket-inputs"
+	res, _ := http.Get("http://localhost:9650" + resource)
+	body, _ := ioutil.ReadAll(res.Body)
+
+	const expectedRoot = "static/ccd-responses";
+	expected, _ := ioutil.ReadFile(expectedRoot + resource);
+
+	require.JSONEq(t, string(expected), string(body))
 }
