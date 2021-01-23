@@ -5,18 +5,17 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"testing"
 )
 
 var fs = http.FileServer(http.Dir("./static"))
 
-func serveFolder(path string, port int) {
+func serveFolder(path string, host string) {
 	r1 := http.NewServeMux()
 	fs := http.FileServer(http.Dir(path))
 	r1.Handle("/", fs)
 
-	err := http.ListenAndServe("localhost:" + strconv.Itoa(port), r1)
+	err := http.ListenAndServe(host, r1)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,9 +23,11 @@ func serveFolder(path string, port int) {
 
 func init() {
 	// CCD
-	go serveFolder("static/ccd-responses", 6000)
-	go serveFolder("static/independent-responses", 7000)
-	go main()
+	const ccdUrl = "localhost:6000"
+	const indieUrl = "localhost:7000"
+	go serveFolder("static/ccd-responses", ccdUrl)
+	go serveFolder("static/independent-responses", indieUrl)
+	go start("localhost:9650", ccdUrl, indieUrl)
 }
 
 func CheckRequest(t *testing.T, expectedRoot string, url string) {

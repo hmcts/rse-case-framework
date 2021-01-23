@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -42,24 +43,35 @@ func fetchJsonArray(host string, req *http.Request) []interface{} {
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	path := strings.ToLower(req.URL.Path)
 	if strings.Contains(path, "/jurisdictions") {
-		first := fetchJsonArray("localhost:6000", req)
-		second := fetchJsonArray("localhost:7000", req)
+		first := fetchJsonArray(CcdHost, req)
+		second := fetchJsonArray(IndependentHost, req)
 		result := append(first, second...)
 		json.NewEncoder(res).Encode(result)
 		return
 	}
 
 	if strings.Contains(path, "/nfd") {
-		serveReverseProxy("http://localhost:7000", res, req)
+		serveReverseProxy("http://" + IndependentHost, res, req)
 		return
 	}
 
-	serveReverseProxy("http://localhost:6000", res, req)
+	serveReverseProxy("http://" + CcdHost, res, req)
+}
+
+var CcdHost string
+var IndependentHost string
+
+func start(bindTo string, ccdHost string, indieHost string) {
+	CcdHost = ccdHost
+	IndependentHost = indieHost
+	http.HandleFunc("/", handleRequestAndRedirect)
+	if err := http.ListenAndServe(bindTo, nil); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
-	http.HandleFunc("/", handleRequestAndRedirect)
-	if err := http.ListenAndServe("localhost:9650", nil); err != nil {
-		panic(err)
-	}
+	start(os.Getenv("BIND_ADDRESS"),
+		os.Getenv("CCD_HOST"),
+		os.Getenv("INDIE_HOST"))
 }
