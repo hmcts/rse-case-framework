@@ -65,6 +65,7 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
+
     def "exports openAPI specification"() {
         when:
         def f = mockMvc.perform(get('/v3/api-docs').with(oidcLogin()))

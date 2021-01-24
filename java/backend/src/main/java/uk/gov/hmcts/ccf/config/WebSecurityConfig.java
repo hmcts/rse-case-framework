@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/data/**", "/aggregated/**").permitAll()
+                .antMatchers("/internal/**", "/data/**", "/aggregated/**").permitAll()
                 .anyRequest().authenticated().and()
                 .oauth2Login(x -> x.successHandler(this.loginHandler))
                 .logout(l -> l.logoutSuccessHandler(oidcLogoutSuccessHandler()))

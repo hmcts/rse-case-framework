@@ -3,13 +3,11 @@ package uk.gov.hmcts
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseSearchController
-import uk.gov.hmcts.ccf.config.WebSecurityConfig
+import uk.gov.hmcts.ccd.v2.internal.controller.UIDefinitionController
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -18,10 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class UICaseSearchControllerSpec extends Specification {
-
-    @Autowired
-    private UICaseSearchController controller;
+class UIDefinitionControllerSpec extends Specification {
 
     @Autowired
     private CaseFactory factory;
@@ -29,18 +24,9 @@ class UICaseSearchControllerSpec extends Specification {
     @Autowired
     private MockMvc mockMvc;
 
-    def "searches cases"() {
-        given:
-        factory.CreateCase()
-        def result = controller.searchCases("", "", "").getBody()
-
-        expect:
-        result.cases.size() > 0
-    }
-
-    def "has jurisdictions"() {
+    def "has work basket inputs"() {
         when:
-        def f = mockMvc.perform(get('/aggregated/caseworkers/:uid/jurisdictions?access=read').with(oidcLogin()))
+        def f = mockMvc.perform(get('/data/internal/case-types/NFD/work-basket-inputs').with(oidcLogin()))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
         then:

@@ -20,14 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/internal")
+@RequestMapping(path = "/data/internal")
 public class UIDefinitionController {
-
     @GetMapping(
         path = "/case-types/{caseTypeId}/work-basket-inputs",
-        headers = {
-            V2.EXPERIMENTAL_HEADER
-        },
         produces = {
             V2.MediaType.UI_WORKBASKET_INPUT_DETAILS
         }

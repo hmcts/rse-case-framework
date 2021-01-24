@@ -29,7 +29,7 @@ import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.table;
 
 @RestController
-@RequestMapping(path = "/internal/searchCases", consumes = MediaType.APPLICATION_JSON_VALUE,
+@RequestMapping(path = "/data/internal/searchCases", consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class UICaseSearchController {
@@ -60,7 +60,10 @@ public class UICaseSearchController {
         for (CaseController.CaseSearchResult result : results) {
             cases.add(SearchResultViewItem.builder()
                 .caseId(result.getCaseId().toString())
-                .fields(Map.of("foo", 5))
+                .fields(Map.of(
+                    "party_count", result.getPartyCount(),
+                    "id", result.getCaseId()
+                    ))
                 .build());
         }
         return ResponseEntity.ok(CaseSearchResultViewResource.builder()
@@ -71,8 +74,16 @@ public class UICaseSearchController {
                     .caseTypeId("NFD")
                     .build())
                 .field(SearchResultViewHeader.builder()
-                    .caseFieldId("foo")
-                    .label("Foo")
+                    .caseFieldId("id")
+                    .label("Case ID")
+                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
+                        .id("Number")
+                        .type("Number")
+                        .build())
+                    .build())
+                .field(SearchResultViewHeader.builder()
+                    .caseFieldId("party_count")
+                    .label("Number of parties")
                     .caseFieldTypeDefinition(FieldTypeDefinition.builder()
                         .id("Number")
                         .type("Number")

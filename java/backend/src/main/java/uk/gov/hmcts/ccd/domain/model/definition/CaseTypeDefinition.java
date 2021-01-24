@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.Builder;
+import lombok.Data;
+import lombok.Singular;
 import uk.gov.hmcts.ccd.data.casedetails.SecurityClassification;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CommonField;
 import uk.gov.hmcts.ccd.domain.model.common.CaseFieldPathUtils;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition.LABEL;
 
+@Data
 @Builder
 public class CaseTypeDefinition implements Serializable {
     private static final long serialVersionUID = 5688786015302840008L;
@@ -30,6 +33,7 @@ public class CaseTypeDefinition implements Serializable {
     @JsonProperty("security_classification")
     private SecurityClassification securityClassification;
     private List<CaseEventDefinition> events;
+    @Singular
     private List<CaseStateDefinition> states;
     @JsonProperty("case_fields")
     private List<CaseFieldDefinition> caseFieldDefinitions;
@@ -98,14 +102,6 @@ public class CaseTypeDefinition implements Serializable {
 
     public void setEvents(List<CaseEventDefinition> events) {
         this.events = events;
-    }
-
-    public List<CaseStateDefinition> getStates() {
-        return states;
-    }
-
-    public void setStates(List<CaseStateDefinition> states) {
-        this.states = states;
     }
 
     public List<CaseFieldDefinition> getCaseFieldDefinitions() {

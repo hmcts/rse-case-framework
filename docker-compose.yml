@@ -21,17 +21,6 @@ services:
       - keycloak
     expose:
       - 8080
-  frontend:
-    build:
-      context: angular
-      dockerfile: Dockerfile
-    command: ${NG_COMMAND}
-    depends_on:
-      - backend
-    expose:
-      - 4200
-    volumes:
-      - './angular/build:/app/build'
 
   keycloak:
     build:

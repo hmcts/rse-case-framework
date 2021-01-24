@@ -6,10 +6,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import spock.lang.Specification
+import uk.gov.hmcts.ccd.endpoint.ui.QueryEndpoint
 import uk.gov.hmcts.ccd.v2.internal.controller.UIDefinitionController
 
 @WebMvcTest(UIDefinitionController)
-class CCDEndpointSpec extends Specification {
+class UIDefinitionControllerSpec extends Specification {
 
     @Autowired
     private UIDefinitionController controller;

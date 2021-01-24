@@ -2,22 +2,23 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Builder;
 
 
 import java.io.Serializable;
 import java.util.List;
 
 
+@Builder
 public class CaseStateDefinition implements Serializable {
 
     @JsonIgnore
     public static final String ANY = "*";
 
-    private String id = null;
-    private String name = null;
-    private String description = null;
-    private Integer displayOrder = null;
+    private String id;
+    private String name;
+    private String description;
+    private Integer displayOrder;
     private String titleDisplay;
     private List<AccessControlList> accessControlLists;
 

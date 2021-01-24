@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -30,11 +31,12 @@ func init() {
 	go start("localhost:9650", ccdUrl, indieUrl)
 }
 
-func CheckRequest(t *testing.T, expectedRoot string, url string) {
-	res, _ := http.Get("http://localhost:9650" + url)
+func CheckRequest(t *testing.T, expectedRoot string, u string) {
+	res, _ := http.Get("http://localhost:9650" + u)
 	body, _ := ioutil.ReadAll(res.Body)
 
-	expected, err := ioutil.ReadFile("static/" + expectedRoot + url)
+	p, _ := url.Parse(u)
+	expected, err := ioutil.ReadFile("static/" + expectedRoot + p.Path)
 	if err != nil {
 		panic(err)
 	}
@@ -56,6 +58,12 @@ func TestRoutesDivorceWBI(t *testing.T) {
 func TestRoutesNFDWBI(t *testing.T) {
 	const expectedRoot = "independent-responses"
 	resource := "/data/internal/case-types/NFD/work-basket-inputs"
+	CheckRequest(t, expectedRoot, resource)
+}
+
+func TestRoutesNFDSearch(t *testing.T) {
+	const expectedRoot = "independent-responses"
+	resource := "/data/internal/searchCases?ctid=NFD&use_case=WORKBASKET&view=WORKBASKET&state=Open&page=1"
 	CheckRequest(t, expectedRoot, resource)
 }
 
