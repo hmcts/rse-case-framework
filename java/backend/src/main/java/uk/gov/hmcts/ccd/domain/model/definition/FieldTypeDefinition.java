@@ -2,7 +2,9 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CommonField;
 import uk.gov.hmcts.ccd.domain.model.common.CaseFieldPathUtils;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class FieldTypeDefinition implements Serializable {
 
