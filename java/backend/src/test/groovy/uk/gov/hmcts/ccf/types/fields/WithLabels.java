@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import uk.gov.hmcts.ccf.definition.FieldLabel;
 
-@Getter @Setter
+@Getter
+@Setter
 @FieldLabel(value = "parent")
 public class WithLabels {
+
     @FieldLabel(value = "child")
-    private String aString = "value";
+    private String mystring = "value";
 }

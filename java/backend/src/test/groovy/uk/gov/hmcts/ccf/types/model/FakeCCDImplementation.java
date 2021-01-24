@@ -6,13 +6,13 @@ import com.google.common.collect.Maps;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewActionableEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.ProfileCaseState;
 import uk.gov.hmcts.ccd.domain.model.std.CaseDataContent;
-import uk.gov.hmcts.ccf.ICCDApplication;
+import uk.gov.hmcts.ccf.ICcdApplication;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class FakeCCDImplementation implements ICCDApplication<FakeCase> {
+public class FakeCCDImplementation implements ICcdApplication<FakeCase> {
     public static FakeCase fakeCase = new FakeCase("Defendant", "foo");
 
     @Override

@@ -174,7 +174,7 @@ public class ReflectionUtils {
         for (Type param : params) {
             if (param instanceof ParameterizedType) {
                 ParameterizedType p = (ParameterizedType) param;
-                if (p.getRawType().equals(ICCDApplication.class)) {
+                if (p.getRawType().equals(ICcdApplication.class)) {
                     return (Class) p.getActualTypeArguments()[0];
                 }
             }
@@ -204,7 +204,7 @@ public class ReflectionUtils {
             CaseRenderer renderer = new CaseRenderer();
             view.render(renderer, c);
             // TODO
-//            caseViewTab.setFields(renderer.getFields());
+            //            caseViewTab.setFields(renderer.getFields());
 
             tabs.add(caseViewTab);
         }
@@ -376,6 +376,7 @@ public class ReflectionUtils {
         }
         return result;
     }
+
     public static CaseFieldDefinition convert(Object value) {
         return convert(value.getClass(), value);
     }

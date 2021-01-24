@@ -6,7 +6,6 @@ import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewTab;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseFieldDefinition;
 import uk.gov.hmcts.ccf.definition.ICaseView;
@@ -80,12 +79,14 @@ public class ReflectionTests {
         assertThat(field.getFieldTypeDefinition().getComplexFields().size()).isGreaterThanOrEqualTo(3);
         assertThat(field.getFieldTypeDefinition().getComplexFields().get(0).getLabel()).isEqualTo("test");
     }
+
     @Test
     public void mapsNestedComplexType() {
         CaseFieldDefinition field = ReflectionUtils.mapComplexType(Party.class, new Party());
         assertThat(field.getFieldTypeDefinition().getType()).isEqualTo("Complex");
         assertThat(field.getFieldTypeDefinition().getComplexFields().size()).isGreaterThanOrEqualTo(2);
-        assertThat(field.getFieldTypeDefinition().getComplexFields().get(1).getFieldTypeDefinition().getType()).isEqualTo("Complex");
+        assertThat(field.getFieldTypeDefinition().getComplexFields().get(1).getFieldTypeDefinition()
+            .getType()).isEqualTo("Complex");
     }
 
     @Test
@@ -109,10 +110,10 @@ public class ReflectionTests {
         assertThat(result.length).isEqualTo(1);
         CaseViewTab addressTab = result[0];
         // TODO
-//        assertThat(addressTab.getFields().length).isEqualTo(2);
-//        CaseViewField vf = addressTab.getFields()[1];
-//
-//        assertThat(vf.getFieldTypeDefinition().getComplexFields().size()).isGreaterThanOrEqualTo(2);
+        //        assertThat(addressTab.getFields().length).isEqualTo(2);
+        //        CaseViewField vf = addressTab.getFields()[1];
+        //
+        //        assertThat(vf.getFieldTypeDefinition().getComplexFields().size()).isGreaterThanOrEqualTo(2);
     }
 
 }

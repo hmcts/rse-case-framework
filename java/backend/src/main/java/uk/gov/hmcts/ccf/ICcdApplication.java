@@ -8,7 +8,7 @@ import uk.gov.hmcts.ccd.domain.model.std.CaseDataContent;
 import java.util.List;
 import java.util.Map;
 
-public interface ICCDApplication<T extends ICase> {
+public interface ICcdApplication<T extends ICase> {
 
     List<T> getCases(Map<String, String> searchCriteria);
 

@@ -7,13 +7,13 @@ public abstract class BaseCaseView<T extends ICase> implements ICaseView<T> {
 
     private ICaseRenderer renderer;
 
+    protected abstract void onRender(T theCase);
+
     @Override
     public final void render(ICaseRenderer renderer, T theCase) {
         this.renderer = renderer;
         onRender(theCase);
     }
-
-    protected abstract void onRender(T theCase);
 
     protected void render(Object o, String label) {
         renderer.render(o, label);
