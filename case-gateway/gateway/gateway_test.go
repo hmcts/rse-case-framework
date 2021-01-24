@@ -67,6 +67,18 @@ func TestRoutesNFDSearch(t *testing.T) {
 	CheckRequest(t, expectedRoot, resource)
 }
 
+func TestRoutesCCDCase(t *testing.T) {
+	const expectedRoot = "ccd-responses"
+	resource := "/data/internal/cases/1515433003120937"
+	CheckRequest(t, expectedRoot, resource)
+}
+
+func TestRoutesIndieCase(t *testing.T) {
+	const expectedRoot = "independent-responses"
+	resource := "/data/internal/cases/3615433003120937"
+	CheckRequest(t, expectedRoot, resource)
+}
+
 func TestHandlesIndieDown(t *testing.T) {
 	IndependentHost = "localhost:32"
 	const expectedRoot = "ccd-responses"

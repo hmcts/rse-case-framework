@@ -88,6 +88,15 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	if strings.HasPrefix(req.URL.Path, "/data/internal/cases") {
+		// TODO: range based routing
+		urlPart := strings.Split(req.URL.Path, "/")
+		if strings.HasPrefix(urlPart[4], "3") {
+			serveReverseProxy("http://" + IndependentHost, res, req)
+			return
+		}
+	}
+
 	if strings.Contains(path, "/nfd") {
 		serveReverseProxy("http://" + IndependentHost, res, req)
 		return
