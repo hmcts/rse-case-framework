@@ -75,7 +75,7 @@ func TestRoutesCCDCase(t *testing.T) {
 
 func TestRoutesIndieCase(t *testing.T) {
 	const expectedRoot = "independent-responses"
-	resource := "/data/internal/cases/3615433003120937"
+	resource := "/data/internal/cases/2515433003120937"
 	CheckRequest(t, expectedRoot, resource)
 }
 

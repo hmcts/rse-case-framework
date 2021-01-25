@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseView;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewActionableEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewEvent;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewJurisdiction;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewType;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseEventDefinition;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseFieldDefinition;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseStateDefinition;
@@ -17,7 +14,6 @@ import uk.gov.hmcts.ccd.domain.model.definition.CaseTypeDefinition;
 import uk.gov.hmcts.ccd.domain.model.search.SearchInput;
 import uk.gov.hmcts.ccd.domain.model.search.WorkbasketInput;
 import uk.gov.hmcts.ccd.domain.model.std.CaseDataContent;
-import uk.gov.hmcts.ccf.definition.ICaseView;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,12 +30,10 @@ public class CoreCaseService {
 
     @Autowired
     private ObjectMapper objectMapper = new ObjectMapper();
-    private List<ICaseView> views;
 
-    public CoreCaseService(CCDAppConfig config, ICcdApplication application, List<ICaseView> views) {
+    public CoreCaseService(CCDAppConfig config, ICcdApplication application) {
         this.config = config;
         this.application = application;
-        this.views = views;
         this.caseClass = ReflectionUtils.getCaseType(application.getClass());
     }
 
@@ -75,29 +69,6 @@ public class CoreCaseService {
         return collect.toArray(caseViewEvents);
     }
 
-
-    public CaseView getCaseView(String jurisdictionId, String caseTypeId, String caseId) {
-        CaseView caseView = new CaseView();
-        caseView.setCaseId(caseId);
-        caseView.setTabs(ReflectionUtils.generateCaseViewTabs(application.getCase(caseId), views));
-        caseView.setChannels(getChannels());
-        // TODO
-        //        caseView.setTriggers(getTriggers(caseId));
-
-        caseView.setState(application.getCaseState(caseId));
-        CaseViewJurisdiction jurisdiction = new CaseViewJurisdiction();
-        jurisdiction.setId(jurisdictionId);
-        jurisdiction.setName(jurisdictionId);
-        jurisdiction.setDescription(jurisdictionId);
-        CaseViewType caseType = new CaseViewType();
-        caseType.setJurisdiction(jurisdiction);
-        caseType.setDescription(jurisdictionId);
-        caseType.setId(caseTypeId);
-        caseView.setCaseType(caseType);
-        caseView.setEvents(getCaseViewEvents());
-
-        return caseView;
-    }
 
     private CaseViewActionableEvent[] getTriggers(String caseId) {
         return (CaseViewActionableEvent[]) application.getTriggers(caseId).toArray();

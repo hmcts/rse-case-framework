@@ -1,6 +1,9 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import uk.gov.hmcts.ccd.domain.model.definition.AccessControlList;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseFieldDefinition;
@@ -11,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CaseViewField implements CommonField {
 
     public static final String READONLY = "READONLY";

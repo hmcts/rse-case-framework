@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf
+package uk.gov.hmcts
 
 import org.jooq.impl.DefaultDSLContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,13 +7,12 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import spock.lang.Specification
 import uk.gov.hmcts.ccd.endpoint.ui.QueryEndpoint
-import uk.gov.hmcts.ccd.v2.internal.controller.UIDefinitionController
 
-@WebMvcTest(UIDefinitionController)
-class UIDefinitionControllerSpec extends Specification {
+@WebMvcTest(QueryEndpoint)
+class QueryEndpointSpec extends Specification {
 
     @Autowired
-    private UIDefinitionController controller;
+    private QueryEndpoint query;
 
     @MockBean
     private DefaultDSLContext jooq;
@@ -24,18 +23,10 @@ class UIDefinitionControllerSpec extends Specification {
 
     def "returns jurisdiction information"() {
         given:
-        def jurisdictions = controller.getJurisdictions("read").getBody().jurisdictions
+        def jurisdictions = query.getJurisdictions("read")
         expect:
         jurisdictions.size() == 1
-        jurisdictions[0].caseTypeDefinitions.size() == 1
-    }
-
-    def "returns workbasket inputs"() {
-        given:
-        def inputs = controller.getWorkbasketInputsDetails("NFD").getBody().workbasketInputs
-        expect:
-        inputs.size() == 1
-        inputs[0].label != null
-        inputs[0].field != null
+        jurisdictions[0].caseTypes.size() == 1
+        jurisdictions[0].caseTypes[0].states.size() >= 1
     }
 }

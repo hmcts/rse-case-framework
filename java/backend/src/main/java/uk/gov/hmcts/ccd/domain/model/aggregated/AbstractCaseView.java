@@ -12,7 +12,7 @@ public abstract class AbstractCaseView {
     private String caseId;
     @JsonProperty("case_type")
     private CaseViewType caseType;
-    private CaseViewTab[] tabs;
+    private List<CaseViewTab> tabs;
     private List<CaseViewField> metadataFields;
 
     public String getCaseId() {
@@ -31,11 +31,11 @@ public abstract class AbstractCaseView {
         this.caseType = caseType;
     }
 
-    public CaseViewTab[] getTabs() {
+    public List<CaseViewTab> getTabs() {
         return tabs;
     }
 
-    public void setTabs(CaseViewTab[] tabs) {
+    public void setTabs(List<CaseViewTab> tabs) {
         this.tabs = tabs;
     }
 

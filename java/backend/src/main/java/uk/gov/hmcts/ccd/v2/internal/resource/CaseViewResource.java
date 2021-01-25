@@ -28,7 +28,7 @@ public class CaseViewResource extends RepresentationModel {
     private CaseViewType caseType;
 
     @JsonProperty("tabs")
-    private CaseViewTab[] tabs;
+    private List<CaseViewTab> tabs;
 
     @JsonProperty("metadataFields")
     private List<CaseViewField> metadataFields;

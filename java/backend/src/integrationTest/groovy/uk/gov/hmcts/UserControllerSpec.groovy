@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf
+package uk.gov.hmcts
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jooq.impl.DefaultDSLContext

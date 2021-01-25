@@ -23,7 +23,7 @@ public class CaseHistoryViewResource extends RepresentationModel {
     private String caseId;
     @JsonProperty("case_type")
     private CaseViewType caseType;
-    private CaseViewTab[] tabs;
+    private List<CaseViewTab> tabs;
     private List<CaseViewField> metadataFields;
     @JsonProperty("event")
     private CaseViewEvent event;

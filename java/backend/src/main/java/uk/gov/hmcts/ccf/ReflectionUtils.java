@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewTab;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.definition.CaseFieldDefinition;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
 import uk.gov.hmcts.ccd.domain.model.search.Field;
@@ -21,7 +21,6 @@ import uk.gov.hmcts.ccf.definition.CaseListField;
 import uk.gov.hmcts.ccf.definition.CaseSearchableField;
 import uk.gov.hmcts.ccf.definition.ComplexType;
 import uk.gov.hmcts.ccf.definition.FieldLabel;
-import uk.gov.hmcts.ccf.definition.ICaseView;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -191,26 +190,6 @@ public class ReflectionUtils {
         }
     }
 
-    public static CaseViewTab[] generateCaseViewTabs(ICase c, List<ICaseView> views) {
-        List<CaseViewTab> tabs = Lists.newArrayList();
-        int i = 0;
-
-        for (ICaseView view : views) {
-            CaseViewTab caseViewTab = new CaseViewTab();
-            caseViewTab.setOrder(i++);
-            caseViewTab.setId(view.getTab());
-            caseViewTab.setLabel(view.getTab());
-
-            CaseRenderer renderer = new CaseRenderer();
-            view.render(renderer, c);
-            // TODO
-            //            caseViewTab.setFields(renderer.getFields());
-
-            tabs.add(caseViewTab);
-        }
-        return tabs.toArray(new CaseViewTab[0]);
-    }
-
     public static String determineFieldTypeDefinition(Class c) {
         switch (c.getSimpleName()) {
             case "String":
@@ -255,8 +234,8 @@ public class ReflectionUtils {
         return type;
     }
 
-    public static CaseFieldDefinition mapComplexType(Class clazz, Object instance) {
-        CaseFieldDefinition result = new CaseFieldDefinition();
+    public static CaseViewField mapComplexType(Class clazz, Object instance) {
+        CaseViewField result = new CaseViewField();
         FieldTypeDefinition type = new FieldTypeDefinition();
         type.setType("Complex");
         result.setFieldTypeDefinition(type);
@@ -292,14 +271,15 @@ public class ReflectionUtils {
                 continue;
             }
 
-            CaseFieldDefinition child = convert(field.getType(), value);
+            CaseViewField child = convert(field.getType(), value);
             if (null != child) {
                 child.setId(field.getName());
                 FieldLabel label = field.getAnnotation(FieldLabel.class);
                 if (null != label) {
                     child.setLabel(label.value());
                 }
-                complexFields.add(child);
+                // TODO
+                //                complexFields.add(child);
             }
         }
 
@@ -324,8 +304,8 @@ public class ReflectionUtils {
         return result;
     }
 
-    public static CaseFieldDefinition mapCollection(Collection c) {
-        CaseFieldDefinition result = new CaseFieldDefinition();
+    public static CaseViewField mapCollection(Collection c) {
+        CaseViewField result = new CaseViewField();
         FieldTypeDefinition type = new FieldTypeDefinition();
         type.setType("Collection");
         result.setFieldTypeDefinition(type);
@@ -338,7 +318,7 @@ public class ReflectionUtils {
         FieldTypeDefinition listType = getFieldTypeDefinition(instance.getClass());
         type.setCollectionFieldTypeDefinition(listType);
         if (listType.getType().equals("Complex")) {
-            CaseFieldDefinition cf = mapComplexType(instance.getClass(), instance);
+            CaseViewField cf = mapComplexType(instance.getClass(), instance);
             type.getCollectionFieldTypeDefinition().setComplexFields(cf.getFieldTypeDefinition().getComplexFields());
         }
         List<CCDCollectionEntry> entries = Lists.newArrayList();
@@ -347,21 +327,19 @@ public class ReflectionUtils {
         for (Object o : c) {
             entries.add(new CCDCollectionEntry(String.valueOf(t++), o));
         }
-        // TODO
-        //        result.setValue(mapper.valueToTree(entries));
+        result.setValue(mapper.valueToTree(entries));
 
         return result;
     }
 
-    public static CaseFieldDefinition convert(Class type, Object value) {
-        CaseFieldDefinition result;
+    public static CaseViewField convert(Class type, Object value) {
+        CaseViewField result;
         String typeName = determineFieldTypeDefinition(type);
         if (PRIMITIVES.contains(typeName)) {
-            result = new CaseFieldDefinition();
+            result = new CaseViewField();
             result.setFieldTypeDefinition(ReflectionUtils.getFieldTypeDefinition(type));
             if (value != null) {
-                // TODO
-                //                result.setValue(ReflectionUtils.mapper.valueToTree(value));
+                result.setValue(ReflectionUtils.mapper.valueToTree(value));
             }
         } else if (typeName.equals("Collection")) {
             result = ReflectionUtils.mapCollection((Collection) value);
@@ -377,7 +355,7 @@ public class ReflectionUtils {
         return result;
     }
 
-    public static CaseFieldDefinition convert(Object value) {
+    public static CaseViewField convert(Object value) {
         return convert(value.getClass(), value);
     }
 }

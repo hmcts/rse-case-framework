@@ -1,0 +1,80 @@
+{
+  "links": [],
+  "case_id": "2542345663454321",
+  "case_type": {
+    "id": "2542345663454321",
+    "name": null,
+    "description": "NFD",
+    "jurisdiction": {
+      "id": "NFD",
+      "name": "No fault divorce",
+      "description": "No fault divorce"
+    },
+    "printEnabled": false
+  },
+  "tabs": [
+    {
+      "id": "Petition",
+      "label": "Petition",
+      "order": 0,
+      "fields": [
+        {
+          "id": null,
+          "label": null,
+          "hidden": null,
+          "value": "Hello world",
+          "metadata": false,
+          "hint_text": null,
+          "field_type": {
+            "id": "Text",
+            "type": "Text",
+            "min": null,
+            "max": null,
+            "regular_expression": null,
+            "fixed_list_items": null,
+            "complex_fields": null,
+            "collection_field_type": null
+          },
+          "validation_expr": null,
+          "security_label": null,
+          "order": 0,
+          "formatted_value": null,
+          "display_context": null,
+          "display_context_parameter": null,
+          "show_condition": null,
+          "show_summary_change_option": null,
+          "show_summary_content_option": null,
+          "retain_hidden_value": null,
+          "acls": null,
+          "default_value": null
+        }
+      ],
+      "role": null,
+      "show_condition": null
+    }
+  ],
+  "metadataFields": null,
+  "state": {
+    "id": "Open",
+    "name": "Open",
+    "description": "Open",
+    "title_display": "Open"
+  },
+  "triggers": null,
+  "events": [
+    {
+      "id": -800860905525923458,
+      "timestamp": "2021-01-25T16:25:30.010854",
+      "summary": "AddNotes",
+      "comment": "Hardcoded TODO",
+      "event_id": "Hardcoded TODO",
+      "event_name": "AddNotes",
+      "user_id": "4578745062434052079",
+      "user_last_name": "Last",
+      "user_first_name": "First",
+      "state_name": "Hardcoded TODO",
+      "state_id": "Hardcoded TODO",
+      "significant_item": null
+    }
+  ]
+}
