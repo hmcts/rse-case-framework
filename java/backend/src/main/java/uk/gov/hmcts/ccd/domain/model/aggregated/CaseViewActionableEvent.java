@@ -1,8 +1,10 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CaseViewActionableEvent {

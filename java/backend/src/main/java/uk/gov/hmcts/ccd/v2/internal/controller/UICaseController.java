@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseView;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewActionableEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewJurisdiction;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewTab;
@@ -55,8 +56,8 @@ public class UICaseController {
         CaseView caseView = new CaseView();
         caseView.setCaseId(caseId);
         caseView.setChannels(getChannels());
-        // TODO
-        //        caseView.setTriggers(getTriggers(caseId));
+
+        caseView.setActionableEvents(getActionableEvents());
 
         caseView.setState(getState());
         CaseViewJurisdiction jurisdiction = new CaseViewJurisdiction();
@@ -70,6 +71,17 @@ public class UICaseController {
         caseView.setCaseType(caseType);
         caseView.setEvents(getCaseViewEvents());
         return caseView;
+    }
+
+    private List<CaseViewActionableEvent> getActionableEvents() {
+        return List.of(
+            CaseViewActionableEvent.builder()
+                .id("generalReferral")
+                .name("generalReferral")
+                .description("generalReferral")
+                .order(1)
+                .build()
+        );
     }
 
     private ProfileCaseState getState() {

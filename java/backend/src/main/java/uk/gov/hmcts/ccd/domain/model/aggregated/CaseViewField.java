@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -33,14 +34,16 @@ public class CaseViewField implements CommonField {
     @JsonProperty("validation_expr")
     private String validationExpression;
     @JsonProperty("security_label")
-    private String securityLabel;
+    @Builder.Default
+    private String securityLabel = "PUBLIC";
     @JsonProperty("order")
     private Integer order;
     private Object value;
     @JsonProperty("formatted_value")
     private Object formattedValue;
     @JsonProperty("display_context")
-    private String displayContext;
+    @Builder.Default
+    private String displayContext = "MANDATORY";
     @JsonProperty("display_context_parameter")
     private String displayContextParameter;
     @JsonProperty("show_condition")
@@ -52,7 +55,8 @@ public class CaseViewField implements CommonField {
     @JsonProperty("retain_hidden_value")
     private Boolean retainHiddenValue;
     @JsonProperty("acls")
-    private List<AccessControlList> accessControlLists;
+    @Builder.Default
+    private List<AccessControlList> accessControlLists = Lists.newArrayList();
     private boolean metadata;
     @JsonProperty("default_value")
     private String defaultValue;

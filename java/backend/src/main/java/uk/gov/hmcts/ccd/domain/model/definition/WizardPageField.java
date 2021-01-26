@@ -1,6 +1,9 @@
 package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 import java.io.Serializable;
@@ -9,12 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class WizardPageField implements Serializable {
 
-    private String caseFieldId = null;
-    private Integer order = null;
+    private String caseFieldId;
+    private Integer order;
     private Integer pageColumnNumber;
-    private List<WizardPageComplexFieldOverride> complexFieldOverrides = new ArrayList<>();
+    private List<WizardPageComplexFieldOverride> complexFieldOverrides;
 
     @JsonProperty("case_field_id")
     public String getCaseFieldId() {

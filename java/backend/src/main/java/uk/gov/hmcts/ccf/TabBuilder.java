@@ -22,6 +22,8 @@ public class TabBuilder {
             .value(value)
             .hintText(hint)
             .label(label)
+            .order(1)
+            .formattedValue(value)
             .fieldTypeDefinition(type("Text")).build();
         tab.getFields().add(f);
         return this;

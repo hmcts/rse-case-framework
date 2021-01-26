@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.ToString;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public abstract class AbstractCaseView {
     @JsonProperty("case_type")
     private CaseViewType caseType;
     private List<CaseViewTab> tabs;
-    private List<CaseViewField> metadataFields;
+    private List<CaseViewField> metadataFields = Lists.newArrayList();
 
     public String getCaseId() {
         return caseId;

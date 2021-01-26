@@ -2,10 +2,12 @@ package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class CaseView extends AbstractCaseView {
     private ProfileCaseState state;
     private String[] channels;
-    private CaseViewActionableEvent[] actionableEvents;
+    private List<CaseViewActionableEvent> actionableEvents;
     private CaseViewEvent[] caseViewEvents;
 
     public ProfileCaseState getState() {
@@ -25,11 +27,11 @@ public class CaseView extends AbstractCaseView {
     }
 
     @JsonProperty("triggers")
-    public CaseViewActionableEvent[] getActionableEvents() {
+    public List<CaseViewActionableEvent> getActionableEvents() {
         return actionableEvents;
     }
 
-    public void setActionableEvents(CaseViewActionableEvent[] actionableEvents) {
+    public void setActionableEvents(List<CaseViewActionableEvent> actionableEvents) {
         this.actionableEvents = actionableEvents;
     }
 

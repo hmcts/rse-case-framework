@@ -1,10 +1,17 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 import uk.gov.hmcts.ccd.domain.model.definition.WizardPage;
 
 import java.util.List;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CaseUpdateViewEvent {
     private String id;
     private String name;
@@ -12,10 +19,12 @@ public class CaseUpdateViewEvent {
     @JsonProperty("case_id")
     private String caseId;
     @JsonProperty("case_fields")
+    @Singular
     private List<CaseViewField> caseFields;
     @JsonProperty("event_token")
     private String eventToken;
     @JsonProperty("wizard_pages")
+    @Singular
     private List<WizardPage> wizardPages;
     @JsonProperty("show_summary")
     private Boolean showSummary;

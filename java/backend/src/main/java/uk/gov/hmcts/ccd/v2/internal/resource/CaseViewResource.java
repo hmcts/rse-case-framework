@@ -1,6 +1,7 @@
 package uk.gov.hmcts.ccd.v2.internal.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -31,13 +32,13 @@ public class CaseViewResource extends RepresentationModel {
     private List<CaseViewTab> tabs;
 
     @JsonProperty("metadataFields")
-    private List<CaseViewField> metadataFields;
+    private List<CaseViewField> metadataFields = Lists.newArrayList();
 
     @JsonProperty("state")
     private ProfileCaseState state;
 
     @JsonProperty("triggers")
-    private CaseViewActionableEvent[] caseViewActionableEvents;
+    private List<CaseViewActionableEvent> caseViewActionableEvents = Lists.newArrayList();
 
     @JsonProperty("events")
     private CaseViewEvent[] caseViewEvents;

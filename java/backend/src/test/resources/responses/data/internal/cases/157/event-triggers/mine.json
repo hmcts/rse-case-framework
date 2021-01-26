@@ -1,0 +1,62 @@
+{
+  "id": "generalReferral",
+  "name": "General referral",
+  "description": "General referral",
+  "case_id": "2542345663454321",
+  "case_fields": [
+    {
+      "id": "details",
+      "label": "Details yo",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "TextArea",
+        "type": "TextArea",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": null,
+        "complex_fields": null,
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": null,
+      "order": null,
+      "formatted_value": null,
+      "display_context": null,
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": null,
+      "default_value": null
+    }
+  ],
+  "event_token": null,
+  "wizard_pages": [
+    {
+      "id": "generalReferralgeneralreferral",
+      "label": null,
+      "order": 1,
+      "wizard_page_fields": [
+        {
+          "case_field_id": "details",
+          "order": 1,
+          "page_column_no": 1,
+          "complex_field_overrides": null
+        }
+      ],
+      "show_condition": null,
+      "callback_url_mid_event": null,
+      "retries_timeout_mid_event": []
+    }
+  ],
+  "show_summary": null,
+  "show_event_notes": null,
+  "end_button_label": null,
+  "can_save_draft": null,
+  "links": []
+}

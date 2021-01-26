@@ -1,0 +1,667 @@
+{
+  "id": "generalReferral",
+  "name": "General referral",
+  "description": "General referral",
+  "case_id": "1515432442452448",
+  "case_fields": [
+    {
+      "id": "GeneralReferralReason",
+      "label": "Reason for referral?",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "FixedRadioList-GeneralReferralReasonEnum",
+        "type": "FixedRadioList",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [
+          {
+            "code": "caseworkerReferral",
+            "label": "Caseworker referral",
+            "order": "1"
+          },
+          {
+            "code": "generalApplicationReferral",
+            "label": "General application referral",
+            "order": "2"
+          }
+        ],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "GeneralApplicationFrom",
+      "label": "Application from",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "FixedList-GeneralPartiesEnum",
+        "type": "FixedList",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [
+          {
+            "code": "petitioner",
+            "label": "Petitioner / Petitioner's Solicitor",
+            "order": "1"
+          },
+          {
+            "code": "respondent",
+            "label": "Respondent / Respondent's Solicitor",
+            "order": "2"
+          },
+          {
+            "code": "co-respondent",
+            "label": "Co-respondent / Co-respondent's Solicitor",
+            "order": "3"
+          },
+          {
+            "code": "other",
+            "label": "Other",
+            "order": "4"
+          }
+        ],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": "GeneralReferralReason=\"generalApplicationReferral\"",
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "GeneralApplicationReferralDate",
+      "label": "Application or referral date",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "Date",
+        "type": "Date",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "OPTIONAL",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "GeneralReferralType",
+      "label": "Type of referral",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "FixedList-GeneralReferralTypeEnum",
+        "type": "FixedList",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [
+          {
+            "code": "alternativeServiceApplication",
+            "label": "Alternative service application",
+            "order": "1"
+          },
+          {
+            "code": "orderApplicationWithoutMc",
+            "label": "Order application without m/c",
+            "order": "2"
+          },
+          {
+            "code": "orderOnFilingOfAnswers",
+            "label": "Order on filing of Answers",
+            "order": "3"
+          },
+          {
+            "code": "permissionOnDaOot",
+            "label": "Permission on DA OOT",
+            "order": "4"
+          },
+          {
+            "code": "disclosureViaDwp",
+            "label": "Disclosure via DWP",
+            "order": "5"
+          },
+          {
+            "code": "other",
+            "label": "Other",
+            "order": "6"
+          }
+        ],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "AlternativeServiceMedium",
+      "label": "Medium requested for alternative service",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "FixedList-AlternativeServiceTypeEnum",
+        "type": "FixedList",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [
+          {
+            "code": "text",
+            "label": "Text",
+            "order": "1"
+          },
+          {
+            "code": "email",
+            "label": "Email",
+            "order": "2"
+          },
+          {
+            "code": "socialMedia",
+            "label": "Social media",
+            "order": "3"
+          },
+          {
+            "code": "other",
+            "label": "Other",
+            "order": "4"
+          }
+        ],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": "GeneralReferralType=\"alternativeServiceApplication\"",
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "GeneralReferralDetails",
+      "label": "Further details for Judge or Legal Advisor",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "TextArea",
+        "type": "TextArea",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    },
+    {
+      "id": "GeneralReferralFee",
+      "label": "Is fee payment required?",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "YesOrNo",
+        "type": "YesOrNo",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": [],
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": false,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [
+        {
+          "role": "caseworker-divorce-courtadmin_beta",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-superuser",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "caseworker-divorce-courtadmin-la",
+          "create": true,
+          "read": true,
+          "update": true,
+          "delete": true
+        },
+        {
+          "role": "caseworker-divorce-solicitor",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        },
+        {
+          "role": "citizen",
+          "create": false,
+          "read": true,
+          "update": false,
+          "delete": false
+        }
+      ],
+      "default_value": null
+    }
+  ],
+  "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJiMTB2M2V2YmlrdWIxdDNmc3I5cnIxMWxiIiwic3ViIjoiMGQwNjMwYWItNzliYy00Mzk5LWJiOTctYjM2NjNiM2Y1NDIxIiwiaWF0IjoxNjExNjA3Mjk0LCJjYXNlLWlkIjoiNjgiLCJldmVudC1pZCI6ImdlbmVyYWxSZWZlcnJhbCIsImNhc2UtdHlwZS1pZCI6IkRJVk9SQ0UiLCJqdXJpc2RpY3Rpb24taWQiOiJESVZPUkNFIiwiY2FzZS1zdGF0ZSI6IkF3YWl0aW5nUGF5bWVudCIsImNhc2UtdmVyc2lvbiI6IjI3M2VhNGEyZjVhYTJhYTA2ZmNkYzc3NGQ0MTIyYTYzMWEwNzBmY2QiLCJlbnRpdHktdmVyc2lvbiI6MX0.zp035lSPBmgVOzOqyPjVJFCb6sX02C6o509ttNAg5fo",
+  "wizard_pages": [
+    {
+      "id": "generalReferralgeneralreferral",
+      "label": null,
+      "order": 1,
+      "wizard_page_fields": [
+        {
+          "case_field_id": "GeneralReferralReason",
+          "order": 1,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "GeneralApplicationFrom",
+          "order": 2,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "GeneralApplicationReferralDate",
+          "order": 3,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "GeneralReferralType",
+          "order": 4,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "AlternativeServiceMedium",
+          "order": 5,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "GeneralReferralDetails",
+          "order": 6,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        },
+        {
+          "case_field_id": "GeneralReferralFee",
+          "order": 7,
+          "page_column_no": 1,
+          "complex_field_overrides": []
+        }
+      ],
+      "show_condition": null,
+      "callback_url_mid_event": null,
+      "retries_timeout_mid_event": []
+    }
+  ],
+  "show_summary": null,
+  "show_event_notes": null,
+  "end_button_label": null,
+  "can_save_draft": null,
+  "_links": {
+    "self": {
+      "href": "http://ccd-data-store-api:4452/internal/cases/1515432442452448/event-triggers/generalReferral?ignore-warning=false"
+    }
+  }
+}

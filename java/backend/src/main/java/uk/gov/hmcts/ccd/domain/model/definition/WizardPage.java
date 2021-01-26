@@ -2,7 +2,10 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 
 import java.io.Serializable;
@@ -13,12 +16,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class WizardPage implements Serializable {
 
-    private String id = null;
-    private String label = null;
-    private Integer order = null;
-    private List<WizardPageField> wizardPageFields = new ArrayList<>();
+    private String id;
+    private String label;
+    private Integer order;
+    @Singular
+    private List<WizardPageField> wizardPageFields;
     private String showCondition;
     private String callBackURLMidEvent;
     private List<Integer> retriesTimeoutMidEvent;
