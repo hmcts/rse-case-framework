@@ -1,10 +1,16 @@
 package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import uk.gov.hmcts.ccd.domain.model.callbacks.SignificantItem;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CaseViewEvent {
     private Long id;
 

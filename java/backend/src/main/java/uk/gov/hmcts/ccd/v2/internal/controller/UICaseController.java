@@ -1,5 +1,6 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import com.google.common.collect.Lists;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +41,27 @@ public class UICaseController {
     )
     public ResponseEntity<CaseViewResource> getCaseView(@PathVariable("caseId") String caseId) {
 
+        List<CaseViewEvent> history = Lists.newArrayList(
+            CaseViewEvent.builder()
+                .id(145L)
+                .timestamp(LocalDateTime.now())
+                .summary("Opened")
+                .eventId("create")
+                .eventName("Create new thing")
+                .userId("42")
+                .userFirstName("John")
+                .userLastName("Smith")
+                .stateId("Open")
+                .stateName("Open")
+            .build()
+        );
+
         List<CaseViewTab> tabs = new CaseViewBuilder()
+            .newTab("History", "History")
+            .field("History", history, null, "CaseHistoryViewer")
+            .build()
             .newTab("Petition", "Petition")
-            .field("Place of marriage", "Cathedral", "")
+            .textField("Place of marriage", "Cathedral", "")
             .build()
             .build();
 

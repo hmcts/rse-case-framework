@@ -16,7 +16,11 @@ public class TabBuilder {
         this.tab = tab;
     }
 
-    public TabBuilder field(String label, String value, String hint) {
+    public TabBuilder textField(String label, String value, String hint) {
+        return field(label, value, hint, "Text");
+    }
+
+    public TabBuilder field(String label, Object value, String hint, String type) {
         CaseViewField f = CaseViewField.builder()
             .id(new UID().toString())
             .value(value)
@@ -24,7 +28,7 @@ public class TabBuilder {
             .label(label)
             .order(1)
             .formattedValue(value)
-            .fieldTypeDefinition(type("Text")).build();
+            .fieldTypeDefinition(type(type)).build();
         tab.getFields().add(f);
         return this;
     }
