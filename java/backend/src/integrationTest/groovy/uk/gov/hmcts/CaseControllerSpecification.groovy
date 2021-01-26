@@ -2,6 +2,7 @@ package uk.gov.hmcts
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.io.Resources
 import groovy.json.JsonOutput
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
@@ -28,13 +30,16 @@ import uk.gov.hmcts.unspec.event.CreateClaim
 import uk.gov.hmcts.unspec.event.SubmitAppeal
 
 import javax.sql.DataSource
+import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 
 import static org.jooq.generated.Tables.CASES
 import static org.jooq.impl.DSL.count
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
@@ -203,5 +208,21 @@ class CaseControllerSpecification extends Specification {
         // Read in a new transaction.
         DSLContext create = DSL.using(dataSource, SQLDialect.DEFAULT);
         return create.select(count()).from(CASES).fetchSingle().value1();
+    }
+
+    def "Adds a new party"() {
+        when:
+        def c = factory.CreateCase()
+        URL url = Resources.getResource("requests/data/cases/157/addParty.json");
+        String body = Resources.toString(url, StandardCharsets.UTF_8);
+        String path = String.format('/data/cases/%s/events', c.getBody().getId());
+        mockMvc.perform(post(path)
+                .with(csrf())
+                .with(oidcLogin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andExpect(status().isCreated())
+        then:
+        true
     }
 }

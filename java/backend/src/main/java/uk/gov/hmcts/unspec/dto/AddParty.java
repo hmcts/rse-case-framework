@@ -5,8 +5,13 @@ import uk.gov.hmcts.ccf.XUI;
 
 @Data
 public class AddParty {
+
+    @XUI(label = "Title")
+    private String title;
     @XUI(label = "Forename")
-    private String forename;
+    private String firstName;
     @XUI(label = "Surname")
-    private String surname;
+    private String lastName;
+    private String dateOfBirth;
+
 }
