@@ -122,4 +122,5 @@ public class CaseUpdateViewEvent {
     public void setCanSaveDraft(Boolean canSaveDraft) {
         this.canSaveDraft = canSaveDraft;
     }
+
 }

@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccf.types;
 
 import org.junit.Test;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
 import uk.gov.hmcts.ccd.v2.internal.controller.UIStartTriggerController;
 import uk.gov.hmcts.ccf.EventBuilder;
@@ -32,5 +33,32 @@ public class UIStartTriggerControllerTest {
         assertEquals("FixedRadioList", fieldtype.getType());
         assertEquals(2, fieldtype.getFixedListItemDefinitions().size());
         assertEquals("Caseworker referral", fieldtype.getFixedListItemDefinitions().get(0).getLabel());
+    }
+
+    @Test
+    public void buildsReferralDate() {
+        EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
+        e.field(GeneralReferral::getDate);
+        CaseViewField date = e.build().getCaseFields().get(0);
+        FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
+
+        assertEquals("date", date.getId());
+        assertEquals("Application or referral date", date.getLabel());
+
+        assertEquals("Date", fieldtype.getType());
+        assertEquals("Date", fieldtype.getId());
+    }
+
+    @Test
+    public void buildsReferralDetails() {
+        EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
+        e.field(GeneralReferral::getReferralDetails);
+        CaseViewField date = e.build().getCaseFields().get(0);
+        FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
+
+        assertEquals("referralDetails", date.getId());
+
+        assertEquals("TextArea", fieldtype.getType());
+        assertEquals("TextArea", fieldtype.getId());
     }
 }

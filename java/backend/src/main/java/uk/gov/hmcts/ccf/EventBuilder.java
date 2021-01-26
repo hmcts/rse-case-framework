@@ -8,6 +8,7 @@ import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
 import uk.gov.hmcts.ccd.domain.model.definition.FixedListItemDefinition;
 
 import java.beans.PropertyDescriptor;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class EventBuilder<T> {
@@ -34,7 +35,30 @@ public class EventBuilder<T> {
                 .id(id)
                 .fieldTypeDefinition(buildFixedList(propertyType))
                 .build());
+        } else if (propertyType.equals(LocalDate.class)) {
+            builder.caseField(CaseViewField.builder()
+                .id(id)
+                .fieldTypeDefinition(FieldTypeDefinition.builder()
+                    .id("Date")
+                    .type("Date")
+                    .build())
+                .build());
+        } else if (propertyType.equals(String.class)) {
+            builder.caseField(CaseViewField.builder()
+                .id(id)
+                .fieldTypeDefinition(FieldTypeDefinition.builder()
+                    .id("TextArea")
+                    .type("TextArea")
+                    .build())
+                .build());
         }
+
+        XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
+        if (xui != null) {
+            CaseViewField f = build().getCaseFields().get(build().getCaseFields().size() - 1);
+            f.setLabel(xui.label());
+        }
+
         return this;
     }
 
