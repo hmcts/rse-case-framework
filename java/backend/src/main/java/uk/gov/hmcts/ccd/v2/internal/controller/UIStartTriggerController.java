@@ -53,10 +53,16 @@ public class UIStartTriggerController {
                                                                                 required = false)
                                                                                   final Boolean ignoreWarning) {
 
-        CaseUpdateViewEvent event = CaseUpdateViewEvent.builder()
-            .id(triggerId)
-            .name("General referral")
-            .description("General referral")
+        CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(buildAddParty(caseId), caseId,
+            ignoreWarning);
+        return ResponseEntity.ok(e);
+    }
+
+    public CaseUpdateViewEvent buildAddParty(String caseId) {
+        return CaseUpdateViewEvent.builder()
+            .id("addParty")
+            .name("Add Party")
+            .description("Add Party")
             .caseId(caseId)
             .caseField(CaseViewField.builder()
                 .id("details")
@@ -76,8 +82,6 @@ public class UIStartTriggerController {
                     .build())
                 .build())
             .build();
-        CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(event, caseId, ignoreWarning);
-        return ResponseEntity.ok(e);
     }
 
     @GetMapping(

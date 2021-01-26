@@ -1,18 +1,23 @@
 package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 import java.io.Serializable;
 
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FixedListItemDefinition implements Serializable {
 
     private static final long serialVersionUID = 6196146295016140921L;
-    private String code = null;
-    private String label = null;
-    private String order = null;
+    private String code;
+    private String label;
+    private String order;
 
 
     @JsonProperty("code")

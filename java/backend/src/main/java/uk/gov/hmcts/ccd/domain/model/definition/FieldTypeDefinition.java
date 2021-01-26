@@ -2,10 +2,10 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CommonField;
 import uk.gov.hmcts.ccd.domain.model.common.CaseFieldPathUtils;
@@ -45,11 +45,10 @@ public class FieldTypeDefinition implements Serializable {
     @JsonProperty("regular_expression")
     private String regularExpression;
     @JsonProperty("fixed_list_items")
-    @Builder.Default
-    private List<FixedListItemDefinition> fixedListItemDefinitions = Lists.newArrayList();
+    @Singular
+    private List<FixedListItemDefinition> fixedListItemDefinitions;
     @JsonProperty("complex_fields")
-    @Builder.Default
-    private List<CaseFieldDefinition> complexFields = Lists.newArrayList();
+    private List<CaseFieldDefinition> complexFields;
     @JsonProperty("collection_field_type")
     private FieldTypeDefinition collectionFieldTypeDefinition;
 
@@ -87,10 +86,6 @@ public class FieldTypeDefinition implements Serializable {
 
     public List<FixedListItemDefinition> getFixedListItemDefinitions() {
         return fixedListItemDefinitions;
-    }
-
-    public void setFixedListItemDefinitions(List<FixedListItemDefinition> fixedListItemDefinitions) {
-        this.fixedListItemDefinitions = fixedListItemDefinitions;
     }
 
     public List<CaseFieldDefinition> getComplexFields() {

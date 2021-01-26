@@ -160,9 +160,9 @@ public class UICaseController {
     private List<CaseViewActionableEvent> getActionableEvents() {
         return List.of(
             CaseViewActionableEvent.builder()
-                .id("generalReferral")
-                .name("generalReferral")
-                .description("generalReferral")
+                .id("addParty")
+                .name("Add Party")
+                .description("Add Party")
                 .order(1)
                 .build()
         );
