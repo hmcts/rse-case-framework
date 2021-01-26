@@ -97,4 +97,25 @@ public class UIStartTriggerControllerTest {
         assertEquals(1, fields.get(0).getOrder());
         assertEquals(2, fields.get(1).getOrder());
     }
+
+    @Test
+    public void buildsWizardPages() {
+        EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
+        e.field(GeneralReferral::isFeeRequired);
+        e.nextPage();
+        e.field(GeneralReferral::getDate);
+        List<WizardPage> pages = e.build().getWizardPages();
+        assertEquals(2, pages.size());
+        WizardPage page = pages.get(0);
+        assertEquals(1, page.getOrder());
+        assertEquals(1, page.getWizardPageFields().size());
+
+        List<WizardPageField> fields = page.getWizardPageFields();
+        assertEquals("feeRequired", fields.get(0).getCaseFieldId());
+
+        page = pages.get(1);
+        fields = page.getWizardPageFields();
+        assertEquals("date", fields.get(0).getCaseFieldId());
+        assertEquals(1, fields.get(0).getOrder());
+    }
 }

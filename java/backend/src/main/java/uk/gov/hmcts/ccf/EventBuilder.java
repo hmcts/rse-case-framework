@@ -23,7 +23,7 @@ public class EventBuilder<T> {
     private CaseUpdateViewEvent.CaseUpdateViewEventBuilder builder = CaseUpdateViewEvent.builder();
     private Multimap<Integer, String> fieldPageMap = ArrayListMultimap.create();
     private int currentPage = 1;
-    
+
     public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {
             Collection<String> fieldNames =
@@ -118,5 +118,9 @@ public class EventBuilder<T> {
         }
 
         return fb.build();
+    }
+
+    public void nextPage() {
+        currentPage++;
     }
 }
