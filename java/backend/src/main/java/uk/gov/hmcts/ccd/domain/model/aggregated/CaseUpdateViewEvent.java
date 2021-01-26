@@ -3,12 +3,15 @@ package uk.gov.hmcts.ccd.domain.model.aggregated;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import uk.gov.hmcts.ccd.domain.model.definition.WizardPage;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -123,4 +126,9 @@ public class CaseUpdateViewEvent {
         this.canSaveDraft = canSaveDraft;
     }
 
+    public static class CaseUpdateViewEventBuilder {
+        public ArrayList<CaseViewField> getCaseFields() {
+            return caseFields;
+        }
+    }
 }

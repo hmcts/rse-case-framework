@@ -40,7 +40,7 @@ public class WizardPage implements Serializable {
     }
 
     @JsonProperty("order")
-    public Integer getOrder() {
+    public int getOrder() {
         return order;
     }
 
