@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"log"
@@ -83,6 +84,11 @@ func TestRoutesValidation(t *testing.T) {
 	const expectedRoot = "independent-responses"
 	resource := "/data/case-types/2542345663454321/validate"
 	CheckRequest(t, expectedRoot, resource)
+}
+
+func TestRoutesEvents(t *testing.T) {
+	u, _ := url.Parse("http://localhost:3455/data/cases/2542345663454321/events")
+	assert.True(t, isIndie(u))
 }
 
 func TestHandlesIndieDown(t *testing.T) {

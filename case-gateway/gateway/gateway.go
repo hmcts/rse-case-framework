@@ -9,6 +9,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -77,20 +78,10 @@ func isIndie(url *url.URL) bool {
 		}
 	}
 
-	if strings.HasPrefix(url.Path, "/data/internal/cases") {
-		// TODO: range based routing
-		urlPart := strings.Split(url.Path, "/")
-		if strings.HasPrefix(urlPart[4], "2") {
-			return true
-		}
-	}
-
-	if strings.HasPrefix(url.Path, "/data/case-types") {
-		// TODO: range based routing
-		urlPart := strings.Split(url.Path, "/")
-		if strings.HasPrefix(urlPart[3], "2") {
-			return true
-		}
+	// TODO: range based routing
+	match, _ := regexp.MatchString("25\\d{14}", url.Path)
+	if match {
+		return true
 	}
 
 	if strings.Contains(strings.ToLower(url.Path), "/nfd") {
