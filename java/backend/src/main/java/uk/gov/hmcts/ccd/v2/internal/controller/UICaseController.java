@@ -1,6 +1,8 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
-import com.google.common.collect.Lists;
+import org.jooq.generated.tables.pojos.CaseHistory;
+import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,11 +26,15 @@ import java.util.Random;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
+import static org.jooq.generated.Tables.CASE_HISTORY;
 
 @RestController
 @RequestMapping(path = "/data/internal/cases")
 public class UICaseController {
     private static final String ERROR_CASE_ID_INVALID = "Case ID is not valid";
+
+    @Autowired
+    private DefaultDSLContext jooq;
 
     @GetMapping(
         path = "/{caseId}",
@@ -41,20 +47,7 @@ public class UICaseController {
     )
     public ResponseEntity<CaseViewResource> getCaseView(@PathVariable("caseId") String caseId) {
 
-        List<CaseViewEvent> history = Lists.newArrayList(
-            CaseViewEvent.builder()
-                .id(145L)
-                .timestamp(LocalDateTime.now())
-                .summary("Opened")
-                .eventId("create")
-                .eventName("Create new thing")
-                .userId("42")
-                .userFirstName("John")
-                .userLastName("Smith")
-                .stateId("Open")
-                .stateName("Open")
-            .build()
-        );
+        List<CaseViewEvent> history = getCaseViewHistory(caseId);
 
         List<CaseViewTab> tabs = new CaseViewBuilder()
             .newTab("History", "History")
@@ -69,6 +62,26 @@ public class UICaseController {
         view.setTabs(tabs);
 
         return ResponseEntity.ok(new CaseViewResource(view));
+    }
+
+    private List<CaseViewEvent> getCaseViewHistory(String caseId) {
+        List<CaseHistory> hist = jooq.select()
+            .from(CASE_HISTORY)
+            .where(CASE_HISTORY.CASE_ID.eq(Long.valueOf(caseId)))
+            .orderBy(CASE_HISTORY.TIMESTAMP.desc())
+            .fetchInto(CaseHistory.class);
+        return hist.stream().map(x -> CaseViewEvent.builder()
+            .id(Long.valueOf(x.hashCode()))
+            .timestamp(x.getTimestamp())
+            .summary(x.getId())
+            .eventId(x.getId())
+            .eventName(x.getId())
+            .userId(x.getUserId())
+            .userFirstName(x.getUserForename())
+            .userLastName(x.getUserSurname())
+            .stateId("Open")
+            .stateName("Open")
+            .build()).collect(toList());
     }
 
     private CaseView buildCaseView(String caseId) {
