@@ -11,4 +11,5 @@ public class GeneralReferral {
     @XUI(label = "Application or referral date")
     LocalDate date;
     String referralDetails;
+    boolean feeRequired;
 }

@@ -61,4 +61,18 @@ public class UIStartTriggerControllerTest {
         assertEquals("TextArea", fieldtype.getType());
         assertEquals("TextArea", fieldtype.getId());
     }
+
+    @Test
+    public void buildsBoolean() {
+        EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
+        e.field(GeneralReferral::isFeeRequired);
+        CaseViewField date = e.build().getCaseFields().get(0);
+        FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
+
+        assertEquals("feeRequired", date.getId());
+
+        assertEquals("YesOrNo", fieldtype.getType());
+        assertEquals("YesOrNo", fieldtype.getId());
+    }
+    
 }

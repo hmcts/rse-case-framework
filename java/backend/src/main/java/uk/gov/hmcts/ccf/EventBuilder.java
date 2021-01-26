@@ -51,6 +51,16 @@ public class EventBuilder<T> {
                     .type("TextArea")
                     .build())
                 .build());
+        } else if (propertyType.equals(boolean.class)) {
+            builder.caseField(CaseViewField.builder()
+                .id(id)
+                .fieldTypeDefinition(FieldTypeDefinition.builder()
+                    .id("YesOrNo")
+                    .type("YesOrNo")
+                    .build())
+                .build());
+        } else {
+            throw new RuntimeException("Unimplemented type:" + propertyType);
         }
 
         XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
