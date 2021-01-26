@@ -16,6 +16,10 @@ public class TabBuilder {
         this.tab = tab;
     }
 
+    public TabBuilder label(String label) {
+        return field(label, null, null, "Label");
+    }
+
     public TabBuilder textField(String label, String value, String hint) {
         return field(label, value, hint, "Text");
     }

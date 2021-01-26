@@ -11,4 +11,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Organisation extends Party {
     private String name;
+
+    @Override
+    public String name() {
+        return name;
+    }
 }

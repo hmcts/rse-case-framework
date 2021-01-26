@@ -14,4 +14,9 @@ public class Individual extends Party {
     private String firstName;
     private String lastName;
     private String dateOfBirth;
+
+    @Override
+    public String name() {
+        return title + " " + firstName + " " + lastName;
+    }
 }

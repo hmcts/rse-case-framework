@@ -18,4 +18,6 @@ public abstract class Party {
     private long partyId;
     private String address;
     private long solicitorId;
+
+    public abstract String name();
 }

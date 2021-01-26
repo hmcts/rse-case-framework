@@ -112,14 +112,14 @@ public class CaseController {
 
     @Data
     @AllArgsConstructor
-    static class CaseParty {
+    public static class CaseParty {
         Long partyId;
         Party data;
         PartyClaims claims;
 
         @NoArgsConstructor
         @Data
-        static class PartyClaims {
+        public static class PartyClaims {
             List<Long> claimant;
             List<Long> defendant;
         }

@@ -12,13 +12,14 @@ import uk.gov.hmcts.ccd.domain.model.aggregated.CaseView;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewActionableEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewJurisdiction;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewTab;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewType;
 import uk.gov.hmcts.ccd.domain.model.aggregated.ProfileCaseState;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseHistoryViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseViewResource;
 import uk.gov.hmcts.ccf.CaseViewBuilder;
+import uk.gov.hmcts.ccf.TabBuilder;
+import uk.gov.hmcts.ccf.controller.kase.CaseController;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static org.jooq.generated.Tables.CASE_HISTORY;
+import static org.jooq.generated.Tables.PARTIES;
+import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 
 @RestController
 @RequestMapping(path = "/data/internal/cases")
@@ -49,19 +52,33 @@ public class UICaseController {
 
         List<CaseViewEvent> history = getCaseViewHistory(caseId);
 
-        List<CaseViewTab> tabs = new CaseViewBuilder()
+        CaseViewBuilder builder = new CaseViewBuilder()
             .newTab("History", "History")
             .field("History", history, null, "CaseHistoryViewer")
-            .build()
-            .newTab("Petition", "Petition")
-            .textField("Place of marriage", "Cathedral", "")
-            .build()
             .build();
 
+        builder = buildParties(caseId, builder);
+
         CaseView view = buildCaseView(caseId);
-        view.setTabs(tabs);
+        view.setTabs(builder.build());
 
         return ResponseEntity.ok(new CaseViewResource(view));
+    }
+
+    private CaseViewBuilder buildParties(String caseId, CaseViewBuilder builder) {
+        List<CaseController.CaseParty> parties =
+            jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
+                .from(PARTIES)
+                .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
+                .where(PARTIES.CASE_ID.eq(Long.valueOf(caseId)))
+                .orderBy(PARTIES.CASE_ID.asc())
+                .fetchInto(CaseController.CaseParty.class);
+        TabBuilder tab = builder.newTab("Parties", "Parties");
+        for (CaseController.CaseParty party : parties) {
+            tab.label("### " + party.getData().name());
+            tab.textField("Number of parties", String.valueOf(party.getClaims().getClaimant().size()), null);
+        }
+        return builder;
     }
 
     private List<CaseViewEvent> getCaseViewHistory(String caseId) {

@@ -2,23 +2,28 @@ package uk.gov.hmcts.ccd.domain.model.aggregated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
+@Data
 public class CaseViewTab {
     private String id;
     private String label;
     private Integer order;
+    @Builder.Default
     private List<CaseViewField> fields = Lists.newArrayList();
     @JsonProperty("show_condition")
     private String showCondition;
     private String role;
-
-    public CaseViewTab() {
-        // default constructor
-    }
 
     public String getId() {
         return id;
@@ -42,14 +47,6 @@ public class CaseViewTab {
 
     public void setOrder(Integer order) {
         this.order = order;
-    }
-
-    public List<CaseViewField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<CaseViewField> fields) {
-        this.fields = fields;
     }
 
     public String getShowCondition() {
