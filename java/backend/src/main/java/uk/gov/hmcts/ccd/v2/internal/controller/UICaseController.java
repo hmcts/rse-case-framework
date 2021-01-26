@@ -19,8 +19,10 @@ import uk.gov.hmcts.ccd.v2.internal.resource.CaseHistoryViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseViewResource;
 import uk.gov.hmcts.ccf.CaseViewBuilder;
 import uk.gov.hmcts.ccf.TabBuilder;
+import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -38,6 +40,9 @@ public class UICaseController {
 
     @Autowired
     private DefaultDSLContext jooq;
+
+    @Autowired
+    private ClaimController claimController;
 
     @GetMapping(
         path = "/{caseId}",
@@ -58,6 +63,7 @@ public class UICaseController {
             .build();
 
         builder = buildParties(caseId, builder);
+        builder = buildClaims(caseId, builder);
 
         CaseView view = buildCaseView(caseId);
         view.setTabs(builder.build());
@@ -76,9 +82,38 @@ public class UICaseController {
         TabBuilder tab = builder.newTab("Parties", "Parties");
         for (CaseController.CaseParty party : parties) {
             tab.label("### " + party.getData().name());
-            tab.textField("Number of parties", String.valueOf(party.getClaims().getClaimant().size()), null);
+            tab.textField("Number of claims", String.valueOf(party.getClaims().getClaimant().size()), null);
         }
         return builder;
+    }
+
+    private CaseViewBuilder buildClaims(String caseId, CaseViewBuilder builder) {
+        List<ClaimController.Claim> claims = claimController.getClaims(caseId);
+        for (ClaimController.Claim claim : claims) {
+            String tabName = getClaimName(claim.getParties());
+            TabBuilder tab = builder.newTab(tabName, tabName);
+            tab.label(String.format("### Claim value £%s - £%s",
+                NumberFormat.getNumberInstance().format(claim.getLowerAmount()),
+                NumberFormat.getNumberInstance().format(claim.getHigherAmount())));
+
+            String table = "| Claimants      | Defendants |\n"
+                + "| ----------- | ----------- |\n";
+
+            ClaimController.ClaimParties parties = claim.getParties();
+            int rows = Math.max(parties.getClaimants().size(), parties.getDefendants().size());
+            for (int t = 0; t < rows; t++) {
+                String claimant = t < parties.getClaimants().size() ? parties.getClaimants().get(t).name() : "";
+                String defendant = t < parties.getDefendants().size() ? parties.getDefendants().get(t).name() : "";
+                table += String.format("| %s      | %s       |", claimant, defendant);
+            }
+            tab.label(table);
+        }
+
+        return builder;
+    }
+
+    private String getClaimName(ClaimController.ClaimParties parties) {
+        return parties.getDefendants().get(0).name() + " vs.";
     }
 
     private List<CaseViewEvent> getCaseViewHistory(String caseId) {
