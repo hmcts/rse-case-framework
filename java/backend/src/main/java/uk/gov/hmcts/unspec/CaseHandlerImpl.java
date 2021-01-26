@@ -1,6 +1,8 @@
 package uk.gov.hmcts.unspec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.jooq.JSONB;
 import org.jooq.generated.enums.CaseState;
@@ -13,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
+import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Individual;
-import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
@@ -35,11 +37,19 @@ public class CaseHandlerImpl {
 
     public StateMachine<CaseState, Event> build() {
         StateMachine<CaseState, Event> result = new StateMachine<>();
-        result.initialState(CaseState.Created, this::onCreate)
-                .addEvent(CaseState.Created, Event.AddParty, this::addParty)
-                .addEvent(CaseState.Created, Event.AddClaim, this::addClaim)
-                .addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
-                .addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
+        result.initialState(CaseState.Created, this::onCreate);
+
+        result.addEvent(CaseState.Created, Event.AddParty, this::addParty)
+            .field(AddParty::getPartyType)
+            .field(AddParty::getTitle)
+            .field(AddParty::getFirstName)
+            .field(AddParty::getLastName)
+            .field(AddParty::getDateOfBirth);
+
+        result.addEvent(CaseState.Created, Event.AddClaim, this::addClaim);
+
+        result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase);
+        result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
     }
 
@@ -84,9 +94,12 @@ public class CaseHandlerImpl {
     }
 
     @SneakyThrows
-    private void addParty(StateMachine.TransitionContext context, Party party) {
+    private void addParty(StateMachine.TransitionContext context, AddParty party) {
+        ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
         jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(context.getEntityId(), JSONB.valueOf(new ObjectMapper().writeValueAsString(party)))
+                .values(context.getEntityId(), JSONB.valueOf(mapper.writeValueAsString(party)))
                 .execute();
     }
 

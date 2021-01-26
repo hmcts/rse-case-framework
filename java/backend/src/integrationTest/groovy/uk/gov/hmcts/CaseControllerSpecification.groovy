@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
+import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 import uk.gov.hmcts.ccf.StateMachine
 
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
@@ -48,6 +49,9 @@ class CaseControllerSpecification extends Specification {
 
     @Autowired
     private CaseController controller
+
+    @Autowired
+    private UICaseController uiCaseController;
 
     @Autowired
     private DataSource dataSource
@@ -213,6 +217,7 @@ class CaseControllerSpecification extends Specification {
     def "Adds a new party"() {
         when:
         def c = factory.CreateCase()
+        factory.createUser("a62f4e6f-c223-467d-acc1-fe91444783f5")
         URL url = Resources.getResource("requests/data/cases/157/addParty.json");
         String body = Resources.toString(url, StandardCharsets.UTF_8);
         String path = String.format('/data/cases/%s/events', c.getBody().getId());
@@ -223,6 +228,7 @@ class CaseControllerSpecification extends Specification {
                 .content(body))
                 .andExpect(status().isCreated())
         then:
-        true
+        controller.getCase(c.getBody().getId().toString())
+        uiCaseController.getCaseView(c.getBody().getId().toString())
     }
 }

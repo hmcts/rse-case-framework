@@ -21,6 +21,7 @@ import uk.gov.hmcts.ccf.CaseViewBuilder;
 import uk.gov.hmcts.ccf.TabBuilder;
 import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
+import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -43,6 +44,10 @@ public class UICaseController {
 
     @Autowired
     private ClaimController claimController;
+
+    @Autowired
+    CaseHandlerImpl stateMachineSupplier;
+
 
     @GetMapping(
         path = "/{caseId}",
@@ -82,7 +87,9 @@ public class UICaseController {
         TabBuilder tab = builder.newTab("Parties", "Parties");
         for (CaseController.CaseParty party : parties) {
             tab.label("### " + party.getData().name());
-            tab.textField("Number of claims", String.valueOf(party.getClaims().getClaimant().size()), null);
+            if (party.getClaims() != null && party.getClaims().getClaimant() != null) {
+                tab.textField("Number of claims", String.valueOf(party.getClaims().getClaimant().size()), null);
+            }
         }
         return builder;
     }
@@ -160,7 +167,7 @@ public class UICaseController {
     private List<CaseViewActionableEvent> getActionableEvents() {
         return List.of(
             CaseViewActionableEvent.builder()
-                .id("addParty")
+                .id("AddParty")
                 .name("Add Party")
                 .description("Add Party")
                 .order(1)

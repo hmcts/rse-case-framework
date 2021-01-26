@@ -1,7 +1,11 @@
 package uk.gov.hmcts.ccd.v2.external.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.Event;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccd.domain.model.std.CaseDataContent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.external.resource.CaseResource;
-import uk.gov.hmcts.ccf.EventBuilder;
-import uk.gov.hmcts.ccf.config.EventConfig;
+import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
+import static org.jooq.generated.Tables.CASES_WITH_STATES;
+import static org.jooq.generated.Tables.EVENTS;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController(value = "CCDController")
@@ -25,7 +31,10 @@ import static org.springframework.http.ResponseEntity.status;
 public class CaseController {
 
     @Autowired
-    private EventConfig config;
+    CaseHandlerImpl stateMachineSupplier;
+
+    @Autowired
+    DefaultDSLContext jooq;
 
     @GetMapping(
         path = "/cases/{caseId}",
@@ -48,10 +57,24 @@ public class CaseController {
     @SuppressWarnings("unchecked")
     public ResponseEntity<CaseResource> createEvent(@PathVariable("caseId") String caseId,
                                                     @RequestBody final CaseDataContent content) {
-        EventBuilder.CCFEvent e = config.getEvent(content.getEventId());
+        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+
+        StateMachine.TransitionContext context = new StateMachine.TransitionContext("1", Long.valueOf(caseId));
+        Event event = Event.valueOf(content.getEventId());
+
         String json = new ObjectMapper().writeValueAsString(content.getData());
-        Object instance = new ObjectMapper().readValue(json, e.getClazz());
-        e.getHandler().accept(Long.valueOf(caseId), instance);
+        JsonNode node = new ObjectMapper().readTree(json);
+
+        CaseState state = jooq.select(CASES_WITH_STATES.STATE)
+            .from(CASES_WITH_STATES)
+            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .fetchOne().value1();
+
+        statemachine.handleEvent(context, event, node);
+
+        insertEvent(Event.valueOf(content.getEventId()), Long.valueOf(caseId), statemachine.getState(),
+            "a62f4e6f-c223-467d-acc1-fe91444783f5");
+
         CaseResource result = CaseResource.builder()
             .data(content.getData())
             .reference(content.getCaseReference())
@@ -60,6 +83,15 @@ public class CaseController {
             .build();
         return status(HttpStatus.CREATED).body(result);
     }
+
+    private void insertEvent(Event eventId, Long caseId, CaseState state, String userId) {
+        jooq.insertInto(EVENTS)
+            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE,
+                EVENTS.USER_ID)
+            .values(eventId, caseId, state, userId)
+            .execute();
+    }
+
 
     @PostMapping(
         path = "/case-types/{caseTypeId}/cases",

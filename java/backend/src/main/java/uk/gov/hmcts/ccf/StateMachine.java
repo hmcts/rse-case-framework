@@ -2,9 +2,12 @@ package uk.gov.hmcts.ccf;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
@@ -15,8 +18,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
@@ -26,6 +31,7 @@ public class StateMachine<StateT, EventT> {
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
     private Table<String, EventT, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
+    private Map<EventT, EventBuilder> events = Maps.newHashMap();
 
     private Class clazz;
     private BiConsumer initialHandler;
@@ -33,6 +39,10 @@ public class StateMachine<StateT, EventT> {
     private StateT initialState;
 
     public StateMachine() {
+    }
+
+    public CaseUpdateViewEvent getEvent(EventT event) {
+        return events.get(event).build();
     }
 
     public <T> StateMachine<StateT, EventT> initialState(StateT state, BiConsumer<TransitionContext, T> c) {
@@ -62,9 +72,12 @@ public class StateMachine<StateT, EventT> {
 
     @SneakyThrows
     public void handleEvent(TransitionContext context, EventT event, JsonNode data) {
+        ObjectMapper o = new ObjectMapper()
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
         for (TransitionRecord transitionRecord : transitions.get(state.toString())) {
             if (transitionRecord.event.equals(event)) {
-                Object instance = new ObjectMapper().treeToValue(data, transitionRecord.clazz);
+                Object instance = o.treeToValue(data, transitionRecord.clazz);
                 transitionRecord.consumer.accept(context, instance);
                 state = transitionRecord.destination;
                 return;
@@ -73,7 +86,7 @@ public class StateMachine<StateT, EventT> {
 
         for (TransitionRecord universalEvent : universalEvents) {
             if (universalEvent.event.equals(event)) {
-                Object instance = new ObjectMapper().treeToValue(data, universalEvent.clazz);
+                Object instance = o.treeToValue(data, universalEvent.clazz);
                 universalEvent.consumer.accept(context, instance);
                 return;
             }
@@ -97,11 +110,14 @@ public class StateMachine<StateT, EventT> {
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addEvent(StateT state, EventT event,
+    @SuppressWarnings("unchecked")
+    public <T> EventBuilder<T> addEvent(StateT state, EventT event,
                                                      BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
+        EventBuilder<T> result = new EventBuilder<T>((Class<T>) typeArgs[1], event.toString(), event.toString());
         transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
-        return this;
+        events.put(event, result);
+        return result;
     }
 
     public <T> StateMachine<StateT, EventT> addFileUploadEvent(StateT state, EventT event,

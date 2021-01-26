@@ -19,7 +19,7 @@ public class EventBuilderTest {
     public void buildReasonForReferral() {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::getReason);
-        FieldTypeDefinition fieldtype = e.build().getViewEvent().getCaseFields().get(0).getFieldTypeDefinition();
+        FieldTypeDefinition fieldtype = e.build().getCaseFields().get(0).getFieldTypeDefinition();
 
         assertEquals("FixedRadioList", fieldtype.getType());
         assertEquals(2, fieldtype.getFixedListItemDefinitions().size());
@@ -30,7 +30,7 @@ public class EventBuilderTest {
     public void buildsReferralDate() {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::getDate);
-        CaseViewField date = e.build().getViewEvent().getCaseFields().get(0);
+        CaseViewField date = e.build().getCaseFields().get(0);
 
         assertEquals("date", date.getId());
         assertTrue(date.getShowSummaryChangeOption());
@@ -45,7 +45,7 @@ public class EventBuilderTest {
     public void buildsReferralDetails() {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::getReferralDetails);
-        CaseViewField date = e.build().getViewEvent().getCaseFields().get(0);
+        CaseViewField date = e.build().getCaseFields().get(0);
         FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
 
         assertEquals("referralDetails", date.getId());
@@ -58,7 +58,7 @@ public class EventBuilderTest {
     public void buildsBoolean() {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::isFeeRequired);
-        CaseViewField date = e.build().getViewEvent().getCaseFields().get(0);
+        CaseViewField date = e.build().getCaseFields().get(0);
         FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
 
         assertEquals("feeRequired", date.getId());
@@ -72,7 +72,7 @@ public class EventBuilderTest {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::isFeeRequired);
         e.field(GeneralReferral::getDate);
-        List<WizardPage> pages = e.build().getViewEvent().getWizardPages();
+        List<WizardPage> pages = e.build().getWizardPages();
         assertEquals(1, pages.size());
         WizardPage page = pages.get(0);
         assertEquals("1", page.getId());
@@ -93,7 +93,7 @@ public class EventBuilderTest {
         e.field(GeneralReferral::isFeeRequired);
         e.nextPage();
         e.field(GeneralReferral::getDate);
-        List<WizardPage> pages = e.build().getViewEvent().getWizardPages();
+        List<WizardPage> pages = e.build().getWizardPages();
         assertEquals(2, pages.size());
         WizardPage page = pages.get(0);
         assertEquals(1, page.getOrder());

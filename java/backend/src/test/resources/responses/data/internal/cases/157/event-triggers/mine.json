@@ -1,19 +1,19 @@
 {
-  "id": "addParty",
-  "name": "addParty",
-  "description": "addParty",
-  "case_id": "addParty",
+  "id": "",
+  "name": null,
+  "description": null,
+  "case_id": null,
   "case_fields": [
     {
-      "id": "forename",
-      "label": "Forename",
+      "id": "title",
+      "label": "Title",
       "hidden": null,
       "value": null,
       "metadata": false,
       "hint_text": null,
       "field_type": {
-        "id": "TextArea",
-        "type": "TextArea",
+        "id": "Text",
+        "type": "Text",
         "min": null,
         "max": null,
         "regular_expression": null,
@@ -28,22 +28,22 @@
       "display_context": "MANDATORY",
       "display_context_parameter": null,
       "show_condition": null,
-      "show_summary_change_option": null,
+      "show_summary_change_option": true,
       "show_summary_content_option": null,
       "retain_hidden_value": null,
       "acls": [],
       "default_value": null
     },
     {
-      "id": "surname",
-      "label": "Surname",
+      "id": "firstName",
+      "label": "Forename",
       "hidden": null,
       "value": null,
       "metadata": false,
       "hint_text": null,
       "field_type": {
-        "id": "TextArea",
-        "type": "TextArea",
+        "id": "Text",
+        "type": "Text",
         "min": null,
         "max": null,
         "regular_expression": null,
@@ -58,7 +58,67 @@
       "display_context": "MANDATORY",
       "display_context_parameter": null,
       "show_condition": null,
-      "show_summary_change_option": null,
+      "show_summary_change_option": true,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [],
+      "default_value": null
+    },
+    {
+      "id": "lastName",
+      "label": "Surname",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": null,
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": true,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [],
+      "default_value": null
+    },
+    {
+      "id": "dateOfBirth",
+      "label": null,
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "Text",
+        "type": "Text",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": null,
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": true,
       "show_summary_content_option": null,
       "retain_hidden_value": null,
       "acls": [],
@@ -69,18 +129,30 @@
   "wizard_pages": [
     {
       "id": "1",
-      "label": "Add a party",
+      "label": "Page 1",
       "order": 1,
       "wizard_page_fields": [
         {
-          "case_field_id": "forename",
+          "case_field_id": "title",
           "order": 1,
           "page_column_no": 1,
           "complex_field_overrides": null
         },
         {
-          "case_field_id": "surname",
+          "case_field_id": "firstName",
           "order": 2,
+          "page_column_no": 1,
+          "complex_field_overrides": null
+        },
+        {
+          "case_field_id": "lastName",
+          "order": 3,
+          "page_column_no": 1,
+          "complex_field_overrides": null
+        },
+        {
+          "case_field_id": "dateOfBirth",
+          "order": 4,
           "page_column_no": 1,
           "complex_field_overrides": null
         }
@@ -90,7 +162,7 @@
       "retries_timeout_mid_event": []
     }
   ],
-  "show_summary": null,
+  "show_summary": true,
   "show_event_notes": null,
   "end_button_label": null,
   "can_save_draft": null,

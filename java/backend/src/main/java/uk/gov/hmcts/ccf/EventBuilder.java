@@ -6,8 +6,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
@@ -31,7 +29,7 @@ public class EventBuilder<T> {
     private int currentPage = 1;
     private BiConsumer<Long, T> handler;
 
-    public CCFEvent build() {
+    public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {
             Collection<String> fieldNames =
                 fieldPageMap.get(t);
@@ -53,7 +51,7 @@ public class EventBuilder<T> {
                 .wizardPageFields(fields)
                 .build());
         }
-        return new CCFEvent(builder.build(), handler, clazz);
+        return builder.build();
     }
 
     public EventBuilder(Class<T> clazz, String id, String label) {
@@ -150,11 +148,4 @@ public class EventBuilder<T> {
         currentPage++;
     }
 
-    @Data
-    @AllArgsConstructor
-    public class CCFEvent {
-        private CaseUpdateViewEvent viewEvent;
-        private BiConsumer handler;
-        private Class clazz;
-    }
 }

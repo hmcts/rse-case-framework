@@ -1,12 +1,13 @@
 {
   "data": {
+    "partyType": "Individual",
     "title": "Mr",
     "firstName": "A",
     "lastName": "Person",
     "dateOfBirth": "2000-01-01"
   },
   "event": {
-    "id": "addParty",
+    "id": "AddParty",
     "summary": "",
     "description": ""
   },

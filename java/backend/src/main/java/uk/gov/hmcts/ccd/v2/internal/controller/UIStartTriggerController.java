@@ -1,5 +1,7 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,9 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseUpdateViewEventResource;
-import uk.gov.hmcts.ccf.config.EventConfig;
+import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 @RestController
 @RequestMapping(path = "/data/internal")
@@ -17,7 +21,7 @@ public class UIStartTriggerController {
     private static final String ERROR_CASE_ID_INVALID = "Case ID is not valid";
 
     @Autowired
-    private EventConfig config;
+    CaseHandlerImpl stateMachineSupplier;
 
     @GetMapping(
         path = "/case-types/{caseTypeId}/event-triggers/{triggerId}",
@@ -52,7 +56,11 @@ public class UIStartTriggerController {
                                                                             @RequestParam(value = "ignore-warning",
                                                                                 required = false)
                                                                                   final Boolean ignoreWarning) {
-        CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(config.getEvent(triggerId).getViewEvent(),
+        StateMachine<CaseState, Event> s =
+            stateMachineSupplier.build();
+        CaseUpdateViewEvent view = s.getEvent(Event.valueOf(triggerId));
+        CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(
+            view,
             caseId,
             ignoreWarning);
         return ResponseEntity.ok(e);
