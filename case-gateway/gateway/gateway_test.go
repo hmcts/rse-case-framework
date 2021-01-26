@@ -79,6 +79,12 @@ func TestRoutesIndieCase(t *testing.T) {
 	CheckRequest(t, expectedRoot, resource)
 }
 
+func TestRoutesValidation(t *testing.T) {
+	const expectedRoot = "independent-responses"
+	resource := "/data/case-types/2542345663454321/validate"
+	CheckRequest(t, expectedRoot, resource)
+}
+
 func TestHandlesIndieDown(t *testing.T) {
 	IndependentHost = "localhost:32"
 	const expectedRoot = "ccd-responses"
