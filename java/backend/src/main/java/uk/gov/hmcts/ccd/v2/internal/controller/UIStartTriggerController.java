@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
-import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
-import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
-import uk.gov.hmcts.ccd.domain.model.definition.WizardPage;
-import uk.gov.hmcts.ccd.domain.model.definition.WizardPageField;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseUpdateViewEventResource;
+import uk.gov.hmcts.ccf.EventBuilder;
+import uk.gov.hmcts.unspec.dto.AddParty;
 
 @RestController
 @RequestMapping(path = "/data/internal")
@@ -52,36 +50,15 @@ public class UIStartTriggerController {
                                                                             @RequestParam(value = "ignore-warning",
                                                                                 required = false)
                                                                                   final Boolean ignoreWarning) {
-
         CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(buildAddParty(caseId), caseId,
             ignoreWarning);
         return ResponseEntity.ok(e);
     }
 
     public CaseUpdateViewEvent buildAddParty(String caseId) {
-        return CaseUpdateViewEvent.builder()
-            .id("addParty")
-            .name("Add Party")
-            .description("Add Party")
-            .caseId(caseId)
-            .caseField(CaseViewField.builder()
-                .id("details")
-                .label("Details yo")
-                .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("TextArea")
-                    .type("TextArea")
-                    .build())
-                .build())
-            .wizardPage(WizardPage.builder()
-                .id("generalReferralgeneralreferral")
-                .order(1)
-                .wizardPageField(WizardPageField.builder()
-                    .caseFieldId("details")
-                    .order(1)
-                    .pageColumnNumber(1)
-                    .build())
-                .build())
-            .build();
+        return new EventBuilder<>(AddParty.class, "addParty", "Add a party")
+            .field(AddParty::getForename)
+            .field(AddParty::getSurname).build();
     }
 
     @GetMapping(

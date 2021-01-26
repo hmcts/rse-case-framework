@@ -44,11 +44,12 @@ public class UIStartTriggerControllerTest {
         EventBuilder<GeneralReferral> e = new EventBuilder<>(GeneralReferral.class);
         e.field(GeneralReferral::getDate);
         CaseViewField date = e.build().getCaseFields().get(0);
-        FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
 
         assertEquals("date", date.getId());
+        assertTrue(date.getShowSummaryChangeOption());
         assertEquals("Application or referral date", date.getLabel());
 
+        FieldTypeDefinition fieldtype = date.getFieldTypeDefinition();
         assertEquals("Date", fieldtype.getType());
         assertEquals("Date", fieldtype.getId());
     }
@@ -62,8 +63,8 @@ public class UIStartTriggerControllerTest {
 
         assertEquals("referralDetails", date.getId());
 
-        assertEquals("TextArea", fieldtype.getType());
-        assertEquals("TextArea", fieldtype.getId());
+        assertEquals("Text", fieldtype.getType());
+        assertEquals("Text", fieldtype.getId());
     }
 
     @Test
@@ -87,6 +88,7 @@ public class UIStartTriggerControllerTest {
         List<WizardPage> pages = e.build().getWizardPages();
         assertEquals(1, pages.size());
         WizardPage page = pages.get(0);
+        assertEquals("1", page.getId());
         assertEquals(1, page.getOrder());
         assertEquals(2, page.getWizardPageFields().size());
 

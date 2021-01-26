@@ -49,7 +49,7 @@ public class CaseViewField implements CommonField {
     @JsonProperty("show_condition")
     private String showCondition;
     @JsonProperty("show_summary_change_option")
-    private Boolean showSummaryChangeOption;
+    private boolean showSummaryChangeOption;
     @JsonProperty("show_summary_content_option")
     private Integer showSummaryContentOption;
     @JsonProperty("retain_hidden_value")
@@ -157,7 +157,7 @@ public class CaseViewField implements CommonField {
         return this.showCondition;
     }
 
-    public Boolean getShowSummaryChangeOption() {
+    public boolean getShowSummaryChangeOption() {
         return showSummaryChangeOption;
     }
 

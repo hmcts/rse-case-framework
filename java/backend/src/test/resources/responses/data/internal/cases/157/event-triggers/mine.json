@@ -1,12 +1,12 @@
 {
-  "id": "generalReferral",
-  "name": "General referral",
-  "description": "General referral",
-  "case_id": "2542345663454321",
+  "id": "addParty",
+  "name": "addParty",
+  "description": "addParty",
+  "case_id": "addParty",
   "case_fields": [
     {
-      "id": "details",
-      "label": "Details yo",
+      "id": "forename",
+      "label": "Forename",
       "hidden": null,
       "value": null,
       "metadata": false,
@@ -17,34 +17,70 @@
         "min": null,
         "max": null,
         "regular_expression": null,
-        "fixed_list_items": null,
+        "fixed_list_items": [],
         "complex_fields": null,
         "collection_field_type": null
       },
       "validation_expr": null,
-      "security_label": null,
+      "security_label": "PUBLIC",
       "order": null,
       "formatted_value": null,
-      "display_context": null,
+      "display_context": "MANDATORY",
       "display_context_parameter": null,
       "show_condition": null,
       "show_summary_change_option": null,
       "show_summary_content_option": null,
       "retain_hidden_value": null,
-      "acls": null,
+      "acls": [],
+      "default_value": null
+    },
+    {
+      "id": "surname",
+      "label": "Surname",
+      "hidden": null,
+      "value": null,
+      "metadata": false,
+      "hint_text": null,
+      "field_type": {
+        "id": "TextArea",
+        "type": "TextArea",
+        "min": null,
+        "max": null,
+        "regular_expression": null,
+        "fixed_list_items": [],
+        "complex_fields": null,
+        "collection_field_type": null
+      },
+      "validation_expr": null,
+      "security_label": "PUBLIC",
+      "order": null,
+      "formatted_value": null,
+      "display_context": "MANDATORY",
+      "display_context_parameter": null,
+      "show_condition": null,
+      "show_summary_change_option": null,
+      "show_summary_content_option": null,
+      "retain_hidden_value": null,
+      "acls": [],
       "default_value": null
     }
   ],
   "event_token": null,
   "wizard_pages": [
     {
-      "id": "generalReferralgeneralreferral",
-      "label": null,
+      "id": "1",
+      "label": "Add a party",
       "order": 1,
       "wizard_page_fields": [
         {
-          "case_field_id": "details",
+          "case_field_id": "forename",
           "order": 1,
+          "page_column_no": 1,
+          "complex_field_overrides": null
+        },
+        {
+          "case_field_id": "surname",
+          "order": 2,
           "page_column_no": 1,
           "complex_field_overrides": null
         }

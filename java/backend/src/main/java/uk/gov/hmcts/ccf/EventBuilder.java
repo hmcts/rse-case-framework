@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccf;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.ccd.domain.model.definition.WizardPageField;
 import java.beans.PropertyDescriptor;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 public class EventBuilder<T> {
@@ -22,6 +24,7 @@ public class EventBuilder<T> {
     private Class<T> clazz;
     private CaseUpdateViewEvent.CaseUpdateViewEventBuilder builder = CaseUpdateViewEvent.builder();
     private Multimap<Integer, String> fieldPageMap = ArrayListMultimap.create();
+    private Map<Integer, String> pageLabels = Maps.newHashMap();
     private int currentPage = 1;
 
     public CaseUpdateViewEvent build() {
@@ -41,14 +44,26 @@ public class EventBuilder<T> {
 
             builder.wizardPage(WizardPage.builder()
                 .order(t)
+                .id(String.valueOf(t))
+                .label(pageLabels.containsKey(t) ? pageLabels.get(t) : "Page " + t)
                 .wizardPageFields(fields)
                 .build());
         }
         return builder.build();
     }
 
+    public EventBuilder(Class<T> clazz, String id, String label) {
+        this.clazz = clazz;
+        this.builder.id(id);
+        this.builder.name(id);
+        this.builder.description(id);
+        this.builder.caseId(id);
+        this.pageLabels.put(currentPage, label);
+    }
+
     public EventBuilder(Class<T> clazz) {
         this.clazz = clazz;
+        this.builder.id("");
     }
 
     public EventBuilder<T> field(TypedPropertyGetter<T, ?> getter) {
@@ -74,8 +89,8 @@ public class EventBuilder<T> {
             builder.caseField(CaseViewField.builder()
                 .id(id)
                 .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("TextArea")
-                    .type("TextArea")
+                    .id("Text")
+                    .type("Text")
                     .build())
                 .build());
         } else if (propertyType.equals(boolean.class)) {
@@ -91,6 +106,8 @@ public class EventBuilder<T> {
         }
 
         CaseViewField f = builder.getCaseFields().get(builder.getCaseFields().size() - 1);
+        this.builder.showSummary(true);
+        f.setShowSummaryChangeOption(true);
         fieldPageMap.put(currentPage, f.getId());
 
         XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
