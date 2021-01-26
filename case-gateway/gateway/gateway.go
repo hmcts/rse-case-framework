@@ -69,6 +69,36 @@ func fetchJsonArray(host string, req *http.Request) []interface{} {
 	return arr
 }
 
+func isIndie(url *url.URL) bool {
+	keys, ok := url.Query()["ctid"]
+	if ok && len(keys[0]) > 0 {
+		if strings.ToLower(keys[0]) == "nfd" {
+			return true
+		}
+	}
+
+	if strings.HasPrefix(url.Path, "/data/internal/cases") {
+		// TODO: range based routing
+		urlPart := strings.Split(url.Path, "/")
+		if strings.HasPrefix(urlPart[4], "2") {
+			return true
+		}
+	}
+
+	if strings.HasPrefix(url.Path, "/data/case-types") {
+		// TODO: range based routing
+		urlPart := strings.Split(url.Path, "/")
+		if strings.HasPrefix(urlPart[3], "2") {
+			return true
+		}
+	}
+
+	if strings.Contains(strings.ToLower(url.Path), "/nfd") {
+		return true
+	}
+	return false
+}
+
 // Given a request send it to the appropriate url
 func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 	path := strings.ToLower(req.URL.Path)
@@ -80,33 +110,7 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	keys, ok := req.URL.Query()["ctid"]
-	if ok && len(keys[0]) > 0 {
-		if strings.ToLower(keys[0]) == "nfd" {
-			serveReverseProxy("http://" + IndependentHost, res, req)
-			return
-		}
-	}
-
-	if strings.HasPrefix(req.URL.Path, "/data/internal/cases") {
-		// TODO: range based routing
-		urlPart := strings.Split(req.URL.Path, "/")
-		if strings.HasPrefix(urlPart[4], "2") {
-			serveReverseProxy("http://" + IndependentHost, res, req)
-			return
-		}
-	}
-
-	if strings.HasPrefix(req.URL.Path, "/data/case-types") {
-		// TODO: range based routing
-		urlPart := strings.Split(req.URL.Path, "/")
-		if strings.HasPrefix(urlPart[3], "2") {
-			serveReverseProxy("http://" + IndependentHost, res, req)
-			return
-		}
-	}
-
-	if strings.Contains(path, "/nfd") {
+	if isIndie(req.URL) {
 		serveReverseProxy("http://" + IndependentHost, res, req)
 		return
 	}
