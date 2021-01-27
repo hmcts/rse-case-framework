@@ -18,7 +18,7 @@ class UICaseControllerSpec extends Specification {
     def "renders the case view"() {
         given:
         def c = factory.CreateCase(factory.createUser("1"))
-        def view = controller.getCaseView("1").getBody()
+        def view = controller.getCaseView(String.valueOf(c.getBody().getId())).getBody()
 
         expect:
         view.getTabs().size() > 0

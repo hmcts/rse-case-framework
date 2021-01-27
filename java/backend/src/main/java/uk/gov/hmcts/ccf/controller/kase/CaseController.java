@@ -164,7 +164,7 @@ public class CaseController {
     @AllArgsConstructor
     @Data
     public static class CaseActions {
-        private Long id;
+        private long id;
         private CaseState state;
         private Set<Event> actions;
     }

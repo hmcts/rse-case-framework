@@ -19,6 +19,7 @@ import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
+import uk.gov.hmcts.unspec.event.ReopenCase;
 
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,11 @@ public class CaseHandlerImpl {
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);
 
-        result.addEvent(CaseState.Created, Event.AddClaim, this::addClaim);
-
         result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
             .field(CloseCase::getReason);
 
-        result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
+        result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::reopenCase)
+            .field(ReopenCase::getReason);
         return result;
     }
 
@@ -141,6 +141,10 @@ public class CaseHandlerImpl {
             .registerModule(new Jdk8Module())
             .registerModule(new JavaTimeModule());
         return mapper;
+    }
+
+    private void reopenCase(StateMachine.TransitionContext context, ReopenCase r) {
+
     }
 
     private void closeCase(StateMachine.TransitionContext context, CloseCase t) {

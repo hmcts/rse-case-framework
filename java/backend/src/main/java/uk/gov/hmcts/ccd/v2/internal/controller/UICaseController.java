@@ -1,5 +1,8 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import com.google.common.collect.Lists;
+import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseHistoryViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseViewResource;
 import uk.gov.hmcts.ccf.CaseViewBuilder;
+import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TabBuilder;
 import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
@@ -30,6 +34,7 @@ import java.util.Random;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
+import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
@@ -143,6 +148,22 @@ public class UICaseController {
             .build()).collect(toList());
     }
 
+    private String getActionLabel(String id) {
+        if (id.equals("CreateClaim")) {
+            return "Create a claim";
+        }
+        if (id.equals("AddParty")) {
+            return "Add a party";
+        }
+        if (id.equals("CloseCase")) {
+            return "Close the case";
+        }
+        if (id.equals("SubmitAppeal")) {
+            return "Submit an appeal";
+        }
+        return id;
+    }
+
     private String getHistoryLabel(String id) {
         if (id.equals("CreateClaim")) {
             return "Claim Created";
@@ -156,8 +177,11 @@ public class UICaseController {
         if (id.equals("AddParty")) {
             return "Party Added";
         }
-        if (id.equals("Close Case")) {
+        if (id.equals("CloseCase")) {
             return "Case closed";
+        }
+        if (id.equals("SubmitAppeal")) {
+            return "Case reopened";
         }
         return id;
     }
@@ -167,7 +191,7 @@ public class UICaseController {
         caseView.setCaseId(caseId);
         caseView.setChannels(getChannels());
 
-        caseView.setActionableEvents(getActionableEvents());
+        caseView.setActionableEvents(getActionableEvents(caseId));
 
         caseView.setState(getState());
         CaseViewJurisdiction jurisdiction = new CaseViewJurisdiction();
@@ -183,21 +207,24 @@ public class UICaseController {
         return caseView;
     }
 
-    private List<CaseViewActionableEvent> getActionableEvents() {
-        return List.of(
-            CaseViewActionableEvent.builder()
-                .id("AddParty")
-                .name("Add Party")
-                .description("Add Party")
-                .order(1)
-                .build(),
-            CaseViewActionableEvent.builder()
-                .id("CloseCase")
-                .name("Close case")
-                .description("Close case")
-                .order(1)
-                .build()
-        );
+    private List<CaseViewActionableEvent> getActionableEvents(String caseId) {
+        CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
+            .from(CASES_WITH_STATES)
+            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .fetchOne().value1();
+
+        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+        List<CaseViewActionableEvent> result = Lists.newArrayList();
+        int t = 1;
+        for (Event e : statemachine.getAvailableActions(currentState)) {
+            result.add(CaseViewActionableEvent.builder()
+                .id(e.getLiteral())
+                .name(getActionLabel(e.getLiteral()))
+                .description(e.getLiteral())
+                .order(t++)
+                .build());
+        }
+        return result;
     }
 
     private ProfileCaseState getState() {
