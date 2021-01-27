@@ -62,7 +62,8 @@ public class UICaseSearchController {
                 .caseId(result.getCaseId().toString())
                 .fields(Map.of(
                     "party_count", result.getPartyCount(),
-                    "id", result.getCaseId()
+                    "id", result.getCaseId(),
+                    "parent_id", result.getCaseId()
                     ))
                 .build());
         }
@@ -76,6 +77,14 @@ public class UICaseSearchController {
                 .field(SearchResultViewHeader.builder()
                     .caseFieldId("id")
                     .label("Case ID")
+                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
+                        .id("Number")
+                        .type("Number")
+                        .build())
+                    .build())
+                .field(SearchResultViewHeader.builder()
+                    .caseFieldId("parent_id")
+                    .label("Parent Case")
                     .caseFieldTypeDefinition(FieldTypeDefinition.builder()
                         .id("Number")
                         .type("Number")

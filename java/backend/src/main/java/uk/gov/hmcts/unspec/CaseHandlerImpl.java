@@ -41,7 +41,6 @@ public class CaseHandlerImpl {
 
         result.addEvent(CaseState.Created, Event.AddParty, this::addParty)
             .field(AddParty::getPartyType)
-            .field(AddParty::getTitle)
             .field(AddParty::getFirstName)
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);
@@ -51,6 +50,13 @@ public class CaseHandlerImpl {
         result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase);
         result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
+    }
+
+    @SneakyThrows
+    private void addParty(StateMachine.TransitionContext context, AddParty party) {
+        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
+            .values(context.getEntityId(), JSONB.valueOf(getObjectMapper().writeValueAsString(party)))
+            .execute();
     }
 
     @SneakyThrows
@@ -93,15 +99,7 @@ public class CaseHandlerImpl {
                 .execute();
     }
 
-    @SneakyThrows
-    private void addParty(StateMachine.TransitionContext context, AddParty party) {
-        ObjectMapper mapper = new ObjectMapper()
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
-        jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
-                .values(context.getEntityId(), JSONB.valueOf(mapper.writeValueAsString(party)))
-                .execute();
-    }
+
 
     @SneakyThrows
     private void onCreate(StateMachine.TransitionContext context, CreateClaim request) {
@@ -133,6 +131,13 @@ public class CaseHandlerImpl {
                 .defendants(Map.of(partyIds.get(1), true))
                 .build());
 
+    }
+
+    private ObjectMapper getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
+        return mapper;
     }
 
     private void closeCase(StateMachine.TransitionContext context, CloseCase t) {

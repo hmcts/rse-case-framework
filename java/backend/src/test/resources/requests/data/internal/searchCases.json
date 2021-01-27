@@ -1,6 +1,6 @@
 {
   "native_es_query": {
-    "from": 0,
+    "from": 50,
     "query": {
       "bool": {
         "must": [
