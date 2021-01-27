@@ -107,7 +107,7 @@ create table citizen(
 create view cases_with_states as
     select c.case_id, c.parent_case_id, events.state
     from cases c
-        join events using (case_id)
+        join events on events.case_id = coalesce(c.parent_case_id, c.case_id)
         left join events events2 on events2.case_id = events.case_id
                                and events2.sequence_number > events.sequence_number
     where events2 is null;
