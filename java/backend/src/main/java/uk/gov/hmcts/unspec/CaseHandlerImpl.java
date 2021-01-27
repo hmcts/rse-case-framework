@@ -41,6 +41,7 @@ public class CaseHandlerImpl {
 
         result.addEvent(CaseState.Created, Event.AddParty, this::addParty)
             .field(AddParty::getPartyType)
+            .field(AddParty::getTitle)
             .field(AddParty::getFirstName)
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);

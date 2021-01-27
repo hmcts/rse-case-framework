@@ -16,6 +16,7 @@ import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewHeader
 import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewHeaderGroup;
 import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewItem;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseSearchResultViewResource;
+import uk.gov.hmcts.ccf.ESQueryParser;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class UICaseSearchController {
                                      @RequestParam(value = "use_case", required = false) final String useCase,
                                      @RequestBody String jsonSearchRequest) {
 
+        ESQueryParser.ESQuery query = ESQueryParser.parse(jsonSearchRequest);
 
         List<CaseController.CaseSearchResult> results =
             jooq.with("party_counts").as(
@@ -54,6 +56,8 @@ public class UICaseSearchController {
                 .from(CASES_WITH_STATES)
                 .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
                 .orderBy(CASES_WITH_STATES.CASE_ID.asc())
+                .offset(query.getFrom())
+                .limit(query.getPageSize())
                 .fetchInto(CaseController.CaseSearchResult.class);
 
         List<SearchResultViewItem> cases = new ArrayList<>();
@@ -69,6 +73,7 @@ public class UICaseSearchController {
         }
         return ResponseEntity.ok(CaseSearchResultViewResource.builder()
             .cases(cases)
+            .total(110000L)
             .header(SearchResultViewHeaderGroup.builder()
                 .metadata(HeaderGroupMetadata.builder()
                     .jurisdiction("DIVORCE")

@@ -24,12 +24,15 @@ create table users(
 create table events(
   case_id bigint references cases(case_id) not null,
   id event not null,
-  sequence_number serial not null unique,
+  sequence_number bigserial not null,
   timestamp timestamp not null default now(),
   state case_state not null,
   user_id varchar not null references users(user_id),
   unique(case_id, sequence_number)
 );
+
+create index on events(case_id);
+create index on events(sequence_number);
 
 CREATE TYPE claim_state AS ENUM ('Issued', 'Stayed', 'ServiceConfirmed');
 
@@ -80,7 +83,7 @@ create table parties(
                         case_id bigint references cases(case_id) not null,
                         data jsonb not null
 );
-
+create index on parties(case_id);
 CREATE TYPE party_role AS ENUM ('claimant', 'defendant');
 
 create table claim_parties(
@@ -100,20 +103,14 @@ create table citizen(
         status varchar not null
 );
 
--- View for cases with their current states.
 create view cases_with_states as
-with latest_events as (
-    select case_id, max(events.sequence_number) as latest_seq
-    from cases
-             join events using (case_id)
-    group by case_id
-)
-select
-    latest_events.case_id,
-    events.state
-from latest_events
-         join events on events.case_id = latest_events.case_id
-    and  events.sequence_number = latest_seq;
+    select c.case_id, events.state
+    from cases c
+        join events using (case_id)
+        left join events events2 on events2.case_id = events.case_id
+                               and events2.sequence_number < events.sequence_number
+    where events2 is null;
+
 
 create view parties_with_claims as
 with claims_by_type as (

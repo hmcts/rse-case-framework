@@ -23,7 +23,7 @@ public class CaseDetailsEndpoint {
                                                                      @PathVariable("ctid") final String caseTypeId,
                                                                      @RequestParam Map<String, String>
                                                                              queryParameters) {
-        return PaginatedSearchMetadata.builder().totalPagesCount(1).totalResultsCount(2).build();
+        return PaginatedSearchMetadata.builder().totalPagesCount(4800).totalResultsCount(120000).build();
     }
 
 }
