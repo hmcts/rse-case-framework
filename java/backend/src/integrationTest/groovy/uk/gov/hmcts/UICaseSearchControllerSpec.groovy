@@ -1,5 +1,6 @@
 package uk.gov.hmcts
 
+import com.google.common.io.Resources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseSearchController
 import uk.gov.hmcts.ccf.config.WebSecurityConfig
+
+import java.nio.charset.StandardCharsets
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -31,8 +34,10 @@ class UICaseSearchControllerSpec extends Specification {
 
     def "searches cases"() {
         given:
+        URL url = Resources.getResource("requests/data/internal/searchCases.json");
+        String json = Resources.toString(url, StandardCharsets.UTF_8);
         factory.CreateCase()
-        def result = controller.searchCases("", "", "").getBody()
+        def result = controller.searchCases("", "", json).getBody()
 
         expect:
         result.cases.size() > 0

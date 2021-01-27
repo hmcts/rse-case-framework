@@ -108,7 +108,7 @@ create view cases_with_states as
     from cases c
         join events using (case_id)
         left join events events2 on events2.case_id = events.case_id
-                               and events2.sequence_number < events.sequence_number
+                               and events2.sequence_number > events.sequence_number
     where events2 is null;
 
 
