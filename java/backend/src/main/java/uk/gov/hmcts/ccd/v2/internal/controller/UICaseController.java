@@ -132,15 +132,31 @@ public class UICaseController {
         return hist.stream().map(x -> CaseViewEvent.builder()
             .id(Long.valueOf(x.hashCode()))
             .timestamp(x.getTimestamp())
-            .summary(x.getId())
+            .summary(getHistoryLabel(x.getId()))
             .eventId(x.getId())
-            .eventName(x.getId())
+            .eventName(getHistoryLabel(x.getId()))
             .userId(x.getUserId())
             .userFirstName(x.getUserForename())
             .userLastName(x.getUserSurname())
             .stateId("Open")
             .stateName("Open")
             .build()).collect(toList());
+    }
+
+    private String getHistoryLabel(String id) {
+        if (id.equals("CreateClaim")) {
+            return "Claim Created";
+        }
+        if (id.equals("ClaimIssued")) {
+            return "Claim Issued";
+        }
+        if (id.equals("AddClaim")) {
+            return "Claim Created";
+        }
+        if (id.equals("AddParty")) {
+            return "Party Added";
+        }
+        return id;
     }
 
     private CaseView buildCaseView(String caseId) {
