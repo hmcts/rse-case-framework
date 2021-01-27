@@ -1,5 +1,6 @@
 create table cases(
-  case_id bigserial not null primary key
+  case_id bigserial not null primary key,
+  parent_case_id bigint references cases(case_id)
 );
 
 
@@ -104,7 +105,7 @@ create table citizen(
 );
 
 create view cases_with_states as
-    select c.case_id, events.state
+    select c.case_id, c.parent_case_id, events.state
     from cases c
         join events using (case_id)
         left join events events2 on events2.case_id = events.case_id

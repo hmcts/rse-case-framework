@@ -61,6 +61,7 @@ public class CaseController {
     @Data
     public static class CaseSearchResult {
         private Long caseId;
+        private Long parentCaseId;
         private CaseState state;
         private Long partyCount;
     }

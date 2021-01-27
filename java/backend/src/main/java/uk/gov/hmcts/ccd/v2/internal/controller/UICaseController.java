@@ -156,6 +156,9 @@ public class UICaseController {
         if (id.equals("AddParty")) {
             return "Party Added";
         }
+        if (id.equals("Close Case")) {
+            return "Case closed";
+        }
         return id;
     }
 
@@ -186,6 +189,12 @@ public class UICaseController {
                 .id("AddParty")
                 .name("Add Party")
                 .description("Add Party")
+                .order(1)
+                .build(),
+            CaseViewActionableEvent.builder()
+                .id("CloseCase")
+                .name("Close case")
+                .description("Close case")
                 .order(1)
                 .build()
         );

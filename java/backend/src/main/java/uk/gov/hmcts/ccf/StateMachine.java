@@ -103,11 +103,13 @@ public class StateMachine<StateT, EventT> {
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addTransition(StateT from, StateT to, EventT event,
-                                                          BiConsumer<TransitionContext, T> consumer) {
+    public <T> EventBuilder<T> addTransition(StateT from, StateT to, EventT event,
+                                             BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
+        EventBuilder<T> result = new EventBuilder<T>((Class<T>) typeArgs[1], event.toString(), event.toString());
         transitions.put(from.toString(), new TransitionRecord(to, event, typeArgs[1], consumer));
-        return this;
+        events.put(event, result);
+        return result;
     }
 
     @SuppressWarnings("unchecked")

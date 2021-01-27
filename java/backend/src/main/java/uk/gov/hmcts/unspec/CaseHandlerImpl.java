@@ -48,7 +48,9 @@ public class CaseHandlerImpl {
 
         result.addEvent(CaseState.Created, Event.AddClaim, this::addClaim);
 
-        result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase);
+        result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
+            .field(CloseCase::getReason);
+
         result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::closeCase);
         return result;
     }
