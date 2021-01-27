@@ -47,6 +47,8 @@ public class CaseHandlerImpl {
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);
 
+        result.addEvent(CaseState.Created, Event.AddClaim, this::addClaim);
+
         result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
             .field(CloseCase::getReason);
 

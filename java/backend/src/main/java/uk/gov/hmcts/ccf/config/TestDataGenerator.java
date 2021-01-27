@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
+import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
+import uk.gov.hmcts.unspec.dto.PartyType;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;
@@ -70,9 +72,29 @@ public class TestDataGenerator implements Callback {
         ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
         Long caseId = controller.createCase(e, testUserId).getBody().getId();
 
+        AddParty ap = AddParty.builder()
+            .partyType(PartyType.Individual)
+            .title("Hooli Inc")
+            .firstName("")
+            .lastName("")
+            .build();
+
+        e = new ApiEventCreation(Event.AddParty, new ObjectMapper().valueToTree(ap));
+        controller.createEvent(caseId, e, testUserId);
+
+        ap = AddParty.builder()
+            .partyType(PartyType.Individual)
+            .title("Flixnet inc")
+            .firstName("")
+            .lastName("")
+            .build();
+
+        e = new ApiEventCreation(Event.AddParty, new ObjectMapper().valueToTree(ap));
+        controller.createEvent(caseId, e, testUserId);
+
         AddClaim a = AddClaim.builder()
                 .defendants(Map.of((long) 1, Boolean.TRUE))
-                .claimants(Map.of((long) 2, Boolean.TRUE))
+                .claimants(Map.of((long) 2, Boolean.TRUE, 3L, Boolean.TRUE, 4L, Boolean.TRUE))
                 .lowerValue(10000)
                 .higherValue(100000)
                 .build();

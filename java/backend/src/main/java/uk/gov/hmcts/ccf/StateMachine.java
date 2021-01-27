@@ -91,6 +91,7 @@ public class StateMachine<StateT, EventT> {
                 return;
             }
         }
+        throw new RuntimeException("Unhandled event:" + event);
     }
 
     public StateT getState() {

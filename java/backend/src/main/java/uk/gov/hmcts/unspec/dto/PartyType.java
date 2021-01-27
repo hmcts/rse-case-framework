@@ -3,6 +3,7 @@ package uk.gov.hmcts.unspec.dto;
 import uk.gov.hmcts.ccf.HasLabel;
 
 public enum PartyType implements HasLabel {
+    Company("Company"),
     SoleTrader("Sole trader"),
     Individual("Individual");
 

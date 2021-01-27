@@ -92,9 +92,9 @@ public class UICaseController {
         TabBuilder tab = builder.newTab("Parties", "Parties");
         for (CaseController.CaseParty party : parties) {
             tab.label("### " + party.getData().name());
-            if (party.getClaims() != null && party.getClaims().getClaimant() != null) {
-                tab.textField("Number of claims", String.valueOf(party.getClaims().getClaimant().size()), null);
-            }
+            int claimCount = party.getClaims() != null
+                ? (party.getClaims().getClaimant() != null ? party.getClaims().getClaimant().size() : 0) : 0;
+            tab.textField("Number of claims", String.valueOf(claimCount), "");
         }
         return builder;
     }
@@ -116,7 +116,7 @@ public class UICaseController {
             for (int t = 0; t < rows; t++) {
                 String claimant = t < parties.getClaimants().size() ? parties.getClaimants().get(t).name() : "";
                 String defendant = t < parties.getDefendants().size() ? parties.getDefendants().get(t).name() : "";
-                table += String.format("| %s      | %s       |", claimant, defendant);
+                table += String.format("| %s      | %s       |\n", claimant, defendant);
             }
             tab.label(table);
         }
@@ -125,7 +125,7 @@ public class UICaseController {
     }
 
     private String getClaimName(ClaimController.ClaimParties parties) {
-        return parties.getDefendants().get(0).name() + " vs.";
+        return parties.getClaimants().get(0).name() + " vs.";
     }
 
     private List<CaseViewEvent> getCaseViewHistory(String caseId) {
@@ -154,6 +154,9 @@ public class UICaseController {
         }
         if (id.equals("AddParty")) {
             return "Add a party";
+        }
+        if (id.equals("AddClaim")) {
+            return "Add a claim";
         }
         if (id.equals("CloseCase")) {
             return "Close the case";
