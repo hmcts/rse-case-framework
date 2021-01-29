@@ -196,14 +196,14 @@ public class UICaseController {
 
         caseView.setActionableEvents(getActionableEvents(caseId));
 
-        caseView.setState(getState());
+        caseView.setState(getState(caseId));
         CaseViewJurisdiction jurisdiction = new CaseViewJurisdiction();
         jurisdiction.setId("NFD");
-        jurisdiction.setName("No fault divorce");
-        jurisdiction.setDescription("No fault divorce");
+        jurisdiction.setName("Civil");
+        jurisdiction.setDescription("Civil");
         CaseViewType caseType = new CaseViewType();
         caseType.setJurisdiction(jurisdiction);
-        caseType.setDescription("NFD");
+        caseType.setDescription("Unspecified claims");
         caseType.setId(caseId);
         caseView.setCaseType(caseType);
         caseView.setEvents(getCaseViewEvents());
@@ -230,8 +230,13 @@ public class UICaseController {
         return result;
     }
 
-    private ProfileCaseState getState() {
-        return new ProfileCaseState("Open", "Open", "Open", "Open");
+    private ProfileCaseState getState(String caseId) {
+        CaseState c = jooq.select(CASES_WITH_STATES.STATE)
+            .from(CASES_WITH_STATES)
+            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .fetchOne().value1();
+        String currentState = c.getLiteral();
+        return new ProfileCaseState(currentState, currentState, currentState, currentState);
     }
 
     private CaseViewEvent createCaseViewEvent(String s) {

@@ -69,6 +69,7 @@ public class CaseController {
             .from(CASES_WITH_STATES)
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
+        statemachine.rehydrate(state);
 
         statemachine.handleEvent(context, event, node);
 
@@ -79,7 +80,7 @@ public class CaseController {
             .data(content.getData())
             .reference(content.getCaseReference())
             .jurisdiction("NFD")
-            .state("Open")
+            .state(state.getLiteral())
             .build();
         return status(HttpStatus.CREATED).body(result);
     }
