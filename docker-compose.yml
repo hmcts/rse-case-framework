@@ -13,18 +13,11 @@ services:
       context: java/backend
       dockerfile: Dockerfile
     environment:
-      IDAM_URI: http://keycloak:8080/auth/realms/rse
+      IDAM_URI: http://idam-api:5000
     command:
       - --generate-data=true
     depends_on:
       - db
-      - keycloak
     expose:
       - 8080
 
-  keycloak:
-    build:
-      context: keycloak
-      dockerfile: Dockerfile
-    expose:
-      - 8090

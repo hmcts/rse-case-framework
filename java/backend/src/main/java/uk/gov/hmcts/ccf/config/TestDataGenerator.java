@@ -55,7 +55,7 @@ public class TestDataGenerator implements Callback {
         if ("true".equalsIgnoreCase(bigCaseIds)) {
             create.execute("ALTER SEQUENCE cases_case_id_seq RESTART WITH 2542345663454321;");
         }
-        // User 'john' in the keycloak configuration.
+        // User 'john' in the idam configuration.
         String testUserId = "a62f4e6f-c223-467d-acc1-fe91444783f5";
         create.insertInto(USERS,USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
             .values(testUserId, "John", "Smith")
