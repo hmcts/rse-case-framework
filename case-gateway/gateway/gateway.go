@@ -101,6 +101,11 @@ func handleRequestAndRedirect(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if strings.Compare(path, "/health") == 0 {
+		fmt.Fprintf(res, "OK")
+		return
+	}
+
 	if isIndie(req.URL) {
 		serveReverseProxy("http://" + IndependentHost, res, req)
 		return

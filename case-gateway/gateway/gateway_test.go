@@ -91,6 +91,11 @@ func TestRoutesEvents(t *testing.T) {
 	assert.True(t, isIndie(u))
 }
 
+func TestHealthy(t *testing.T) {
+	res, _ := http.Get("http://localhost:9650/health")
+	assert.Equal(t, 200, res.StatusCode)
+}
+
 func TestHandlesIndieDown(t *testing.T) {
 	IndependentHost = "localhost:32"
 	const expectedRoot = "ccd-responses"
