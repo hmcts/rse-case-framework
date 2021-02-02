@@ -8,6 +8,10 @@ services:
       - "8080:8080"
     volumes:
       - './java/build/libs:/app'
+  idam-api:
+    environment:
+      SIMULATOR_JWT_ISSUER: http://localhost:5000
+      SIMULATOR_OPENID_BASE-URL: http://localhost:5000
 volumes:
   # https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container
   # The container's node modules will be copied into this volume on creation.

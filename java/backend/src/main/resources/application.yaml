@@ -41,5 +41,5 @@ spring:
               - profile
         provider:
           idam:
-            issuer-uri: ${IDAM_URI:http://localhost:8090/auth/realms/rse}
+            issuer-uri: ${IDAM_URI:http://idam-api:5000}
 
