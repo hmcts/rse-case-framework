@@ -8,10 +8,27 @@ services:
       - "8080:8080"
     volumes:
       - './java/build/libs:/app'
+  case-gateway:
+    ports:
+      - 80:80
+    environment:
+      INDIE_HOST: host.docker.internal:9998
   idam-api:
     environment:
       SIMULATOR_JWT_ISSUER: http://localhost:5000
       SIMULATOR_OPENID_BASE-URL: http://localhost:5000
+    ports:
+      - 3501:5000
+      - 9002:5000
+      - 5000:5000
+  service-auth-provider-api:
+    ports:
+      - 4502:8080
+  xui-manage-cases:
+    ports:
+      - 3455:3000
+
+
 volumes:
   # https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container
   # The container's node modules will be copied into this volume on creation.

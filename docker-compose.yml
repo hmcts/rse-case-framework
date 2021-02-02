@@ -8,37 +8,45 @@ services:
       POSTGRES_USER: postgres
     expose:
       - 5432
+  functional-tests:
+    build:
+      context: functionalTest
+      dockerfile: Dockerfile
+    volumes:
+      - './functionalTest/build:/app/build'
+    depends_on:
+      - xui-manage-cases
+      - backend
+
   backend:
     build:
       context: java/backend
       dockerfile: Dockerfile
     environment:
-      IDAM_URI: http://idam-api:5000
+      IDAM_URI: http://idam-api:5000/o
     command:
-      - --generate-data=true
+      - --generate-data=true --big-ids=true
     depends_on:
       - db
     expose:
       - 8080
+    ports:
+      - 8080:8080
   case-gateway:
     build:
       context: case-gateway
       dockerfile: Dockerfile
     expose:
       - 80
-    ports:
-      - 80:80
     environment:
       BIND_ADDRESS: 0.0.0.0:80
       CCD_HOST: ccd-api-gateway:3453
-      INDIE_HOST: host.docker.internal:9998
+      INDIE_HOST: backend:8080
 
   idam-api:
     image: hmctspublic.azurecr.io/hmcts/rse/rse-idam-simulator:latest
-    ports:
-      - 3501:5000
-      - 9002:5000
-      - 5000:5000
+    expose:
+      - 5000
     environment:
       SERVER_PORT: 5000
       SIMULATOR_JWT_ISSUER: http://idam-api:5000
@@ -49,8 +57,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
-    ports:
-      - 4502:8080
+    expose:
+      - 8080
     environment:
       SERVER_PORT: 8080
       JWT_KEY: wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==
@@ -87,7 +95,7 @@ services:
       SERVICES_CCD_DATA_STORE_API: http://case-gateway:80
       SERVICES_IDAM_API_URL: http://idam-api:5000
       SERVICES_IDAM_CLIENT_ID: xui_webapp
-      SERVICES_IDAM_LOGIN_URL: http://localhost:3501
+      SERVICES_IDAM_LOGIN_URL: http://idam-api:5000
       SERVICES_IDAM_INDEX_URL: /
       SERVICES_IDAM_ISS_URL: http://idam-api:5000
       SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
@@ -103,6 +111,8 @@ services:
 
       LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
 
+    expose:
+      - 3000
     ports:
       - 3455:3000
     depends_on:

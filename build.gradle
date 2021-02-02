@@ -1,2 +1,8 @@
 task build(dependsOn: [':java:backend:bootJar'])
 
+task functionalTest(type: Exec, dependsOn: [build]) {
+    commandLine 'docker-compose', '-p functionalTest', 'up', '-V', '--exit-code-from', 'functional-tests', '--build'
+}
+
+task check(dependsOn: functionalTest)
+
