@@ -21,5 +21,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: test-results
-        path: |
-          functionalTest/build
+        path: functionalTest/build/
