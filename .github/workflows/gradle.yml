@@ -18,6 +18,7 @@ jobs:
     - name: Check
       run: ./gradlew check -is
     - name: Archive test results
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: test-results
