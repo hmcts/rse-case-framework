@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.ccf.XUI;
+import uk.gov.hmcts.ccf.XUIType;
 
 import java.util.Set;
 
@@ -17,8 +18,8 @@ public class AddClaim {
     private Set<Long> claimants;
     @XUI(label = "Select defendants")
     private Set<Long> defendants;
-    @XUI(label = "Claim lower value", min = 0)
+    @XUI(label = "Claim lower value", min = 0, type = XUIType.MoneyGBP)
     private long lowerValue;
-    @XUI(label = "Claim higher value")
+    @XUI(label = "Claim higher value", type = XUIType.MoneyGBP)
     private long higherValue;
 }

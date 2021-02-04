@@ -154,7 +154,7 @@ public class EventBuilderTest {
         CaseViewField select = result.getCaseFields().get(0);
         FieldTypeDefinition fieldtype = select.getFieldTypeDefinition();
 
-        assertEquals("Number", fieldtype.getType());
+        assertEquals("MoneyGBP", fieldtype.getType());
         assertEquals(0, fieldtype.getMin().longValue());
         assertEquals(Long.MAX_VALUE, fieldtype.getMax().longValue());
     }

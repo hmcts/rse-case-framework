@@ -16,6 +16,8 @@ public @interface XUI {
 
     String showCondition() default "";
 
+    XUIType type() default XUIType.Default;
+
     String typeParameter() default "";
 
     boolean showSummaryContent() default false;

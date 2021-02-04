@@ -81,6 +81,7 @@ public class EventBuilder<T> {
         return multiSelect(getter, options, 1);
 
     }
+
     public <U> EventBuilder<T> multiSelect(TypedPropertyGetter<T, ? extends Set<U>> getter,
                                            Map<U, String> options, int column) {
         String id = PropertyUtils.getPropertyName(clazz, getter);
@@ -172,6 +173,9 @@ public class EventBuilder<T> {
             f.setLabel(xui.label());
             f.getFieldTypeDefinition().setMin(BigDecimal.valueOf(xui.min()));
             f.getFieldTypeDefinition().setMax(BigDecimal.valueOf(xui.max()));
+            if (xui.type() != XUIType.Default) {
+                f.getFieldTypeDefinition().setType(xui.type().toString());
+            }
         }
 
         return this;
@@ -201,9 +205,6 @@ public class EventBuilder<T> {
         return this;
     }
 
-    public void dynamic(Object buildAddClaimEvent) {
-
-    }
     @Data
     @AllArgsConstructor
     private class FieldInfo {
