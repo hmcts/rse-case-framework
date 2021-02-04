@@ -64,17 +64,18 @@ public class CaseHandlerImpl {
         return result;
     }
 
-    private void buildAddClaimEvent(Long caseId, EventBuilder<AddClaim> e) {
+    private void buildAddClaimEvent(Long caseId, EventBuilder<AddClaim> builder) {
         List<CaseController.CaseParty> parties = caseController.getParties(String.valueOf(caseId));
         Map<Long, String> options = Maps.newHashMap();
         for (CaseController.CaseParty party : parties) {
             options.put(party.getPartyId(), party.getData().name());
         }
 
-        e.field(AddClaim::getLowerValue)
+        builder.field(AddClaim::getLowerValue)
             .field(AddClaim::getHigherValue)
+            .nextPage()
             .multiSelect(AddClaim::getClaimants, options)
-            .multiSelect(AddClaim::getDefendants, options);
+            .multiSelect(AddClaim::getDefendants, options, 2);
     }
 
     @SneakyThrows

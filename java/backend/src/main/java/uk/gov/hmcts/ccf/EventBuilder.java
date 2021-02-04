@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
@@ -26,23 +28,23 @@ public class EventBuilder<T> {
 
     private Class<T> clazz;
     private CaseUpdateViewEvent.CaseUpdateViewEventBuilder builder = CaseUpdateViewEvent.builder();
-    private Multimap<Integer, String> fieldPageMap = ArrayListMultimap.create();
+    private Multimap<Integer, FieldInfo> fieldPageMap = ArrayListMultimap.create();
     private Map<Integer, String> pageLabels = Maps.newHashMap();
     private int currentPage = 1;
     private BiConsumer<Long, T> handler;
 
     public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {
-            Collection<String> fieldNames =
+            Collection<FieldInfo> fieldNames =
                 fieldPageMap.get(t);
 
             Collection<WizardPageField> fields = Lists.newArrayList();
             int i = 1;
-            for (String fieldName : fieldNames) {
+            for (FieldInfo info : fieldNames) {
                 fields.add(WizardPageField.builder()
                     .order(i++)
-                    .caseFieldId(fieldName)
-                    .pageColumnNumber(1)
+                    .caseFieldId(info.getId())
+                    .pageColumnNumber(info.getColumn())
                     .build());
             }
 
@@ -76,9 +78,12 @@ public class EventBuilder<T> {
 
     public <U> EventBuilder<T> multiSelect(TypedPropertyGetter<T, ? extends Set<U>> getter,
                                            Map<U, String> options) {
+        return multiSelect(getter, options, 1);
+
+    }
+    public <U> EventBuilder<T> multiSelect(TypedPropertyGetter<T, ? extends Set<U>> getter,
+                                           Map<U, String> options, int column) {
         String id = PropertyUtils.getPropertyName(clazz, getter);
-        PropertyDescriptor descriptor = de.cronn.reflection.util.PropertyUtils
-            .getPropertyDescriptor(clazz, getter);
 
 
         FieldTypeDefinition.FieldTypeDefinitionBuilder fb = FieldTypeDefinition.builder();
@@ -98,7 +103,7 @@ public class EventBuilder<T> {
             label = xui.label();
         }
 
-        fieldPageMap.put(currentPage, id);
+        fieldPageMap.put(currentPage, new FieldInfo(id, column));
 
         builder.caseField(CaseViewField.builder()
             .id(id)
@@ -160,7 +165,7 @@ public class EventBuilder<T> {
         CaseViewField f = builder.getCaseFields().get(builder.getCaseFields().size() - 1);
         this.builder.showSummary(true);
         f.setShowSummaryChangeOption(true);
-        fieldPageMap.put(currentPage, f.getId());
+        fieldPageMap.put(currentPage, new FieldInfo(f.getId(), 1));
 
         XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
         if (xui != null) {
@@ -191,11 +196,18 @@ public class EventBuilder<T> {
         return fb.build();
     }
 
-    public void nextPage() {
+    public EventBuilder<T> nextPage() {
         currentPage++;
+        return this;
     }
 
     public void dynamic(Object buildAddClaimEvent) {
 
+    }
+    @Data
+    @AllArgsConstructor
+    private class FieldInfo {
+        private String id;
+        private int column = 1;
     }
 }
