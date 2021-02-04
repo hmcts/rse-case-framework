@@ -58,11 +58,12 @@ public class UIStartTriggerController {
                                                                                   final Boolean ignoreWarning) {
         StateMachine<CaseState, Event> s =
             stateMachineSupplier.build();
-        CaseUpdateViewEvent view = s.getEvent(Event.valueOf(triggerId));
+        CaseUpdateViewEvent view = s.getEvent(Long.valueOf(caseId), Event.valueOf(triggerId));
         CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(
             view,
             caseId,
             ignoreWarning);
+        e.getCaseUpdateViewEvent().setCaseId(caseId);
         return ResponseEntity.ok(e);
     }
 

@@ -3,6 +3,7 @@ package uk.gov.hmcts.unspec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
 import org.jooq.JSONB;
 import org.jooq.generated.enums.CaseState;
@@ -13,7 +14,9 @@ import org.jooq.generated.enums.PartyRole;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.controller.kase.CaseController;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Individual;
@@ -23,6 +26,7 @@ import uk.gov.hmcts.unspec.event.ReopenCase;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.jooq.generated.Tables.CLAIMS;
@@ -36,6 +40,9 @@ public class CaseHandlerImpl {
     @Autowired
     DefaultDSLContext jooq;
 
+    @Autowired
+    CaseController caseController;
+
     public StateMachine<CaseState, Event> build() {
         StateMachine<CaseState, Event> result = new StateMachine<>();
         result.initialState(CaseState.Created, this::onCreate);
@@ -47,7 +54,7 @@ public class CaseHandlerImpl {
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);
 
-        result.addEvent(CaseState.Created, Event.AddClaim, this::addClaim);
+        result.dynamicEvent(CaseState.Created, Event.AddClaim, this::addClaim, this::buildAddClaimEvent);
 
         result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
             .field(CloseCase::getReason);
@@ -55,6 +62,19 @@ public class CaseHandlerImpl {
         result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::reopenCase)
             .field(ReopenCase::getReason);
         return result;
+    }
+
+    private void buildAddClaimEvent(Long caseId, EventBuilder<AddClaim> e) {
+        List<CaseController.CaseParty> parties = caseController.getParties(String.valueOf(caseId));
+        Map<Long, String> options = Maps.newHashMap();
+        for (CaseController.CaseParty party : parties) {
+            options.put(party.getPartyId(), party.getData().name());
+        }
+
+        e.field(AddClaim::getLowerValue)
+            .field(AddClaim::getHigherValue)
+            .multiSelect(AddClaim::getClaimants, options)
+            .multiSelect(AddClaim::getDefendants, options);
     }
 
     @SneakyThrows
@@ -66,16 +86,12 @@ public class CaseHandlerImpl {
 
     @SneakyThrows
     public void addClaim(StateMachine.TransitionContext context, AddClaim claim) {
-        List<Long> claimantIds = claim.getClaimants().entrySet().stream().filter((x) -> x.getValue())
-                .map(x -> x.getKey())
-                .collect(Collectors.toUnmodifiableList());
+        Set<Long> claimantIds = claim.getClaimants();
         if (claimantIds.size() == 0) {
             throw new IllegalArgumentException("Must have at least one defendant!");
         }
 
-        List<Long> defendantIds = claim.getDefendants().entrySet().stream().filter((x) -> x.getValue())
-                .map(x -> x.getKey())
-                .collect(Collectors.toUnmodifiableList());
+        Set<Long> defendantIds = claim.getDefendants();
         if (defendantIds.size() == 0) {
             throw new IllegalArgumentException("Must have at least one claimant!");
         }
@@ -132,8 +148,8 @@ public class CaseHandlerImpl {
         addClaim(context, AddClaim.builder()
                 .lowerValue(request.getLowerValue())
                 .higherValue(request.getHigherValue())
-                .claimants(Map.of(partyIds.get(0), true))
-                .defendants(Map.of(partyIds.get(1), true))
+                .claimants(Set.of(partyIds.get(0)))
+                .defendants(Set.of(partyIds.get(1)))
                 .build());
 
     }

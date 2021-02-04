@@ -32,7 +32,7 @@ public class StateMachine<StateT, EventT> {
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
     private Table<String, EventT, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
     private Map<EventT, EventBuilder> events = Maps.newHashMap();
-
+    private Map<EventT, TransitionRecord> dynamicEvents = Maps.newHashMap();
     private Class clazz;
     private BiConsumer initialHandler;
 
@@ -41,8 +41,17 @@ public class StateMachine<StateT, EventT> {
     public StateMachine() {
     }
 
-    public CaseUpdateViewEvent getEvent(EventT event) {
-        return events.get(event).build();
+    public CaseUpdateViewEvent getEvent(Long caseId, EventT event) {
+        if (dynamicEvents.containsKey(event)) {
+            TransitionRecord e = dynamicEvents.get(event);
+            EventBuilder builder = new EventBuilder(e.clazz, event.toString(), event.toString());
+            e.consumer.accept(caseId, builder);
+            return builder.build();
+        }
+        if (events.containsKey(event)) {
+            return events.get(event).build();
+        }
+        throw new RuntimeException("Unknown event: " + event);
     }
 
     public <T> StateMachine<StateT, EventT> initialState(StateT state, BiConsumer<TransitionContext, T> c) {
@@ -121,6 +130,15 @@ public class StateMachine<StateT, EventT> {
         transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
         events.put(event, result);
         return result;
+    }
+
+    public <T> StateMachine<StateT, EventT> dynamicEvent(StateT state, EventT event,
+                                                         BiConsumer<TransitionContext, T> consumer,
+                                                         BiConsumer<Long, EventBuilder<T>> builder) {
+        Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
+        dynamicEvents.put(event, new TransitionRecord(state, event, typeArgs[1], builder));
+        transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
+        return this;
     }
 
     public <T> StateMachine<StateT, EventT> addFileUploadEvent(StateT state, EventT event,

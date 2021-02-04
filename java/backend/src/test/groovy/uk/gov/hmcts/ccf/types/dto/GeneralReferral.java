@@ -4,6 +4,7 @@ import lombok.Data;
 import uk.gov.hmcts.ccf.XUI;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class GeneralReferral {
@@ -11,5 +12,6 @@ public class GeneralReferral {
     @XUI(label = "Application or referral date")
     LocalDate date;
     String referralDetails;
+    Set<Integer> ids;
     boolean feeRequired;
 }

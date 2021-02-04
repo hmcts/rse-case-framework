@@ -40,8 +40,8 @@ CREATE TYPE claim_state AS ENUM ('Issued', 'Stayed', 'ServiceConfirmed');
 create table claims(
     claim_id bigserial not null primary key,
     case_id bigint not null references cases(case_id),
-    lower_amount bigint,
-    higher_amount bigint
+    lower_amount bigint CHECK (lower_amount > 0),
+    higher_amount bigint CHECK ( higher_amount > claims.lower_amount )
 );
 
 CREATE TYPE claim_event AS ENUM (

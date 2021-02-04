@@ -28,8 +28,6 @@ services:
     environment:
       SIMULATOR_JWT_ISSUER: http://localhost:5000
       SERVICES_IDAM_LOGIN_URL: http://localhost:5000
-    ports:
-      - 3455:3000
 
 
 volumes:

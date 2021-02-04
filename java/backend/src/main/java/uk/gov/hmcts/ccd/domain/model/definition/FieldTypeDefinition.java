@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,8 @@ public class FieldTypeDefinition implements Serializable {
     @Singular
     private List<FixedListItemDefinition> fixedListItemDefinitions;
     @JsonProperty("complex_fields")
-    private List<CaseFieldDefinition> complexFields;
+    @Builder.Default
+    private List<CaseFieldDefinition> complexFields = Lists.newArrayList();
     @JsonProperty("collection_field_type")
     private FieldTypeDefinition collectionFieldTypeDefinition;
 

@@ -1,2 +1,2 @@
-./wait-for-it.sh -t 60 backend:8080
+./wait-for-http-200.sh backend:8080/actuator/health
 protractor

@@ -21,7 +21,7 @@ import uk.gov.hmcts.unspec.event.CreateClaim;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.Set;
 
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.USERS;
@@ -93,8 +93,8 @@ public class TestDataGenerator implements Callback {
         controller.createEvent(caseId, e, testUserId);
 
         AddClaim a = AddClaim.builder()
-                .defendants(Map.of((long) 1, Boolean.TRUE))
-                .claimants(Map.of((long) 2, Boolean.TRUE, 3L, Boolean.TRUE, 4L, Boolean.TRUE))
+                .defendants(Set.of(1L))
+                .claimants(Set.of(2L, 3L, 4L))
                 .lowerValue(10000)
                 .higherValue(100000)
                 .build();

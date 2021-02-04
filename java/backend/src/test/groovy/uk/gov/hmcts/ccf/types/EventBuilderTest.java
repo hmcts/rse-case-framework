@@ -1,14 +1,19 @@
 package uk.gov.hmcts.ccf.types;
 
+import org.apache.groovy.util.Maps;
 import org.junit.Test;
+import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseViewField;
 import uk.gov.hmcts.ccd.domain.model.definition.FieldTypeDefinition;
+import uk.gov.hmcts.ccd.domain.model.definition.FixedListItemDefinition;
 import uk.gov.hmcts.ccd.domain.model.definition.WizardPage;
 import uk.gov.hmcts.ccd.domain.model.definition.WizardPageField;
 import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.types.dto.GeneralReferral;
+import uk.gov.hmcts.unspec.dto.AddClaim;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -106,5 +111,51 @@ public class EventBuilderTest {
         fields = page.getWizardPageFields();
         assertEquals("date", fields.get(0).getCaseFieldId());
         assertEquals(1, fields.get(0).getOrder());
+    }
+
+    @Test
+    public void buildsMultiSelect() {
+        EventBuilder<AddClaim> e = new EventBuilder<>(AddClaim.class);
+        Map<Long, String> labels = Maps.of(1L, "foo", 2L, "bar");
+        e.multiSelect(AddClaim::getClaimants, labels);
+        e.multiSelect(AddClaim::getDefendants, labels);
+
+        CaseUpdateViewEvent result = e.build();
+        CaseViewField select = result.getCaseFields().get(0);
+        FieldTypeDefinition fieldtype = select.getFieldTypeDefinition();
+
+        assertEquals("claimants", select.getId());
+        assertTrue(List.class.isAssignableFrom(select.getValue().getClass()));
+        assertEquals(0, fieldtype.getComplexFields().size());
+        assertEquals("MultiSelectList", fieldtype.getType());
+        assertEquals("Select claimants", select.getLabel());
+
+        assertEquals(2, fieldtype.getFixedListItemDefinitions().size());
+        List<FixedListItemDefinition> defs =
+            fieldtype.getFixedListItemDefinitions();
+
+        assertEquals("1", defs.get(0).getCode());
+        assertEquals("foo", defs.get(0).getLabel());
+
+        assertEquals("2", defs.get(1).getCode());
+        assertEquals("bar", defs.get(1).getLabel());
+
+        List<WizardPage> pages = result.getWizardPages();
+        assertEquals(1, pages.size());
+        assertEquals(2, pages.get(0).getWizardPageFields().size());
+    }
+
+    @Test
+    public void buildsNumbers() {
+        EventBuilder<AddClaim> e = new EventBuilder<>(AddClaim.class);
+        e.field(AddClaim::getLowerValue);
+
+        CaseUpdateViewEvent result = e.build();
+        CaseViewField select = result.getCaseFields().get(0);
+        FieldTypeDefinition fieldtype = select.getFieldTypeDefinition();
+
+        assertEquals("Number", fieldtype.getType());
+        assertEquals(0, fieldtype.getMin().longValue());
+        assertEquals(Long.MAX_VALUE, fieldtype.getMax().longValue());
     }
 }

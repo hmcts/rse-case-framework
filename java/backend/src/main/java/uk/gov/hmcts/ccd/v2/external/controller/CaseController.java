@@ -59,7 +59,8 @@ public class CaseController {
                                                     @RequestBody final CaseDataContent content) {
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
 
-        StateMachine.TransitionContext context = new StateMachine.TransitionContext("1", Long.valueOf(caseId));
+        StateMachine.TransitionContext context = new StateMachine.TransitionContext(
+            "a62f4e6f-c223-467d-acc1-fe91444783f5", Long.valueOf(caseId));
         Event event = Event.valueOf(content.getEventId());
 
         String json = new ObjectMapper().writeValueAsString(content.getData());
@@ -74,7 +75,7 @@ public class CaseController {
         statemachine.handleEvent(context, event, node);
 
         insertEvent(Event.valueOf(content.getEventId()), Long.valueOf(caseId), statemachine.getState(),
-            "a62f4e6f-c223-467d-acc1-fe91444783f5");
+            "a62f4e6f-c223-467d-acc1-fe91444783f5"); // TODO
 
         CaseResource result = CaseResource.builder()
             .data(content.getData())

@@ -14,9 +14,11 @@ import uk.gov.hmcts.ccd.domain.model.definition.WizardPage;
 import uk.gov.hmcts.ccd.domain.model.definition.WizardPageField;
 
 import java.beans.PropertyDescriptor;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -59,7 +61,6 @@ public class EventBuilder<T> {
         this.builder.id(id);
         this.builder.name(id);
         this.builder.description(id);
-        this.builder.caseId(id);
         this.pageLabels.put(currentPage, label);
     }
 
@@ -70,6 +71,42 @@ public class EventBuilder<T> {
 
     public EventBuilder<T> withHandler(BiConsumer<Long, T> handler) {
         this.handler = handler;
+        return this;
+    }
+
+    public <U> EventBuilder<T> multiSelect(TypedPropertyGetter<T, ? extends Set<U>> getter,
+                                           Map<U, String> options) {
+        String id = PropertyUtils.getPropertyName(clazz, getter);
+        PropertyDescriptor descriptor = de.cronn.reflection.util.PropertyUtils
+            .getPropertyDescriptor(clazz, getter);
+
+
+        FieldTypeDefinition.FieldTypeDefinitionBuilder fb = FieldTypeDefinition.builder();
+        fb.id(UUID.randomUUID().toString())
+            .type("MultiSelectList");
+
+        for (Map.Entry<U, String> entry : options.entrySet()) {
+            FixedListItemDefinition.FixedListItemDefinitionBuilder ib = FixedListItemDefinition.builder();
+            ib.code(entry.getKey().toString());
+            ib.label(entry.getValue());
+            fb.fixedListItemDefinition(ib.build());
+        }
+
+        XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
+        String label = "";
+        if (xui != null) {
+            label = xui.label();
+        }
+
+        fieldPageMap.put(currentPage, id);
+
+        builder.caseField(CaseViewField.builder()
+            .id(id)
+            .showSummaryChangeOption(true)
+            .label(label)
+            .value(Lists.newArrayList())
+            .fieldTypeDefinition(fb.build())
+            .build());
         return this;
     }
 
@@ -100,6 +137,14 @@ public class EventBuilder<T> {
                     .type("Text")
                     .build())
                 .build());
+        } else if (propertyType.equals(long.class)) {
+            builder.caseField(CaseViewField.builder()
+                .id(id)
+                .fieldTypeDefinition(FieldTypeDefinition.builder()
+                    .id("Number")
+                    .type("Number")
+                    .build())
+                .build());
         } else if (propertyType.equals(boolean.class)) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
@@ -120,6 +165,8 @@ public class EventBuilder<T> {
         XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
         if (xui != null) {
             f.setLabel(xui.label());
+            f.getFieldTypeDefinition().setMin(BigDecimal.valueOf(xui.min()));
+            f.getFieldTypeDefinition().setMax(BigDecimal.valueOf(xui.max()));
         }
 
         return this;
@@ -148,4 +195,7 @@ public class EventBuilder<T> {
         currentPage++;
     }
 
+    public void dynamic(Object buildAddClaimEvent) {
+
+    }
 }

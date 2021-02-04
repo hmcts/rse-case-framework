@@ -1,23 +1,44 @@
 {
-  "id": "",
-  "name": null,
-  "description": null,
-  "case_id": null,
+  "id": "AddClaim",
+  "name": "AddClaim",
+  "description": "AddClaim",
+  "case_id": "2542345663454321",
   "case_fields": [
     {
-      "id": "title",
-      "label": "Title",
+      "id": "claimants",
+      "label": "Select claimants",
       "hidden": null,
-      "value": null,
+      "value": [],
       "metadata": false,
       "hint_text": null,
       "field_type": {
-        "id": "Text",
-        "type": "Text",
+        "id": "42af90f0-1638-46ed-a430-30c1d8946b46",
+        "type": "MultiSelectList",
         "min": null,
         "max": null,
         "regular_expression": null,
-        "fixed_list_items": [],
+        "fixed_list_items": [
+          {
+            "code": "1",
+            "label": "Acme Ltd",
+            "order": null
+          },
+          {
+            "code": "2",
+            "label": "Megacorp Inc",
+            "order": null
+          },
+          {
+            "code": "3",
+            "label": "Hooli Inc  ",
+            "order": null
+          },
+          {
+            "code": "4",
+            "label": "Flixnet inc  ",
+            "order": null
+          }
+        ],
         "complex_fields": null,
         "collection_field_type": null
       },
@@ -28,26 +49,47 @@
       "display_context": "MANDATORY",
       "display_context_parameter": null,
       "show_condition": null,
-      "show_summary_change_option": true,
+      "show_summary_change_option": false,
       "show_summary_content_option": null,
       "retain_hidden_value": null,
       "acls": [],
       "default_value": null
     },
     {
-      "id": "firstName",
-      "label": "Forename",
+      "id": "defendants",
+      "label": "Select defendants",
       "hidden": null,
-      "value": null,
+      "value": [],
       "metadata": false,
       "hint_text": null,
       "field_type": {
-        "id": "Text",
-        "type": "Text",
+        "id": "f4eefa14-446f-4a56-8a5f-b1d326e6516c",
+        "type": "MultiSelectList",
         "min": null,
         "max": null,
         "regular_expression": null,
-        "fixed_list_items": [],
+        "fixed_list_items": [
+          {
+            "code": "1",
+            "label": "Acme Ltd",
+            "order": null
+          },
+          {
+            "code": "2",
+            "label": "Megacorp Inc",
+            "order": null
+          },
+          {
+            "code": "3",
+            "label": "Hooli Inc  ",
+            "order": null
+          },
+          {
+            "code": "4",
+            "label": "Flixnet inc  ",
+            "order": null
+          }
+        ],
         "complex_fields": null,
         "collection_field_type": null
       },
@@ -58,67 +100,7 @@
       "display_context": "MANDATORY",
       "display_context_parameter": null,
       "show_condition": null,
-      "show_summary_change_option": true,
-      "show_summary_content_option": null,
-      "retain_hidden_value": null,
-      "acls": [],
-      "default_value": null
-    },
-    {
-      "id": "lastName",
-      "label": "Surname",
-      "hidden": null,
-      "value": null,
-      "metadata": false,
-      "hint_text": null,
-      "field_type": {
-        "id": "Text",
-        "type": "Text",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": null,
-        "collection_field_type": null
-      },
-      "validation_expr": null,
-      "security_label": "PUBLIC",
-      "order": null,
-      "formatted_value": null,
-      "display_context": "MANDATORY",
-      "display_context_parameter": null,
-      "show_condition": null,
-      "show_summary_change_option": true,
-      "show_summary_content_option": null,
-      "retain_hidden_value": null,
-      "acls": [],
-      "default_value": null
-    },
-    {
-      "id": "dateOfBirth",
-      "label": null,
-      "hidden": null,
-      "value": null,
-      "metadata": false,
-      "hint_text": null,
-      "field_type": {
-        "id": "Text",
-        "type": "Text",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": null,
-        "collection_field_type": null
-      },
-      "validation_expr": null,
-      "security_label": "PUBLIC",
-      "order": null,
-      "formatted_value": null,
-      "display_context": "MANDATORY",
-      "display_context_parameter": null,
-      "show_condition": null,
-      "show_summary_change_option": true,
+      "show_summary_change_option": false,
       "show_summary_content_option": null,
       "retain_hidden_value": null,
       "acls": [],
@@ -129,40 +111,15 @@
   "wizard_pages": [
     {
       "id": "1",
-      "label": "Page 1",
+      "label": "AddClaim",
       "order": 1,
-      "wizard_page_fields": [
-        {
-          "case_field_id": "title",
-          "order": 1,
-          "page_column_no": 1,
-          "complex_field_overrides": null
-        },
-        {
-          "case_field_id": "firstName",
-          "order": 2,
-          "page_column_no": 1,
-          "complex_field_overrides": null
-        },
-        {
-          "case_field_id": "lastName",
-          "order": 3,
-          "page_column_no": 1,
-          "complex_field_overrides": null
-        },
-        {
-          "case_field_id": "dateOfBirth",
-          "order": 4,
-          "page_column_no": 1,
-          "complex_field_overrides": null
-        }
-      ],
+      "wizard_page_fields": [],
       "show_condition": null,
       "callback_url_mid_event": null,
       "retries_timeout_mid_event": []
     }
   ],
-  "show_summary": true,
+  "show_summary": null,
   "show_event_notes": null,
   "end_button_label": null,
   "can_save_draft": null,

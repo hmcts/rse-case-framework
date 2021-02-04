@@ -10,6 +10,10 @@ public @interface XUI {
 
     String hint() default "";
 
+    long min() default Long.MIN_VALUE;
+
+    long max() default Long.MAX_VALUE;
+
     String showCondition() default "";
 
     String typeParameter() default "";

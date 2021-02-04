@@ -160,8 +160,10 @@ class CaseControllerSpecification extends Specification {
         Long partyId = parties[0].partyId
         handler.addClaim(StateMachine.TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
                 AddClaim.builder()
-                        .defendants(Map.of(partyId, true))
-                        .claimants(Map.of(partyId, true)).build())
+                        .lowerValue(10)
+                        .higherValue(20)
+                        .defendants(Set.of(partyId))
+                        .claimants(Set.of(partyId)).build())
 
         then:
         thrown DuplicateKeyException
