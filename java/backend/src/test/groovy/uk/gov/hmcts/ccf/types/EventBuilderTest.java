@@ -11,11 +11,13 @@ import uk.gov.hmcts.ccd.domain.model.definition.WizardPageField;
 import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.types.dto.GeneralReferral;
 import uk.gov.hmcts.unspec.dto.AddClaim;
+import uk.gov.hmcts.unspec.dto.AddParty;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class EventBuilderTest {
@@ -157,5 +159,20 @@ public class EventBuilderTest {
         assertEquals("MoneyGBP", fieldtype.getType());
         assertEquals(0, fieldtype.getMin().longValue());
         assertEquals(Long.MAX_VALUE, fieldtype.getMax().longValue());
+    }
+
+    @Test
+    public void buildsShowgroups() {
+        EventBuilder<AddParty> e = new EventBuilder<>(AddParty.class);
+        String showCondition = "foo = \"bar\"";
+        e.field(AddParty::getName)
+            .showGroup(showCondition)
+            .field(AddParty::getFirstName)
+            .field(AddParty::getLastName);
+
+        CaseUpdateViewEvent result = e.build();
+        assertNull(result.getCaseFields().get(0).getShowCondition());
+        assertEquals(showCondition, result.getCaseFields().get(1).getShowCondition());
+        assertEquals(showCondition, result.getCaseFields().get(2).getShowCondition());
     }
 }

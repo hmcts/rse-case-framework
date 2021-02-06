@@ -32,6 +32,7 @@ public class EventBuilder<T> {
     private Map<Integer, String> pageLabels = Maps.newHashMap();
     private int currentPage = 1;
     private BiConsumer<Long, T> handler;
+    private String showGroup;
 
     public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {
@@ -104,10 +105,11 @@ public class EventBuilder<T> {
             label = xui.label();
         }
 
-        fieldPageMap.put(currentPage, new FieldInfo(id, column));
+        fieldPageMap.put(currentPage, new FieldInfo(id, column, showGroup));
 
         builder.caseField(CaseViewField.builder()
             .id(id)
+            .showCondition(showGroup)
             .showSummaryChangeOption(true)
             .label(label)
             .value(Lists.newArrayList())
@@ -125,11 +127,13 @@ public class EventBuilder<T> {
         if (propertyType.isEnum()) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .showCondition(showGroup)
                 .fieldTypeDefinition(buildFixedList(propertyType))
                 .build());
         } else if (propertyType.equals(LocalDate.class)) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .showCondition(showGroup)
                 .fieldTypeDefinition(FieldTypeDefinition.builder()
                     .id("Date")
                     .type("Date")
@@ -138,6 +142,7 @@ public class EventBuilder<T> {
         } else if (propertyType.equals(String.class)) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .showCondition(showGroup)
                 .fieldTypeDefinition(FieldTypeDefinition.builder()
                     .id("Text")
                     .type("Text")
@@ -146,6 +151,7 @@ public class EventBuilder<T> {
         } else if (propertyType.equals(long.class)) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .showCondition(showGroup)
                 .fieldTypeDefinition(FieldTypeDefinition.builder()
                     .id("Number")
                     .type("Number")
@@ -154,6 +160,7 @@ public class EventBuilder<T> {
         } else if (propertyType.equals(boolean.class)) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .showCondition(showGroup)
                 .fieldTypeDefinition(FieldTypeDefinition.builder()
                     .id("YesOrNo")
                     .type("YesOrNo")
@@ -166,7 +173,7 @@ public class EventBuilder<T> {
         CaseViewField f = builder.getCaseFields().get(builder.getCaseFields().size() - 1);
         this.builder.showSummary(true);
         f.setShowSummaryChangeOption(true);
-        fieldPageMap.put(currentPage, new FieldInfo(f.getId(), 1));
+        fieldPageMap.put(currentPage, new FieldInfo(f.getId(), 1, showGroup));
 
         XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
         if (xui != null) {
@@ -205,10 +212,16 @@ public class EventBuilder<T> {
         return this;
     }
 
+    public EventBuilder<T> showGroup(String showCondition) {
+        this.showGroup = showCondition;
+        return this;
+    }
+
     @Data
     @AllArgsConstructor
     private class FieldInfo {
         private String id;
         private int column = 1;
+        private String showCondition;
     }
 }
