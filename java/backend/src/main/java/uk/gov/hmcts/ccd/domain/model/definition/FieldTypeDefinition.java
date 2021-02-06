@@ -46,7 +46,6 @@ public class FieldTypeDefinition implements Serializable {
     @JsonProperty("regular_expression")
     private String regularExpression;
     @JsonProperty("fixed_list_items")
-    @Singular
     private List<FixedListItemDefinition> fixedListItemDefinitions;
     @JsonProperty("complex_fields")
     @Builder.Default
@@ -88,6 +87,10 @@ public class FieldTypeDefinition implements Serializable {
 
     public List<FixedListItemDefinition> getFixedListItemDefinitions() {
         return fixedListItemDefinitions;
+    }
+
+    public void setFixedListItemDefinitions(List<FixedListItemDefinition> value) {
+        this.fixedListItemDefinitions = value;
     }
 
     public List<CaseFieldDefinition> getComplexFields() {

@@ -1,6 +1,8 @@
 package uk.gov.hmcts.ccf;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -19,6 +21,7 @@ import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +36,13 @@ public class EventBuilder<T> {
     private int currentPage = 1;
     private BiConsumer<Long, T> handler;
     private String showGroup;
+    private static final Map<Class, String> typeMap = ImmutableMap.of(
+        Set.class, "MultiSelectList",
+        LocalDate.class, "Date",
+        String.class, "Text",
+        long.class, "Number",
+        boolean.class, "YesOrNo"
+    );
 
     public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {
@@ -87,35 +97,47 @@ public class EventBuilder<T> {
                                            Map<U, String> options, int column) {
         String id = PropertyUtils.getPropertyName(clazz, getter);
 
+        CaseViewField.CaseViewFieldBuilder fb = buildField(getter, "MultiSelectList");
 
-        FieldTypeDefinition.FieldTypeDefinitionBuilder fb = FieldTypeDefinition.builder();
-        fb.id(UUID.randomUUID().toString())
-            .type("MultiSelectList");
-
+        CaseViewField field = fb.build();
+        List<FixedListItemDefinition> items = Lists.newArrayList();
         for (Map.Entry<U, String> entry : options.entrySet()) {
             FixedListItemDefinition.FixedListItemDefinitionBuilder ib = FixedListItemDefinition.builder();
             ib.code(entry.getKey().toString());
             ib.label(entry.getValue());
-            fb.fixedListItemDefinition(ib.build());
+            items.add(ib.build());
         }
-
-        XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
-        String label = "";
-        if (xui != null) {
-            label = xui.label();
-        }
+        field.setValue(Lists.newArrayList());
+        field.getFieldTypeDefinition().setFixedListItemDefinitions(items);
 
         fieldPageMap.put(currentPage, new FieldInfo(id, column, showGroup));
 
-        builder.caseField(CaseViewField.builder()
-            .id(id)
-            .showCondition(showGroup)
-            .showSummaryChangeOption(true)
-            .label(label)
-            .value(Lists.newArrayList())
-            .fieldTypeDefinition(fb.build())
-            .build());
+        builder.caseField(field);
         return this;
+    }
+
+    CaseViewField.CaseViewFieldBuilder buildField(TypedPropertyGetter<T, ?> getter, String type) {
+        String id = PropertyUtils.getPropertyName(clazz, getter);
+
+        FieldTypeDefinition.FieldTypeDefinitionBuilder ftb = FieldTypeDefinition.builder()
+            .id(type)
+            .type(type);
+
+        XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
+        if (xui != null) {
+            ftb.min(BigDecimal.valueOf(xui.min()));
+            ftb.max(BigDecimal.valueOf(xui.max()));
+            if (xui.type() != XUIType.Default) {
+                ftb.type(xui.type().toString());
+            }
+        }
+
+        return CaseViewField.builder()
+            .id(id)
+            .showSummaryChangeOption(true)
+            .label(xui != null ? xui.label() : "")
+            .showCondition(showGroup)
+            .fieldTypeDefinition(ftb.build());
     }
 
     public EventBuilder<T> field(TypedPropertyGetter<T, ?> getter) {
@@ -130,60 +152,16 @@ public class EventBuilder<T> {
                 .showCondition(showGroup)
                 .fieldTypeDefinition(buildFixedList(propertyType))
                 .build());
-        } else if (propertyType.equals(LocalDate.class)) {
-            builder.caseField(CaseViewField.builder()
-                .id(id)
-                .showCondition(showGroup)
-                .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("Date")
-                    .type("Date")
-                    .build())
-                .build());
-        } else if (propertyType.equals(String.class)) {
-            builder.caseField(CaseViewField.builder()
-                .id(id)
-                .showCondition(showGroup)
-                .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("Text")
-                    .type("Text")
-                    .build())
-                .build());
-        } else if (propertyType.equals(long.class)) {
-            builder.caseField(CaseViewField.builder()
-                .id(id)
-                .showCondition(showGroup)
-                .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("Number")
-                    .type("Number")
-                    .build())
-                .build());
-        } else if (propertyType.equals(boolean.class)) {
-            builder.caseField(CaseViewField.builder()
-                .id(id)
-                .showCondition(showGroup)
-                .fieldTypeDefinition(FieldTypeDefinition.builder()
-                    .id("YesOrNo")
-                    .type("YesOrNo")
-                    .build())
-                .build());
+        } else if (typeMap.containsKey(propertyType)){
+            builder.caseField(
+                buildField(getter, typeMap.get(propertyType)).build()
+            );
         } else {
             throw new RuntimeException("Unimplemented type:" + propertyType);
         }
 
-        CaseViewField f = builder.getCaseFields().get(builder.getCaseFields().size() - 1);
         this.builder.showSummary(true);
-        f.setShowSummaryChangeOption(true);
-        fieldPageMap.put(currentPage, new FieldInfo(f.getId(), 1, showGroup));
-
-        XUI xui = PropertyUtils.getAnnotationOfProperty(this.clazz, getter, XUI.class);
-        if (xui != null) {
-            f.setLabel(xui.label());
-            f.getFieldTypeDefinition().setMin(BigDecimal.valueOf(xui.min()));
-            f.getFieldTypeDefinition().setMax(BigDecimal.valueOf(xui.max()));
-            if (xui.type() != XUIType.Default) {
-                f.getFieldTypeDefinition().setType(xui.type().toString());
-            }
-        }
+        fieldPageMap.put(currentPage, new FieldInfo(id, 1, showGroup));
 
         return this;
     }
@@ -194,6 +172,7 @@ public class EventBuilder<T> {
             .type("FixedRadioList");
 
         int t = 1;
+        List<FixedListItemDefinition> items = Lists.newArrayList();
         for (Object e : propertyType.getEnumConstants()) {
             FixedListItemDefinition.FixedListItemDefinitionBuilder ib = FixedListItemDefinition.builder();
             ib.code(e.toString());
@@ -201,8 +180,10 @@ public class EventBuilder<T> {
             if (e instanceof HasLabel) {
                 ib.label(((HasLabel) e).getLabel());
             }
-            fb.fixedListItemDefinition(ib.build());
+            items.add(ib.build());
         }
+        fb.fixedListItemDefinitions(items);
+
 
         return fb.build();
     }
