@@ -1,4 +1,5 @@
-const { exec } = require("child_process");
+
+const { execSync } = require("child_process").execSync;
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
 var reporter = new HtmlScreenshotReporter({
@@ -44,6 +45,7 @@ exports.config = {
       }
     }));
 
+    require('child_process').execSync("sh create-user.sh")
 
     await browser.waitForAngularEnabled(false);
     while (true) {
@@ -53,24 +55,23 @@ exports.config = {
         await browser.sleep(2000)
         await browser.driver.findElement(by.id('username'));
         console.log("login page loaded")
+        await browser.element(by.id('username')).sendKeys('super@gmail.com')
+        console.log("entered username")
+        await browser.element(by.id('password')).sendKeys('p')
+        console.log("entered password")
+        await browser.element(by.css('body > form > div > button')).click()
+        console.log("clicked login")
+
+        await browser.sleep(10000)
+
+        console.log("Looking for jurisdictions")
+        await browser.driver.findElement(by.id('wb-jurisdiction'));
+        console.log("xui loaded")
         break;
       } catch (error) {
         console.log("Login page not ready")
         await browser.sleep(1000)
       }
     }
-    exec("sh create-user.sh", (error, stdout, stderr) => {
-      if (error) {
-        console.error(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-    });
-    await browser.sleep(1000)
-    await browser.waitForAngularEnabled(true);
   }
 };

@@ -112,8 +112,6 @@ services:
 
     expose:
       - 3000
-    ports:
-      - 3455:3000
     depends_on:
       - idam-api
       - case-gateway
