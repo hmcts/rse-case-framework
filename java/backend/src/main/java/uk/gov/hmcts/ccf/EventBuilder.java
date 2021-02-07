@@ -1,6 +1,5 @@
 package uk.gov.hmcts.ccf;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -95,7 +94,6 @@ public class EventBuilder<T> {
 
     public <U> EventBuilder<T> multiSelect(TypedPropertyGetter<T, ? extends Set<U>> getter,
                                            Map<U, String> options, int column) {
-        String id = PropertyUtils.getPropertyName(clazz, getter);
 
         CaseViewField.CaseViewFieldBuilder fb = buildField(getter, "MultiSelectList");
 
@@ -110,6 +108,7 @@ public class EventBuilder<T> {
         field.setValue(Lists.newArrayList());
         field.getFieldTypeDefinition().setFixedListItemDefinitions(items);
 
+        String id = PropertyUtils.getPropertyName(clazz, getter);
         fieldPageMap.put(currentPage, new FieldInfo(id, column, showGroup));
 
         builder.caseField(field);
@@ -152,7 +151,7 @@ public class EventBuilder<T> {
                 .showCondition(showGroup)
                 .fieldTypeDefinition(buildFixedList(propertyType))
                 .build());
-        } else if (typeMap.containsKey(propertyType)){
+        } else if (typeMap.containsKey(propertyType)) {
             builder.caseField(
                 buildField(getter, typeMap.get(propertyType)).build()
             );
