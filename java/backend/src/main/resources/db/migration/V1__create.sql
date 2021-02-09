@@ -11,8 +11,6 @@ create type event as enum (
     'AddParty',
     'AddClaim',
     'CloseCase',
-    'ImportCitizens',
-    'PurgeInactiveCitizens',
     'SubmitAppeal'
     );
 
@@ -93,15 +91,6 @@ create table claim_parties(
     party_type party_role not null,
     -- A party can only be on one side of a claim
     unique (claim_id, party_id)
-);
-
-create table citizen(
-    case_id bigint not null references cases(case_id),
-    title varchar,
-    forename varchar,
-    surname varchar,
-    date_of_birth date,
-        status varchar not null
 );
 
 create view cases_with_states as

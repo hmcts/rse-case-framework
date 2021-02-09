@@ -124,8 +124,6 @@ public class CaseHandlerImpl {
                 .execute();
     }
 
-
-
     @SneakyThrows
     private void onCreate(StateMachine.TransitionContext context, CreateClaim request) {
         String ref = request.getClaimantReference();
