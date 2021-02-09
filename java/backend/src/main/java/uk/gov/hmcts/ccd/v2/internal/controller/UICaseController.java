@@ -123,7 +123,8 @@ public class UICaseController {
             if (claim.getAvailableEvents().size() > 0) {
                 tab.label("### Available actions");
                 for (ClaimEvent availableEvent : claim.getAvailableEvents()) {
-                    tab.label(String.format("[%s](/cases/case-details/%s/trigger/claims_%s_%s)", getClaimEventLabel(availableEvent), caseId,
+                    tab.label(String.format("[%s](/cases/case-details/%s/trigger/claims_%s_%s)",
+                        getClaimEventLabel(availableEvent), caseId,
                         availableEvent, claim.getClaimId()));
                 }
             }
