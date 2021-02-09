@@ -18,11 +18,11 @@ class UIStartTriggerControllerSpec extends Specification {
     @Autowired
     private UIStartTriggerController controller
 
-    def "has dynamic events"() {
+    def "has dynamic claim events"() {
         given:
         def c = factory.CreateCase(factory.createUser("1"))
         def u = controller.getCaseUpdateViewEvent(c.getBody().getId().toString(),
-                "AddClaim", false).getBody()
+                "cases_AddClaim", false).getBody()
 
         expect:
         u.getCaseUpdateViewEvent().caseFields.size() == 4

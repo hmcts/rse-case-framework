@@ -2,6 +2,7 @@ package uk.gov.hmcts.ccd.v2.internal.controller;
 
 import com.google.common.collect.Lists;
 import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.impl.DefaultDSLContext;
@@ -42,8 +43,6 @@ import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 @RestController
 @RequestMapping(path = "/data/internal/cases")
 public class UICaseController {
-    private static final String ERROR_CASE_ID_INVALID = "Case ID is not valid";
-
     @Autowired
     private DefaultDSLContext jooq;
 
@@ -108,6 +107,7 @@ public class UICaseController {
                 NumberFormat.getNumberInstance().format(claim.getLowerAmount()),
                 NumberFormat.getNumberInstance().format(claim.getHigherAmount())));
 
+
             String table = "| Claimants      | Defendants |\n"
                 + "| ----------- | ----------- |\n";
 
@@ -119,6 +119,14 @@ public class UICaseController {
                 table += String.format("| %s      | %s       |\n", claimant, defendant);
             }
             tab.label(table);
+
+            if (claim.getAvailableEvents().size() > 0) {
+                tab.label("### Available actions");
+                for (ClaimEvent availableEvent : claim.getAvailableEvents()) {
+                    tab.label(String.format("[%s](/cases/case-details/%s/trigger/claims_%s_%s)", getClaimEventLabel(availableEvent), caseId,
+                        availableEvent, claim.getClaimId()));
+                }
+            }
         }
 
         return builder;
@@ -146,6 +154,16 @@ public class UICaseController {
             .stateId("Open")
             .stateName("Open")
             .build()).collect(toList());
+    }
+
+    private String getClaimEventLabel(ClaimEvent c) {
+        switch (c) {
+            case ClaimIssued:
+                return "Issue claim";
+            case ConfirmService:
+                return "Confirm service";
+        }
+        throw new RuntimeException();
     }
 
     private String getActionLabel(String id) {
@@ -221,7 +239,7 @@ public class UICaseController {
         int t = 1;
         for (Event e : statemachine.getAvailableActions(currentState)) {
             result.add(CaseViewActionableEvent.builder()
-                .id(e.getLiteral())
+                .id("cases_" + e.getLiteral())
                 .name(getActionLabel(e.getLiteral()))
                 .description(e.getLiteral())
                 .order(t++)

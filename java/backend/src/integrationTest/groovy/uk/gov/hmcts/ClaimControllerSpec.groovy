@@ -1,6 +1,7 @@
 package uk.gov.hmcts
 
-
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ class ClaimControllerSpec extends Specification {
         def response = factory.CreateCase(userId).getBody()
         def claims = controller.getClaims(String.valueOf(response.getId()))
         def claim = claims[0]
-        ApiEventCreation event = new ApiEventCreation(ClaimEvent.ConfirmService, new ConfirmService("a", "user"));
-        controller.createEvent((Long)claim.claimId, event, userId)
+        JsonNode data = new ObjectMapper().valueToTree(new ConfirmService("a", "user"));
+        controller.createEvent((Long)claim.claimId, ClaimEvent.ConfirmService, data, userId)
         def modifiedClaim = controller.getClaims(String.valueOf(response.getId()))[0]
         ArrayList claimList = controller.getClaims(String.valueOf(response.getId()));
         ArrayList history = controller.getClaimEvents(String.valueOf(claim.claimId))

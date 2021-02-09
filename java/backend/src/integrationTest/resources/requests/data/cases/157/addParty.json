@@ -7,7 +7,7 @@
     "dateOfBirth": "2000-01-01"
   },
   "event": {
-    "id": "AddParty",
+    "id": "cases_AddParty",
     "summary": "",
     "description": ""
   },

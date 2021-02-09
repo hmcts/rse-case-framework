@@ -141,12 +141,6 @@ public class StateMachine<StateT, EventT> {
         return this;
     }
 
-    public <T> StateMachine<StateT, EventT> addFileUploadEvent(StateT state, EventT event,
-                                                               BiConsumer<Long, MultipartFile> consumer) {
-        uploadHandlers.put(state.toString(), event, consumer);
-        return this;
-    }
-
     public Set<EventT> getAvailableActions(StateT state) {
         return getAvailableActions(state.toString());
     }

@@ -1,6 +1,8 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
 import org.jooq.generated.enums.CaseState;
+import org.jooq.generated.enums.ClaimEvent;
+import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseUpdateViewEventResource;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 @RestController
@@ -22,6 +25,9 @@ public class UIStartTriggerController {
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;
+
+    @Autowired
+    ClaimController claimController;
 
     @GetMapping(
         path = "/case-types/{caseTypeId}/event-triggers/{triggerId}",
@@ -56,14 +62,27 @@ public class UIStartTriggerController {
                                                                             @RequestParam(value = "ignore-warning",
                                                                                 required = false)
                                                                                   final Boolean ignoreWarning) {
-        StateMachine<CaseState, Event> s =
-            stateMachineSupplier.build();
-        CaseUpdateViewEvent view = s.getEvent(Long.valueOf(caseId), Event.valueOf(triggerId));
+        String[] splits = triggerId.split("_");
+        String machineId = splits[0];
+        String eventId = splits[1];
+
+        CaseUpdateViewEvent view = null;
+        if (machineId.equalsIgnoreCase("cases")) {
+            StateMachine<CaseState, Event> s =
+                stateMachineSupplier.build();
+            view = s.getEvent(Long.valueOf(caseId), Event.valueOf(eventId));
+        } else if (machineId.equalsIgnoreCase("claims")) {
+            StateMachine<ClaimState, ClaimEvent> s =
+                claimController.build(ClaimState.Issued);
+            view = s.getEvent(Long.valueOf(caseId), ClaimEvent.valueOf(eventId));
+        }
+
         CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(
             view,
             caseId,
             ignoreWarning);
         e.getCaseUpdateViewEvent().setCaseId(caseId);
+        e.getCaseUpdateViewEvent().setId(triggerId);
         return ResponseEntity.ok(e);
     }
 
