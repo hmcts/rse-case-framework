@@ -4,20 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
-import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 
 import java.util.Collection;
@@ -30,7 +27,6 @@ public class StateMachine<StateT, EventT> {
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
-    private Table<String, EventT, BiConsumer<Long, MultipartFile>> uploadHandlers = HashBasedTable.create();
     private Map<EventT, EventBuilder> events = Maps.newHashMap();
     private Map<EventT, TransitionRecord> dynamicEvents = Maps.newHashMap();
     private Class clazz;
@@ -68,15 +64,6 @@ public class StateMachine<StateT, EventT> {
         Object instance = new ObjectMapper().treeToValue(data, clazz);
         initialHandler.accept(new TransitionContext(userId, caseId), instance);
         state = initialState;
-    }
-
-    public void handleFileUpload(String state, Long caseId, EventT event, MultipartFile file) {
-        BiConsumer<Long, MultipartFile> handler = this.uploadHandlers.get(state, event);
-        if (handler != null) {
-            handler.accept(caseId, file);
-        } else {
-            throw new RuntimeException("No file upload handler for " + event);
-        }
     }
 
     @SneakyThrows
@@ -153,8 +140,6 @@ public class StateMachine<StateT, EventT> {
         for (TransitionRecord universalEvent : universalEvents) {
             result.add(universalEvent.getEvent());
         }
-
-        result.addAll(this.uploadHandlers.columnKeySet());
 
         return result;
     }

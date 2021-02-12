@@ -136,14 +136,6 @@ public class CaseController {
                 .fetchInto(CaseParty.class);
     }
 
-    @PostMapping(path = "/{caseId}/events")
-    @Transactional
-    public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
-                                              @RequestBody ApiEventCreation event,
-                                              @Parameter(hidden = true) @AuthenticationPrincipal OidcUser user) {
-        return createEvent(caseId, event, user.getSubject());
-    }
-
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               String userId) {
