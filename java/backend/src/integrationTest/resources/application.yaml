@@ -37,3 +37,6 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: basic
+
+generate-data: false
+big-ids: false

@@ -33,10 +33,10 @@ public class TestDataGenerator implements Callback {
     @Autowired
     private CaseController controller;
 
-    @Value("${generate-data:false}")
+    @Value("${generate-data:true}")
     public String generate;
 
-    @Value("${big-ids:false}")
+    @Value("${big-ids:true}")
     public String bigCaseIds;
 
     @Autowired
@@ -45,7 +45,7 @@ public class TestDataGenerator implements Callback {
     @Override
     @SneakyThrows
     public void handle(org.flywaydb.core.api.callback.Event event, Context context) {
-        if (!"true".equals(generate)) {
+        if (!"true".equalsIgnoreCase(bigCaseIds)) {
             return;
         }
         int count = create.select(count()).from(EVENTS).fetchSingle().value1();
@@ -56,7 +56,7 @@ public class TestDataGenerator implements Callback {
             create.execute("ALTER SEQUENCE cases_case_id_seq RESTART WITH 2542345663454321;");
         }
         // User 'john' in the idam configuration.
-        String testUserId = "a62f4e6f-c223-467d-acc1-fe91444783f5";
+        String testUserId = "super@gmail.com";
         create.insertInto(USERS,USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
             .values(testUserId, "John", "Smith")
             .execute();
