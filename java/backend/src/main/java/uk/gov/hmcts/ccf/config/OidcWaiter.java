@@ -31,9 +31,9 @@ public class OidcWaiter {
         // TODO - make the OIDC client retry nicely.
         String oidcUrl = System.getenv("IDAM_URI");
         if (Strings.isNullOrEmpty(oidcUrl)) {
-            oidcUrl = "http://localhost:5000/o";
+            oidcUrl = "http://localhost:5000";
         }
-        oidcUrl += "/.well-known/openid-configuration";
+        oidcUrl += "/o/.well-known/openid-configuration";
         URL u = new URL(oidcUrl);
         System.out.println("Waiting for " + oidcUrl);
         HttpURLConnection connection = (HttpURLConnection) u.openConnection();

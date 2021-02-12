@@ -18,10 +18,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
-import spock.lang.Specification
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 import uk.gov.hmcts.ccf.StateMachine
-
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
 import uk.gov.hmcts.ccf.controller.kase.CaseController
 import uk.gov.hmcts.unspec.CaseHandlerImpl
@@ -45,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @Transactional
-class CaseControllerSpecification extends Specification {
+class CaseControllerSpecification extends BaseSpringBootSpec {
 
     @Autowired
     private CaseController controller
@@ -57,15 +55,15 @@ class CaseControllerSpecification extends Specification {
     private DataSource dataSource
 
     @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
     private CaseFactory factory;
-
-    private MockMvc mockMvc
 
     @Autowired
     private CaseHandlerImpl handler;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mockMvc
 
     def setup() {
         mockMvc = MockMvcBuilders
@@ -74,12 +72,11 @@ class CaseControllerSpecification extends Specification {
                 .build();
     }
 
-
     def "exports openAPI specification"() {
         when:
         def f = mockMvc.perform(get('/v3/api-docs').with(oidcLogin()))
-            .andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsString()
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
         then:
         new File("build/open-api.yaml").write(JsonOutput.prettyPrint(f))
     }
@@ -104,13 +101,6 @@ class CaseControllerSpecification extends Specification {
         expect:
         a.getState() == CaseState.Created
         a.getActions().isEmpty() == false
-    }
-
-    def "a case cannot be retrieved when not logged in"() {
-        given:
-        def result = factory.CreateCase().getBody()
-        mockMvc.perform(get("/web/cases/" + result.getId()))
-                .andExpect(status().is(401))
     }
 
     def "an invalid case is not created"() {
@@ -219,7 +209,6 @@ class CaseControllerSpecification extends Specification {
     def "Adds a new party"() {
         when:
         def c = factory.CreateCase()
-        factory.createUser("a62f4e6f-c223-467d-acc1-fe91444783f5")
         URL url = Resources.getResource("requests/data/cases/157/addParty.json");
         String body = Resources.toString(url, StandardCharsets.UTF_8);
         String path = String.format('/data/cases/%s/events', c.getBody().getId());

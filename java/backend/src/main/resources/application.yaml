@@ -1,6 +1,8 @@
 logging:
   level:
     org:
+      springframework:
+        security: DEBUG
       jooq:
         tools:
           LoggerListener: DEBUG
@@ -25,21 +27,25 @@ spring:
     url: jdbc:postgresql://${database-host:db}:${database-port:5432}/ccf
     user: postgres
   security:
-    enabled: true
     oauth2:
       client:
-        registration:
-          idam:
-            provider: idam
-            client-id: rse
-            client-secret: bar
-            client-authentication-method: post
-            authorization-grant-type: authorization_code
-            scope:
-              - openid
-              - roles
-              - profile
         provider:
-          idam:
-            issuer-uri: ${IDAM_URI:http://idam-api:5000}
+          oidc:
+            issuer-uri: ${IDAM_URI:http://localhost:5000}/o
+        registration:
+          oidc:
+            client-id: internal
+            client-secret: internal
 
+# Allowed audience list
+oidc:
+  audience-list: ccd-admin,hmcts,xui_webapp
+  issuer: ${IDAM_URI:http://localhost:5000}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

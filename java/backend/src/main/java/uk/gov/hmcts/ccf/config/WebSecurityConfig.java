@@ -1,38 +1,24 @@
 package uk.gov.hmcts.ccf.config;
 
-import org.jooq.impl.DefaultDSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtIssuerValidator;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.jooq.generated.Tables.USERS;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -40,80 +26,58 @@ import static org.jooq.generated.Tables.USERS;
 @ConditionalOnProperty(value = "spring.security.enabled", havingValue = "true", matchIfMissing = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    DefaultDSLContext jooq;
+    private final JwtAuthorityExtractor jwtAuthorityExtractor;
+
+    @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
+    private String issuerUri;
+
+    @Value("${oidc.audience-list}")
+    private String[] allowedAudiences;
+
+    @Value("${oidc.issuer}")
+    private String issuerOverride;
+
+    public WebSecurityConfig(JwtAuthorityExtractor jwtAuthorityExtractor) {
+        this.jwtAuthorityExtractor = jwtAuthorityExtractor;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/actuator/**", "/internal/**", "/data/**", "/aggregated/**").permitAll()
-                .anyRequest().authenticated().and()
-                .oauth2Login(x -> x.successHandler(this.loginHandler))
-                .logout(l -> l.logoutSuccessHandler(oidcLogoutSuccessHandler()))
-                .exceptionHandling()
-                .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                        new AntPathRequestMatcher("/web/**"));
+        http.csrf()
+            .disable()
+            .exceptionHandling()
+            .accessDeniedHandler((request, response, exc) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))
+            .authenticationEntryPoint((request, response, exc) ->
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+            .and()
+            .authorizeRequests()
+            .antMatchers("/management/health").permitAll()
+            .antMatchers("/management/info").permitAll()
+            .antMatchers("/**").permitAll()
+            .and()
+            .oauth2ResourceServer()
+            .jwt()
+            .jwtAuthenticationConverter(jwtAuthorityExtractor)
+            .and()
+            .and()
+            .oauth2Client();
     }
 
-    AuthenticationSuccessHandler loginHandler = new SavedRequestAwareAuthenticationSuccessHandler() {
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                            Authentication authentication) throws ServletException, IOException {
-            OidcUser user = (OidcUser) authentication.getPrincipal();
-            jooq.insertInto(USERS)
-                .columns(USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
-                .values(user.getSubject(), user.getGivenName(), user.getFamilyName())
-                .onDuplicateKeyUpdate()
-                .set(USERS.USER_FORENAME, user.getGivenName())
-                .set(USERS.USER_SURNAME, user.getFamilyName())
-                .execute();
-            response.sendRedirect("/");
-        }
-    };
-
-    /**
-     Map IDAM roles to spring Authorities
-     for use in access control.
-     */
     @Bean
-    public GrantedAuthoritiesMapper mapper() {
-        return (authorities) -> {
-            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+    JwtDecoder jwtDecoder() {
+        NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
+            JwtDecoders.fromOidcIssuerLocation(issuerUri);
 
-            authorities.forEach(authority -> {
-                if (OidcUserAuthority.class.isInstance(authority)) {
-                    OidcUserAuthority oidcUserAuthority = (OidcUserAuthority)authority;
+        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(Arrays.asList(allowedAudiences));
+        // We are using issuerOverride instead of issuerUri as SIDAM has the wrong issuer at the moment
+        OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
+        OAuth2TokenValidator<Jwt> withIssuer = new JwtIssuerValidator(issuerOverride);
+        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withTimestamp,
+            withIssuer,
+            audienceValidator);
 
-                    OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
+        jwtDecoder.setJwtValidator(withAudience);
 
-                    // Map the roles IDAM returns from /userinfo
-                    // to spring security authorities.
-                    Object roles = userInfo.getClaims().get("roles");
-                    if (roles instanceof ArrayList) {
-                        ArrayList a = (ArrayList) roles;
-                        for (Object o : a) {
-                            mappedAuthorities.add((GrantedAuthority) () -> o.toString());
-                        }
-                    }
-                }
-            });
-
-            return mappedAuthorities;
-        };
-    }
-
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
-
-    private LogoutSuccessHandler oidcLogoutSuccessHandler() {
-        OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
-                new OidcClientInitiatedLogoutSuccessHandler(
-                        this.clientRegistrationRepository);
-
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:4200");
-
-        return oidcLogoutSuccessHandler;
+        return jwtDecoder;
     }
 }

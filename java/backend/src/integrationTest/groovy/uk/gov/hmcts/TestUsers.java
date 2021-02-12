@@ -17,9 +17,9 @@ public class TestUsers {
     @Primary
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(Arrays.asList(
-                new User("mary", "", Arrays.asList(
-                        new SimpleGrantedAuthority("judge")
-                ))
+            new User("mary", "", Arrays.asList(
+                new SimpleGrantedAuthority("judge")
+            ))
         ));
     }
 }

@@ -43,12 +43,16 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 
     implementation group: 'org.springframework.security', name: 'spring-security-config'
+    implementation "org.springframework.security:spring-security-web"
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: springBootVersion
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation group: 'org.springframework.cloud', name:'spring-cloud-starter-openfeign', version: '3.0.1'
+    implementation "io.github.openfeign:feign-httpclient:11.0"
+    implementation "io.github.openfeign:feign-jackson:11.0"
 
     implementation('org.springframework.boot:spring-boot-starter-hateoas')
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'net.jodah:typetools:0.6.2'
     implementation 'de.cronn:reflection-util:2.8.0'
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.8'

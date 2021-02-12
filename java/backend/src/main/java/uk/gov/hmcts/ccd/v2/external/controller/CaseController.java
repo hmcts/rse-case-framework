@@ -22,6 +22,7 @@ import uk.gov.hmcts.ccd.domain.model.std.CaseDataContent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.external.resource.CaseResource;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.config.UserProvider;
 import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
@@ -41,6 +42,9 @@ public class CaseController {
 
     @Autowired
     DefaultDSLContext jooq;
+
+    @Autowired
+    UserProvider user;
 
     @GetMapping(
         path = "/cases/{caseId}",
@@ -70,7 +74,7 @@ public class CaseController {
         String[] splits = content.getEventId().split("_");
         String state;
         if (splits[0].equalsIgnoreCase("cases")) {
-            state = handleCaseEvent(Long.parseLong(caseId), splits[1], node);
+            state = handleCaseEvent(Long.parseLong(caseId), splits[1], node, user.getCurrentUserId());
         } else {
             state = handleClaimEvent(splits[1], Long.parseLong(splits[2]), node);
         }
@@ -85,15 +89,15 @@ public class CaseController {
     }
 
     private String handleClaimEvent(String eventId, long claimId, JsonNode data) {
-        claimController.createEvent(claimId, ClaimEvent.valueOf(eventId), data, "a62f4e6f-c223-467d-acc1-fe91444783f5");
+        claimController.createEvent(claimId, ClaimEvent.valueOf(eventId), data, user.getCurrentUserId());
         return "";
     }
 
-    private String handleCaseEvent(long caseId, String eventId, JsonNode data) {
+    private String handleCaseEvent(long caseId, String eventId, JsonNode data, String userId) {
         StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
 
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(
-            "a62f4e6f-c223-467d-acc1-fe91444783f5", Long.valueOf(caseId));
+            userId, Long.valueOf(caseId));
         Event event = Event.valueOf(eventId);
 
         CaseState state = jooq.select(CASES_WITH_STATES.STATE)
@@ -105,7 +109,7 @@ public class CaseController {
         statemachine.handleEvent(context, event, data);
 
         insertEvent(Event.valueOf(eventId), Long.valueOf(caseId), statemachine.getState(),
-            "a62f4e6f-c223-467d-acc1-fe91444783f5"); // TODO
+            userId);
         return state.getLiteral();
     }
 

@@ -53,6 +53,18 @@ exports.config = {
         console.log("Waiting for login screen...")
         await browser.get('http://xui-manage-cases:3000');
         await browser.sleep(2000)
+
+        try {
+          console.log("Checking for login")
+          await browser.driver.findElement(by.id('wb-jurisdiction'));
+          console.log("Already logged in")
+          break;
+        } catch (error) {
+          console.log(error)
+          console.log("Not logged in")
+        }
+
+        console.log("Looking for login page")
         await browser.driver.findElement(by.id('username'));
         console.log("login page loaded")
         await browser.element(by.id('username')).sendKeys('super@gmail.com')
@@ -69,6 +81,7 @@ exports.config = {
         console.log("xui loaded")
         break;
       } catch (error) {
+        console.log(error)
         console.log("Login page not ready")
         await browser.sleep(1000)
       }

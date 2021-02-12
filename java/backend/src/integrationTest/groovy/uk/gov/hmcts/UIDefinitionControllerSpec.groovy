@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.annotation.Transactional
-import spock.lang.Specification
-import uk.gov.hmcts.ccd.v2.internal.controller.UICaseSearchController
 import uk.gov.hmcts.ccd.v2.internal.controller.UIDefinitionController
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
@@ -19,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class UIDefinitionControllerSpec extends Specification {
+class UIDefinitionControllerSpec extends BaseSpringBootSpec {
 
     @Autowired
     private CaseFactory factory;
@@ -32,10 +29,6 @@ class UIDefinitionControllerSpec extends Specification {
 
     @MockBean
     private DefaultDSLContext jooq;
-
-    // Mock out OIDC client registration.
-    @MockBean
-    ClientRegistrationRepository registrations;
 
     def "has work basket inputs"() {
         when:

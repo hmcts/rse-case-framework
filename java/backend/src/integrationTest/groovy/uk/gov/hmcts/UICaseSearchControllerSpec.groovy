@@ -4,13 +4,9 @@ import com.google.common.io.Resources
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.annotation.Transactional
-import spock.lang.Specification
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseSearchController
-import uk.gov.hmcts.ccf.config.WebSecurityConfig
 
 import java.nio.charset.StandardCharsets
 
@@ -21,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class UICaseSearchControllerSpec extends Specification {
+class UICaseSearchControllerSpec extends BaseSpringBootSpec {
 
     @Autowired
     private UICaseSearchController controller;

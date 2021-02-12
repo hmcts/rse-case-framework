@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;

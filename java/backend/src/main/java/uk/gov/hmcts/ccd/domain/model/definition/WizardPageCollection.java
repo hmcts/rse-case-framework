@@ -2,8 +2,6 @@ package uk.gov.hmcts.ccd.domain.model.definition;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 

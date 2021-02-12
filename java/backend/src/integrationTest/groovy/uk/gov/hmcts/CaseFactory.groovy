@@ -23,7 +23,7 @@ class CaseFactory {
     DefaultDSLContext jooq;
 
     String createUser(String id = "1") {
-        jooq.insertInto(USERS,USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
+        jooq.insertInto(USERS, USERS.USER_ID, USERS.USER_FORENAME, USERS.USER_SURNAME)
                 .values(id, "John", "Smith")
                 .execute();
         return id;
@@ -31,13 +31,13 @@ class CaseFactory {
 
     ResponseEntity<CaseController.CaseActions> CreateCase(String userId = createUser()) {
         def event = CreateClaim.builder()
-            .claimantReference("Foo")
-            .defendantReference("Bar")
-            .claimant(new Company("Hooli"))
-            .defendant(new Organisation("Wiki"))
-            .lowerValue(1)
-            .higherValue(2)
-            .build()
+                .claimantReference("Foo")
+                .defendantReference("Bar")
+                .claimant(new Company("Hooli"))
+                .defendant(new Organisation("Wiki"))
+                .lowerValue(1)
+                .higherValue(2)
+                .build()
         def request = new ApiEventCreation("Create", new ObjectMapper().valueToTree(event))
         return controller.createCase(request, userId)
     }

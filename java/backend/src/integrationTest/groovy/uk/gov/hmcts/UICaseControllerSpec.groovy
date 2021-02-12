@@ -3,12 +3,11 @@ package uk.gov.hmcts
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import spock.lang.Specification
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 
 @SpringBootTest
 @Transactional
-class UICaseControllerSpec extends Specification {
+class UICaseControllerSpec extends BaseSpringBootSpec {
     @Autowired
     UICaseController controller;
 
