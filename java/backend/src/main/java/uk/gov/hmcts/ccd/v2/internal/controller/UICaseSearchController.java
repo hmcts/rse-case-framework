@@ -1,7 +1,9 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import de.cronn.reflection.util.TypedPropertyGetter;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +18,15 @@ import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewHeader
 import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewHeaderGroup;
 import uk.gov.hmcts.ccd.domain.model.search.elasticsearch.SearchResultViewItem;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseSearchResultViewResource;
+import uk.gov.hmcts.ccf.ColumnMapper;
 import uk.gov.hmcts.ccf.ESQueryParser;
-import uk.gov.hmcts.ccf.controller.kase.CaseController;
+import uk.gov.hmcts.ccf.EventBuilder;
+import uk.gov.hmcts.ccf.XUISearchHandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import static org.jooq.generated.Tables.CASES_WITH_STATES;
-import static org.jooq.generated.Tables.PARTIES;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.select;
-import static org.jooq.impl.DSL.table;
 
 @RestController
 @RequestMapping(path = "/data/internal/searchCases", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -36,7 +35,7 @@ import static org.jooq.impl.DSL.table;
 public class UICaseSearchController {
 
     @Autowired
-    DefaultDSLContext jooq;
+    XUISearchHandler<?> handler;
 
     @PostMapping(path = "")
     public ResponseEntity<CaseSearchResultViewResource> searchCases(
@@ -45,33 +44,17 @@ public class UICaseSearchController {
                                      @RequestBody String jsonSearchRequest) {
 
         ESQueryParser.ESQuery query = ESQueryParser.parse(jsonSearchRequest);
-
-        List<CaseController.CaseSearchResult> results =
-            jooq.with("party_counts").as(
-                select(PARTIES.CASE_ID, count().as("party_count"))
-                    .from(PARTIES)
-                    .groupBy(PARTIES.CASE_ID)
-            )
-                .select()
-                .from(CASES_WITH_STATES)
-                .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
-                .orderBy(CASES_WITH_STATES.CASE_ID.asc())
-                .offset(query.getFrom())
-                .limit(query.getPageSize())
-                .fetchInto(CaseController.CaseSearchResult.class);
+        Collection<? extends XUISearchHandler.XUISearchResult> results = handler.search(query);
 
         List<SearchResultViewItem> cases = new ArrayList<>();
-        for (CaseController.CaseSearchResult result : results) {
+        for (XUISearchHandler.XUISearchResult result : results) {
             cases.add(SearchResultViewItem.builder()
                 .caseId(result.getCaseId().toString())
-                .fields(Map.of(
-                    "party_count", result.getPartyCount(),
-                    "id", result.getCaseId(),
-                    "parent_id", result.getParentCaseId() != null ? result.getParentCaseId() : "",
-                    "state", result.getState()
-                    ))
+                .fields(new ObjectMapper().convertValue(result, Map.class))
                 .build());
         }
+
+
         return ResponseEntity.ok(CaseSearchResultViewResource.builder()
             .cases(cases)
             .total(110000L)
@@ -80,39 +63,30 @@ public class UICaseSearchController {
                     .jurisdiction("DIVORCE")
                     .caseTypeId("NFD")
                     .build())
-                .field(SearchResultViewHeader.builder()
-                    .caseFieldId("id")
-                    .label("Case ID")
-                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
-                        .id("Number")
-                        .type("Number")
-                        .build())
-                    .build())
-                .field(SearchResultViewHeader.builder()
-                    .caseFieldId("state")
-                    .label("State")
-                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
-                        .id("Text")
-                        .type("Text")
-                        .build())
-                    .build())
-                .field(SearchResultViewHeader.builder()
-                    .caseFieldId("parent_id")
-                    .label("Parent Case")
-                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
-                        .id("Number")
-                        .type("Number")
-                        .build())
-                    .build())
-                .field(SearchResultViewHeader.builder()
-                    .caseFieldId("party_count")
-                    .label("Number of parties")
-                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
-                        .id("Number")
-                        .type("Number")
-                        .build())
-                    .build())
+                .fields(buildColumns())
                 .build())
             .build());
+    }
+
+    private List<SearchResultViewHeader> buildColumns() {
+        List<SearchResultViewHeader> result = Lists.newArrayList();
+        handler.configureColumns(new ColumnMapper() {
+
+            @Override
+            public ColumnMapper column(TypedPropertyGetter getter) {
+                Class c = handler.fieldType(getter);
+                String type = EventBuilder.typeName(c);
+                result.add(SearchResultViewHeader.builder()
+                    .caseFieldId(handler.fieldName(getter))
+                    .label(handler.fieldName(getter))
+                    .caseFieldTypeDefinition(FieldTypeDefinition.builder()
+                        .id(type)
+                        .type(type)
+                        .build())
+                    .build());
+                return this;
+            }
+        });
+        return result;
     }
 }

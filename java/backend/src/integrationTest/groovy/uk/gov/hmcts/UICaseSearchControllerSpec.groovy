@@ -32,11 +32,19 @@ class UICaseSearchControllerSpec extends BaseSpringBootSpec {
         given:
         URL url = Resources.getResource("requests/data/internal/searchCases.json");
         String json = Resources.toString(url, StandardCharsets.UTF_8);
-        factory.CreateCase()
+        def c = factory.CreateCase()
         def result = controller.searchCases("", "", json).getBody()
+        def fields = result.getHeaders().get(0).getFields()
 
         expect:
         result.cases.size() > 0
+        fields.size() == 4
+        fields.get(0).getCaseFieldTypeDefinition().type == "Number"
+        fields.get(1).getCaseFieldTypeDefinition().type == "Text"
+        fields.get(2).getCaseFieldTypeDefinition().type == "Number"
+        fields.get(3).getCaseFieldTypeDefinition().type == "Number"
+
+        result.cases.get(0).fields.get("caseId") == c.getBody().id
     }
 
     def "has jurisdictions"() {

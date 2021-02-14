@@ -186,20 +186,6 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         controller.getCase(String.valueOf(id)).state == CaseState.Stayed
     }
 
-
-    def "search for cases by id"() {
-        given:
-        def c = factory.CreateCase().getBody()
-        def query = Map.of("id", c.id)
-        def string = Base64.getEncoder().encodeToString(JsonOutput.toJson(query).getBytes())
-        def cases = controller.searchCases(string)
-
-        expect:
-        cases.size() == 1
-        cases[0].caseId == c.id
-        cases[0].state == CaseState.Created
-    }
-
     private int caseCount() {
         // Read in a new transaction.
         DSLContext create = DSL.using(dataSource, SQLDialect.DEFAULT);

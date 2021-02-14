@@ -35,13 +35,22 @@ public class EventBuilder<T> {
     private int currentPage = 1;
     private BiConsumer<Long, T> handler;
     private String showGroup;
-    private static final Map<Class, String> typeMap = ImmutableMap.of(
-        Set.class, "MultiSelectList",
-        LocalDate.class, "Date",
-        String.class, "Text",
-        long.class, "Number",
-        boolean.class, "YesOrNo"
-    );
+    private static final ImmutableMap<Class, String> typeMap = ImmutableMap.<Class, String>builder()
+        .put(Set.class, "MultiSelectList")
+        .put(LocalDate.class, "Date")
+        .put(String.class, "Text")
+        .put(long.class, "Number")
+        .put(Long.class, "Number")
+        .put(boolean.class, "YesOrNo")
+        .put(Boolean.class, "YesOrNo")
+        .build();
+
+    public static String typeName(Class c) {
+        if (typeMap.containsKey(c)) {
+            return typeMap.get(c);
+        }
+        return "Text";
+    }
 
     public CaseUpdateViewEvent build() {
         for (int t = 1; t <= currentPage; t++) {

@@ -1,18 +1,14 @@
 package uk.gov.hmcts.ccf.controller.kase;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import org.jooq.Condition;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.generated.tables.records.CasesRecord;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
@@ -31,10 +26,7 @@ import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.dto.Party;
 
 import java.net.URI;
-import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.jooq.generated.Tables.CASES;
@@ -43,9 +35,6 @@ import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.select;
-import static org.jooq.impl.DSL.table;
 
 @RestController
 @RequestMapping("/web/cases")
@@ -57,39 +46,6 @@ public class CaseController {
     @Autowired
     DefaultDSLContext jooq;
 
-    @AllArgsConstructor
-    @Data
-    public static class CaseSearchResult {
-        private Long caseId;
-        private Long parentCaseId;
-        private CaseState state;
-        private Long partyCount;
-    }
-
-    @SneakyThrows
-    @GetMapping(path = "/search")
-    public List<CaseSearchResult> searchCases(@RequestHeader("search-query") String base64JsonQuery) {
-        byte[] bytes = Base64.getDecoder().decode(base64JsonQuery.getBytes());
-        Map<String, String> query = new ObjectMapper().readValue(bytes, HashMap.class);
-
-        Object id = query.get("id");
-        Condition condition = DSL.trueCondition();
-        if (id != null && id.toString().length() > 0) {
-            condition = condition.and(CASES_WITH_STATES.CASE_ID.equal(Long.valueOf(id.toString())));
-        }
-
-        return jooq.with("party_counts").as(
-            select(PARTIES.CASE_ID, count().as("party_count"))
-                .from(PARTIES)
-                .groupBy(PARTIES.CASE_ID)
-        )
-            .select()
-            .from(CASES_WITH_STATES)
-            .join(table("party_counts")).using(CASES_WITH_STATES.CASE_ID)
-            .where(condition)
-            .orderBy(CASES_WITH_STATES.CASE_ID.asc())
-            .fetchInto(CaseSearchResult.class);
-    }
 
     @GetMapping(path = "/{caseId}")
     public CaseActions getCase(@PathVariable("caseId") String caseId) {
