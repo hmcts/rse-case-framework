@@ -9,6 +9,17 @@ import java.util.Collection;
 
 public abstract class XUISearchHandler<T extends XUISearchHandler.XUISearchResult> {
 
+    public String fieldLabel(TypedPropertyGetter<T, ?> getter) {
+        Class<?>[] typeArgs = TypeResolver.resolveRawArguments(XUISearchHandler.class, this.getClass());
+        Class<T> clazz = (Class<T>) typeArgs[0];
+
+        XUI xui = PropertyUtils.getAnnotationOfProperty(clazz, getter, XUI.class);
+        if (null != xui) {
+            return xui.label();
+        }
+        return "";
+    }
+
     public String fieldName(TypedPropertyGetter<T, ?> getter) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(XUISearchHandler.class, this.getClass());
         Class<T> clazz = (Class<T>) typeArgs[0];

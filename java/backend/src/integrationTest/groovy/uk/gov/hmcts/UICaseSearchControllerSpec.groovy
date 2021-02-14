@@ -40,6 +40,7 @@ class UICaseSearchControllerSpec extends BaseSpringBootSpec {
         result.cases.size() > 0
         fields.size() == 4
         fields.get(0).getCaseFieldTypeDefinition().type == "Number"
+        fields.get(0).label == "Case ID"
         fields.get(1).getCaseFieldTypeDefinition().type == "Text"
         fields.get(2).getCaseFieldTypeDefinition().type == "Number"
         fields.get(3).getCaseFieldTypeDefinition().type == "Number"

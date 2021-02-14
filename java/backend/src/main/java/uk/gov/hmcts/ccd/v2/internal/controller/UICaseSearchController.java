@@ -78,7 +78,7 @@ public class UICaseSearchController {
                 String type = EventBuilder.typeName(c);
                 result.add(SearchResultViewHeader.builder()
                     .caseFieldId(handler.fieldName(getter))
-                    .label(handler.fieldName(getter))
+                    .label(handler.fieldLabel(getter))
                     .caseFieldTypeDefinition(FieldTypeDefinition.builder()
                         .id(type)
                         .type(type)
