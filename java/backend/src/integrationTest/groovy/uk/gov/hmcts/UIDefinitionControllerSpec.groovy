@@ -30,7 +30,7 @@ class UIDefinitionControllerSpec extends BaseSpringBootSpec {
     @MockBean
     private DefaultDSLContext jooq;
 
-    def "has work basket inputs"() {
+    def "responds to work basket inputs"() {
         when:
         def f = mockMvc.perform(get('/data/internal/case-types/NFD/work-basket-inputs').with(oidcLogin()))
                 .andExpect(status().isOk())
@@ -39,6 +39,16 @@ class UIDefinitionControllerSpec extends BaseSpringBootSpec {
         f.length() > 0
     }
 
+    def "returns work basket inputs"() {
+        when:
+        def inputs = controller.getWorkbasketInputsDetails("NFD").getBody().workbasketInputs
+        then:
+        inputs.size() == 1
+        inputs.get(0).label == "Case ID"
+        inputs.get(0).getField().id == "caseId"
+        inputs.get(0).getField().type.id == "Text"
+        inputs.get(0).getField().type.type == "Text"
+    }
 
     def "returns jurisdiction information"() {
         given:

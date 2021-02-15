@@ -3,7 +3,6 @@ package uk.gov.hmcts.ccf;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.util.Iterator;
@@ -14,10 +13,10 @@ public class ESQueryParser {
     }
 
     @SneakyThrows
-    public static ESQuery parse(String json) {
+    public static XUIQuery parse(String json) {
         JsonNode node = new ObjectMapper().readTree(json);
         JsonNode query = node.get("native_es_query");
-        ESQuery result = new ESQuery();
+        XUIQuery result = new XUIQuery();
         result.setFrom(query.get("from").asInt());
         result.setPageSize(query.get("size").asInt());
 
@@ -34,13 +33,6 @@ public class ESQueryParser {
         }
 
         return result;
-    }
-
-    @Data
-    public static class ESQuery {
-        Map<String, String> params;
-        int from;
-        int pageSize;
     }
 
 }

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,8 @@ import uk.gov.hmcts.ccd.v2.internal.resource.JurisdictionConfigViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.JurisdictionViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.SearchInputsViewResource;
 import uk.gov.hmcts.ccd.v2.internal.resource.WorkbasketInputsViewResource;
+import uk.gov.hmcts.ccf.WorkbasketInputBuilder;
+import uk.gov.hmcts.unspec.xui.SearchHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +25,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/data/internal")
 public class UIDefinitionController {
+    @Autowired
+    SearchHandler handler;
+
     @GetMapping(
         path = "/case-types/{caseTypeId}/work-basket-inputs",
         produces = {
@@ -30,23 +36,29 @@ public class UIDefinitionController {
     )
     public ResponseEntity<WorkbasketInputsViewResource> getWorkbasketInputsDetails(@PathVariable("caseTypeId")
                                                                                        String caseTypeId) {
-        return ResponseEntity.ok(
-            WorkbasketInputsViewResource.builder()
-                .workbasketInput(
+        WorkbasketInputsViewResource.WorkbasketInputsViewResourceBuilder ib = WorkbasketInputsViewResource.builder();
+        WorkbasketInputBuilder builder = new WorkbasketInputBuilder() {
+            @Override
+            public WorkbasketInputBuilder textInput(String id, String label) {
+                ib.workbasketInput(
                     WorkbasketInputsViewResource.WorkbasketInputView.builder()
-                        .label("Urgent Case")
+                        .label(label)
                         .field(Field.builder()
-                            .id("Urgent Case")
+                            .id(id)
                             .type(
                                 FieldTypeDefinition.builder()
-                                    .id("YesOrNo")
-                                    .type("YesOrNo")
+                                    .id("Text")
+                                    .type("Text")
                                     .build()
                             )
                             .build()
                         )
-                        .build()
-                ).build());
+                        .build());
+                return this;
+            }
+        };
+        handler.configureWorkbasketInputs(builder);
+        return ResponseEntity.ok(ib.build());
     }
 
     @GetMapping(

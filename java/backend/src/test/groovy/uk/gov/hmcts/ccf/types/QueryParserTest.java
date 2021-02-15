@@ -4,6 +4,7 @@ import com.google.common.io.Resources;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import uk.gov.hmcts.ccf.ESQueryParser;
+import uk.gov.hmcts.ccf.XUIQuery;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +20,7 @@ public class QueryParserTest {
         URL url = Resources.getResource("requests/data/internal/searchCases.json");
         String json = Resources.toString(url, StandardCharsets.UTF_8);
 
-        ESQueryParser.ESQuery query = ESQueryParser.parse(json);
+        XUIQuery query = ESQueryParser.parse(json);
 
         assertEquals(50, query.getFrom());
         assertEquals(25, query.getPageSize());

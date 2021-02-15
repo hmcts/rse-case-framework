@@ -9,11 +9,11 @@ import net.jodah.typetools.TypeResolver;
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
 
-public abstract class XUISearchHandler<T extends XUISearchHandler.XUISearchResult> {
+public abstract class XUISearchHandler<S extends XUISearchHandler.XUISearchResult> {
 
-    public String fieldLabel(TypedPropertyGetter<T, ?> getter) {
+    public String fieldLabel(TypedPropertyGetter<S, ?> getter) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(XUISearchHandler.class, this.getClass());
-        Class<T> clazz = (Class<T>) typeArgs[0];
+        Class<S> clazz = (Class<S>) typeArgs[0];
 
         XUI xui = PropertyUtils.getAnnotationOfProperty(clazz, getter, XUI.class);
         if (null != xui) {
@@ -22,24 +22,26 @@ public abstract class XUISearchHandler<T extends XUISearchHandler.XUISearchResul
         return "";
     }
 
-    public String fieldName(TypedPropertyGetter<T, ?> getter) {
+    public String fieldName(TypedPropertyGetter<S, ?> getter) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(XUISearchHandler.class, this.getClass());
-        Class<T> clazz = (Class<T>) typeArgs[0];
+        Class<S> clazz = (Class<S>) typeArgs[0];
 
         return PropertyUtils.getPropertyName(clazz, getter);
     }
 
-    public Class fieldType(TypedPropertyGetter<T, ?> getter) {
+    public Class fieldType(TypedPropertyGetter<S, ?> getter) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(XUISearchHandler.class, this.getClass());
-        Class<T> clazz = (Class<T>) typeArgs[0];
+        Class<S> clazz = (Class<S>) typeArgs[0];
         PropertyDescriptor descriptor = de.cronn.reflection.util.PropertyUtils
             .getPropertyDescriptor(clazz, getter);
         return descriptor.getPropertyType();
     }
 
-    public abstract void configureColumns(ColumnMapper<T> mapper);
+    public abstract void configureWorkbasketInputs(WorkbasketInputBuilder builder);
 
-    public abstract SearchResults search(ESQueryParser.ESQuery query);
+    public abstract void configureColumns(ColumnMapper<S> mapper);
+
+    public abstract SearchResults search(XUIQuery query);
 
     public interface XUISearchResult {
         Long getCaseId();

@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @Transactional
-@SpringBootTest
 @AutoConfigureMockMvc
 class UICaseSearchControllerSpec extends BaseSpringBootSpec {
 
@@ -39,8 +38,8 @@ class UICaseSearchControllerSpec extends BaseSpringBootSpec {
         expect:
         result.cases.size() > 0
         result.total == 1
-        result.cases.get(0).fields.get("caseId") == c.getBody().id
-        result.cases.get(0).fields.get("rowCount") == 1
+        result.cases.get(0).fields.get("caseId") == c.getBody().id.toString()
+        result.cases.get(0).fields.get("rowCount") == "1"
 
         fields.size() == 3
         fields.get(0).getCaseFieldTypeDefinition().type == "Number"

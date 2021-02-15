@@ -1,6 +1,8 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.MapType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.collect.Lists;
 import de.cronn.reflection.util.TypedPropertyGetter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +23,11 @@ import uk.gov.hmcts.ccd.v2.internal.resource.CaseSearchResultViewResource;
 import uk.gov.hmcts.ccf.ColumnMapper;
 import uk.gov.hmcts.ccf.ESQueryParser;
 import uk.gov.hmcts.ccf.EventBuilder;
+import uk.gov.hmcts.ccf.XUIQuery;
 import uk.gov.hmcts.ccf.XUISearchHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +46,19 @@ public class UICaseSearchController {
                                      @RequestParam(value = "use_case", required = false) final String useCase,
                                      @RequestBody String jsonSearchRequest) {
 
-        ESQueryParser.ESQuery query = ESQueryParser.parse(jsonSearchRequest);
+        XUIQuery query = ESQueryParser.parse(jsonSearchRequest);
         XUISearchHandler.SearchResults results = handler.search(query);
 
         List<SearchResultViewItem> cases = new ArrayList<>();
         for (XUISearchHandler.XUISearchResult result : results.getResults()) {
+            TypeFactory factory = TypeFactory.defaultInstance();
+            MapType type =
+                factory.constructMapType(HashMap.class, String.class, String.class);
+            Map map = new ObjectMapper().convertValue(result, type);
+
             cases.add(SearchResultViewItem.builder()
                 .caseId(result.getCaseId().toString())
-                .fields(new ObjectMapper().convertValue(result, Map.class))
+                .fields(map)
                 .build());
         }
 
