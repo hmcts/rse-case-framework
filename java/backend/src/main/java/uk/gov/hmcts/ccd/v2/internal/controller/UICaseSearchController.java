@@ -24,7 +24,6 @@ import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.XUISearchHandler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -44,20 +43,19 @@ public class UICaseSearchController {
                                      @RequestBody String jsonSearchRequest) {
 
         ESQueryParser.ESQuery query = ESQueryParser.parse(jsonSearchRequest);
-        Collection<? extends XUISearchHandler.XUISearchResult> results = handler.search(query);
+        XUISearchHandler.SearchResults results = handler.search(query);
 
         List<SearchResultViewItem> cases = new ArrayList<>();
-        for (XUISearchHandler.XUISearchResult result : results) {
+        for (XUISearchHandler.XUISearchResult result : results.getResults()) {
             cases.add(SearchResultViewItem.builder()
                 .caseId(result.getCaseId().toString())
                 .fields(new ObjectMapper().convertValue(result, Map.class))
                 .build());
         }
 
-
         return ResponseEntity.ok(CaseSearchResultViewResource.builder()
             .cases(cases)
-            .total(110000L)
+            .total(results.getRowCount())
             .header(SearchResultViewHeaderGroup.builder()
                 .metadata(HeaderGroupMetadata.builder()
                     .jurisdiction("DIVORCE")

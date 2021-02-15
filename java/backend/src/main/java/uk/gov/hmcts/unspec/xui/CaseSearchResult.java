@@ -2,10 +2,12 @@ package uk.gov.hmcts.unspec.xui;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jooq.generated.enums.CaseState;
 import uk.gov.hmcts.ccf.XUI;
 import uk.gov.hmcts.ccf.XUISearchHandler;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class CaseSearchResult implements XUISearchHandler.XUISearchResult {
@@ -15,6 +17,6 @@ public class CaseSearchResult implements XUISearchHandler.XUISearchResult {
     private Long parentCaseId;
     @XUI(label = "State")
     private CaseState state;
-    @XUI(label = "Number of parties")
-    private Long partyCount;
+
+    private Long rowCount;
 }

@@ -38,14 +38,15 @@ class UICaseSearchControllerSpec extends BaseSpringBootSpec {
 
         expect:
         result.cases.size() > 0
-        fields.size() == 4
+        result.total == 1
+        result.cases.get(0).fields.get("caseId") == c.getBody().id
+        result.cases.get(0).fields.get("rowCount") == 1
+
+        fields.size() == 3
         fields.get(0).getCaseFieldTypeDefinition().type == "Number"
         fields.get(0).label == "Case ID"
         fields.get(1).getCaseFieldTypeDefinition().type == "Text"
         fields.get(2).getCaseFieldTypeDefinition().type == "Number"
-        fields.get(3).getCaseFieldTypeDefinition().type == "Number"
-
-        result.cases.get(0).fields.get("caseId") == c.getBody().id
     }
 
     def "has jurisdictions"() {

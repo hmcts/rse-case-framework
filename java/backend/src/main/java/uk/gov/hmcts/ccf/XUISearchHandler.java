@@ -2,6 +2,8 @@ package uk.gov.hmcts.ccf;
 
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.jodah.typetools.TypeResolver;
 
 import java.beans.PropertyDescriptor;
@@ -37,9 +39,16 @@ public abstract class XUISearchHandler<T extends XUISearchHandler.XUISearchResul
 
     public abstract void configureColumns(ColumnMapper<T> mapper);
 
-    public abstract Collection<? extends XUISearchResult> search(ESQueryParser.ESQuery query);
+    public abstract SearchResults search(ESQueryParser.ESQuery query);
 
     public interface XUISearchResult {
         Long getCaseId();
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class SearchResults {
+        private long rowCount;
+        private Collection<? extends XUISearchResult> results;
     }
 }
