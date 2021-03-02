@@ -29,7 +29,7 @@ public final class SecurityUtils implements UserProvider {
      */
     public String getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getPrincipal() instanceof JwtAuthenticationToken) {
+        if (auth instanceof JwtAuthenticationToken) {
             return (String) ((JwtAuthenticationToken) auth).getToken().getClaims().get("sub");
         }
         throw new RuntimeException("Unauthorised");
