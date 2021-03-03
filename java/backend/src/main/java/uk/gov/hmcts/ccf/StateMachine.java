@@ -105,6 +105,7 @@ public class StateMachine<StateT, EventT> {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         EventBuilder<T> result = new EventBuilder<T>((Class<T>) typeArgs[1], event.toString(), event.toString());
         transitions.put(from.toString(), new TransitionRecord(to, event, typeArgs[1], consumer));
+        result.name("Confirm service");
         events.put(event, result);
         return result;
     }

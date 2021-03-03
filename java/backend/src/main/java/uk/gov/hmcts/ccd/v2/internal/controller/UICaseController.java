@@ -103,12 +103,10 @@ public class UICaseController {
         for (ClaimController.Claim claim : claims) {
             String tabName = getClaimName(claim.getParties());
             TabBuilder tab = builder.newTab(tabName, tabName);
-            tab.label(String.format("### Claim value £%s - £%s",
-                NumberFormat.getNumberInstance().format(claim.getLowerAmount()),
-                NumberFormat.getNumberInstance().format(claim.getHigherAmount())));
 
+            String table = "<p align=\"center\"><img src=\"https://storage.googleapis.com/hmcts-images/Screenshot%202021-03-02%20at%2020.39.09.png\" alt=\"drawing\" width=\"800\"/></p>\n";
 
-            String table = "| Claimants      | Defendants |\n"
+            table += "\n| Claimants      | Defendants |\n"
                 + "| ----------- | ----------- |\n";
 
             ClaimController.ClaimParties parties = claim.getParties();
@@ -118,16 +116,106 @@ public class UICaseController {
                 String defendant = t < parties.getDefendants().size() ? parties.getDefendants().get(t).name() : "";
                 table += String.format("| %s      | %s       |\n", claimant, defendant);
             }
-            tab.label(table);
 
-            if (claim.getAvailableEvents().size() > 0) {
-                tab.label("### Available actions");
-                for (ClaimEvent availableEvent : claim.getAvailableEvents()) {
-                    tab.label(String.format("[%s](/cases/case-details/%s/trigger/claims_%s_%s)",
-                        getClaimEventLabel(availableEvent), caseId,
-                        availableEvent, claim.getClaimId()));
-                }
-            }
+            table += String.format("\n### Claim value £%s - £%s\n",
+                NumberFormat.getNumberInstance().format(claim.getLowerAmount()),
+                NumberFormat.getNumberInstance().format(claim.getHigherAmount()));
+
+
+            String s = "\n## Available actions\n";
+            ClaimEvent availableEvent = claim.getAvailableEvents().iterator().next();
+            s += "<div class=\"hmcts-menu\">\n" +
+                "<div class=\"hmcts-menu__wrapper\">\n" +
+                "\n" +
+                String.format("<a href=\"/cases/case-details/%s/trigger/claims_%s_%s\">\n", caseId,
+                    availableEvent, claim.getClaimId()) +
+                "<p class=\"govuk-button hmcts-menu__item  \" data-module=\"govuk-button\">\n" +
+                getClaimEventLabel(availableEvent) + "\n" +
+                "</p>\n" +
+                "</a>\n" +
+                "</div>\n" +
+                "</div>";
+
+            tab.label(table + "\n" + s);
+
+
+            tab.label("<h2>Claim history</h2>" +
+                "<div class=\"hmcts-timeline\">\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__item\">\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__header\">\n" +
+                "  <h3 class=\"hmcts-timeline__title\">\n" +
+                "    Response submitted\n" +
+                "  </h3>\n" +
+                "\n" +
+                "  <p class=\"hmcts-timeline__by\">by DWP Appeals Officer</p>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__date\"><time datetime=\"2018-01-25T14:04\">25 Jan 2018 at 14:04pm</time></p>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__description\">This is a description of the event. And this is what happens when it is long.</p>\n" +
+                "\n" +
+                "<ul class=\"hmcts-timeline__documents\">\n" +
+                "\n" +
+                "  <li class=\"hmcts-timeline__document-item\"><a class=\"hmcts-timeline__document-link\" href=\"#1\">Statement of information</a></li>\n" +
+                "\n" +
+                "  <li class=\"hmcts-timeline__document-item\"><a class=\"hmcts-timeline__document-link\" href=\"#2\">Another document</a></li>\n" +
+                "\n" +
+                "</ul>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__item\">\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__header\">\n" +
+                "  <h3 class=\"hmcts-timeline__title\">\n" +
+                "    Appeal marked as compliant\n" +
+                "  </h3>\n" +
+                "\n" +
+                "  <p class=\"hmcts-timeline__by\">by DJ DeVere</p>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__date\"><time datetime=\"2017-12-05T09:10\">5 Dec 2017 at 9:10am</time></p>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__description\">This is a description of the event. And this is what happens when it is long.</p>\n" +
+                "\n" +
+                "<ul class=\"hmcts-timeline__documents\">\n" +
+                "\n" +
+                "  <li class=\"hmcts-timeline__document-item\"><a class=\"hmcts-timeline__document-link\" href=\"#3\">Statement of information</a></li>\n" +
+                "\n" +
+                "</ul>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__item\">\n" +
+                "\n" +
+                "<div class=\"hmcts-timeline__header\">\n" +
+                "  <h3 class=\"hmcts-timeline__title\">\n" +
+                "    Interlocutory referral to DJ DeVere\n" +
+                "  </h3>\n" +
+                "\n" +
+                "  <p class=\"hmcts-timeline__by\">by DLC Admin</p>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__date\"><time datetime=\"2017-11-20T14:27\">20 Nov 2017 at 14:27pm</time></p>\n" +
+                "\n" +
+                "<p class=\"hmcts-timeline__description\">This is a description of the event. And this is what happens when it is long.</p>\n" +
+                "\n" +
+                "</div>\n" +
+                "\n" +
+                "</div> ");
+//            if (claim.getAvailableEvents().size() > 0) {
+//                tab.label("### Available actions");
+//                for (ClaimEvent availableEvent : claim.getAvailableEvents()) {
+//                    tab.label(String.format("[%s](/cases/case-details/%s/trigger/claims_%s_%s)",
+//                        getClaimEventLabel(availableEvent), caseId,
+//                        availableEvent, claim.getClaimId()));
+//                }
+//            }
         }
 
         return builder;
