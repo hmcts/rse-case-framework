@@ -99,23 +99,29 @@ public class UICaseController {
                 .fetchInto(CaseController.CaseParty.class);
         TabBuilder tab = builder.newTab("Parties", "Parties");
 
-        PebbleEngine engine = new PebbleEngine.Builder().build();
-        PebbleTemplate compiledTemplate = engine.getTemplate("template/parties.html");
-
         Map<String, Object> context = new HashMap<>();
         context.put("parties", parties);
 
-        Writer writer = new StringWriter();
-        compiledTemplate.evaluate(writer, context);
-
-        tab.label(writer.toString());
+        tab.label(renderTemplate("template/parties.md", context));
         return builder;
     }
 
     @SneakyThrows
+    private String renderTemplate(String template,
+                                  Map<String, Object> context) {
+        PebbleEngine engine = new PebbleEngine.Builder().build();
+        PebbleTemplate compiledTemplate = engine.getTemplate(template);
+
+        Writer writer = new StringWriter();
+        compiledTemplate.evaluate(writer, context);
+
+        return writer.toString();
+    }
+
+
+    @SneakyThrows
     private CaseViewBuilder buildClaims(String caseId, CaseViewBuilder builder) {
         List<ClaimController.Claim> claims = claimController.getClaims(caseId);
-        PebbleEngine engine = new PebbleEngine.Builder().build();
         for (ClaimController.Claim claim : claims) {
             String tabName = getClaimName(claim.getParties());
             TabBuilder tab = builder.newTab(tabName, tabName);
@@ -158,7 +164,6 @@ public class UICaseController {
             List<ClaimHistory> history =
                 claimController.getClaimEvents(String.valueOf(claim.getClaimId()));
 
-            HashMap<String, Object> context = new HashMap<>();
 
             List<Map<String, Object>> hist = Lists.newArrayList();
             for (ClaimHistory c : history) {
@@ -170,13 +175,9 @@ public class UICaseController {
                 ));
             }
 
+            HashMap<String, Object> context = new HashMap<>();
             context.put("events", hist);
-
-            PebbleTemplate compiledTemplate = engine.getTemplate("template/claim_history.html");
-            StringWriter writer = new StringWriter();
-            compiledTemplate.evaluate(writer, context);
-
-            tab.label(writer.toString());
+            tab.label(renderTemplate("template/claim_history.html", context));
         }
 
         return builder;
