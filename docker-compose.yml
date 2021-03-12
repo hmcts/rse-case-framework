@@ -72,7 +72,7 @@ services:
       MICROSERVICEKEYS_XUI_WEBAPP: AAAAAAAAAAAAAAAB
       TESTING_SUPPORT_ENABLED: "true"
   xui-manage-cases:
-    image: hmctspublic.azurecr.io/xui/webapp@sha256:2be9781d9c06d017f03f41947a2de2fd5ac1bbae2a14d232056741db93714220
+    image: hmctspublic.azurecr.io/xui/webapp:latest
 #    image: fixed-xui-es:latest
     environment:
       FEATURE_APP_INSIGHTS_ENABLED: "true"
