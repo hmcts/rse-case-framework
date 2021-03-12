@@ -5,7 +5,6 @@ import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.jooq.generated.enums.CaseState;
@@ -36,7 +35,6 @@ import uk.gov.hmcts.ccf.controller.claim.ClaimController;
 import uk.gov.hmcts.ccf.controller.kase.CaseController;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -97,12 +95,12 @@ public class UICaseController {
                 .where(PARTIES.CASE_ID.eq(Long.valueOf(caseId)))
                 .orderBy(PARTIES.CASE_ID.asc())
                 .fetchInto(CaseController.CaseParty.class);
-        TabBuilder tab = builder.newTab("Parties", "Parties");
 
-        Map<String, Object> context = new HashMap<>();
-        context.put("parties", parties);
+        builder.newTab("Parties", "Parties")
+            .label(renderTemplate(
+                "template/parties.md",
+                Map.of("parties", parties)));
 
-        tab.label(renderTemplate("template/parties.md", context));
         return builder;
     }
 
@@ -126,44 +124,12 @@ public class UICaseController {
             String tabName = getClaimName(claim.getParties());
             TabBuilder tab = builder.newTab(tabName, tabName);
 
-            String table = "<p align=\"center\"><img src=\"https://storage.googleapis.com/hmcts-images/Screenshot%202021-03-02%20at%2020.39.09.png\" alt=\"drawing\" width=\"800\"/></p>\n";
-
-            table += "\n| Claimants      | Defendants |\n"
-                + "| ----------- | ----------- |\n";
-
-            ClaimController.ClaimParties parties = claim.getParties();
-            int rows = Math.max(parties.getClaimants().size(), parties.getDefendants().size());
-            for (int t = 0; t < rows; t++) {
-                String claimant = t < parties.getClaimants().size() ? parties.getClaimants().get(t).name() : "";
-                String defendant = t < parties.getDefendants().size() ? parties.getDefendants().get(t).name() : "";
-                table += String.format("| %s      | %s       |\n", claimant, defendant);
-            }
-
-            table += String.format("\n### Claim value £%s - £%s\n",
-                NumberFormat.getNumberInstance().format(claim.getLowerAmount()),
-                NumberFormat.getNumberInstance().format(claim.getHigherAmount()));
-
-
-            String s = "\n## Available actions\n";
-            ClaimEvent availableEvent = claim.getAvailableEvents().iterator().next();
-            s += "<div class=\"hmcts-menu\">\n" +
-                "<div class=\"hmcts-menu__wrapper\">\n" +
-                "\n" +
-                String.format("<a href=\"/cases/case-details/%s/trigger/claims_%s_%s\">\n", caseId,
-                    availableEvent, claim.getClaimId()) +
-                "<p class=\"govuk-button hmcts-menu__item  \" data-module=\"govuk-button\">\n" +
-                getClaimEventLabel(availableEvent) + "\n" +
-                "</p>\n" +
-                "</a>\n" +
-                "</div>\n" +
-                "</div>";
-
-            tab.label(table + "\n" + s);
-
+            tab.label(renderTemplate("template/claims.md",
+                Map.of("claim", claim,
+                    "caseId", caseId)));
 
             List<ClaimHistory> history =
                 claimController.getClaimEvents(String.valueOf(claim.getClaimId()));
-
 
             List<Map<String, Object>> hist = Lists.newArrayList();
             for (ClaimHistory c : history) {
@@ -175,9 +141,7 @@ public class UICaseController {
                 ));
             }
 
-            HashMap<String, Object> context = new HashMap<>();
-            context.put("events", hist);
-            tab.label(renderTemplate("template/claim_history.html", context));
+            tab.label(renderTemplate("template/claim_history.html", Map.of("events", hist)));
         }
 
         return builder;
