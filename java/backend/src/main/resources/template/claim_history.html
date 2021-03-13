@@ -1,0 +1,33 @@
+<h2>Claim history</h2>
+<div class="hmcts-timeline">
+
+
+{% for event in events %}
+
+    <div class="hmcts-timeline__item">
+
+        <div class="hmcts-timeline__header">
+            <h3 class="hmcts-timeline__title">
+                {{ event.name }}
+            </h3>
+
+            <p class="hmcts-timeline__by">by {{ event.forname }} {{ event.surname }}</p>
+
+        </div>
+
+        <p class="hmcts-timeline__date"><time datetime="2018-01-25T14:04">25 Jan 2018 at 14:04pm</time></p>
+
+        <p class="hmcts-timeline__description">This is a description of the event. And this is what happens when it is long.</p>
+
+        <ul class="hmcts-timeline__documents">
+
+            <li class="hmcts-timeline__document-item"><a class="hmcts-timeline__document-link" href="#1">Statement of information</a></li>
+
+            <li class="hmcts-timeline__document-item"><a class="hmcts-timeline__document-link" href="#2">Another document</a></li>
+
+        </ul>
+
+    </div>
+{% endfor %}
+</div>
+
