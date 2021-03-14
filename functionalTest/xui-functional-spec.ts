@@ -12,6 +12,8 @@ describe('xui end to end tests', function() {
     browser.get('http://xui-manage-cases:3000');
     browser.wait(protractor.ExpectedConditions.presenceOf(
         $('#wb-jurisdiction')), 10000);
+    browser.wait(protractor.ExpectedConditions.elementToBeClickable(
+        element(by.xpath('//button[contains(text(), "Apply")]'))), 10000);
     element(by.xpath('//button[contains(text(), "Apply")]')).click();
     browser.wait(protractor.ExpectedConditions.presenceOf(
         element(by.xpath('//a[@href="/cases/case-details/2542345663454321"]'))), 10000);
@@ -23,11 +25,4 @@ describe('xui end to end tests', function() {
         element(by.xpath('//div[contains(text(), "Parties")]'))), 10000);
   });
 
-  afterEach(async () => {
-    // Assert that there are no errors emitted from the browser
-    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-    expect(logs).not.toContain(jasmine.objectContaining({
-      level: logging.Level.SEVERE,
-    } as logging.Entry));
-  });
 });
