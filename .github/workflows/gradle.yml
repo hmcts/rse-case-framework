@@ -16,7 +16,7 @@ jobs:
       with:
         java-version: 11
     - name: pull
-      run: docker-compose pull
+      run: docker-compose pull --ignore-pull-failures
     - name: Check
       run: ./gradlew check -is
     - name: Archive test results
