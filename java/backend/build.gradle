@@ -53,7 +53,7 @@ dependencies {
 
     implementation('org.springframework.boot:spring-boot-starter-hateoas')
     implementation 'org.flywaydb:flyway-core'
-    implementation 'net.jodah:typetools:0.6.2'
+    implementation 'net.jodah:typetools:0.6.3'
     implementation 'de.cronn:reflection-util:2.10.0'
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.8'
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.1'
