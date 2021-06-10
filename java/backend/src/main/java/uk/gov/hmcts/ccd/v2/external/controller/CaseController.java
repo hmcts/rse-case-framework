@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.Event;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -94,7 +95,7 @@ public class CaseController {
     }
 
     private String handleCaseEvent(long caseId, String eventId, JsonNode data, String userId) {
-        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
 
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(
             userId, Long.valueOf(caseId));

@@ -4,6 +4,8 @@ import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
+import org.jooq.generated.tables.records.ClaimEventsRecord;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,11 +70,11 @@ public class UIStartTriggerController {
 
         CaseUpdateViewEvent view = null;
         if (machineId.equalsIgnoreCase("cases")) {
-            StateMachine<CaseState, Event> s =
+            StateMachine<CaseState, Event, EventsRecord> s =
                 stateMachineSupplier.build();
             view = s.getEvent(Long.valueOf(caseId), Event.valueOf(eventId));
         } else if (machineId.equalsIgnoreCase("claims")) {
-            StateMachine<ClaimState, ClaimEvent> s =
+            StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> s =
                 claimController.build(ClaimState.Issued);
             view = s.getEvent(Long.valueOf(caseId), ClaimEvent.valueOf(eventId));
         }

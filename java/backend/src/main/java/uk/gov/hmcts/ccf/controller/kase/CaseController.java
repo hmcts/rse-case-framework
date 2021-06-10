@@ -9,6 +9,7 @@ import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.generated.tables.records.CasesRecord;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class CaseController {
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
 
-        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
         return new CaseActions(Long.valueOf(caseId), currentState, statemachine.getAvailableActions(currentState));
     }
 
@@ -100,7 +101,7 @@ public class CaseController {
                 .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
                 .fetchOne().value1();
 
-        StateMachine<CaseState, Event> statemachine = getStatemachine(state);
+        StateMachine<CaseState, Event, EventsRecord> statemachine = getStatemachine(state);
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, caseId);
         statemachine.handleEvent(context, Event.valueOf(event.getId()), event.getData());
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), userId);
@@ -127,7 +128,7 @@ public class CaseController {
     public ResponseEntity<CaseActions> createCase(ApiEventCreation event, String userId) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
-        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
         insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), userId);
 
         statemachine.onCreated(userId, c.getCaseId(), event.getData());
@@ -137,7 +138,7 @@ public class CaseController {
     }
 
     private StateMachine getStatemachine(CaseState state) {
-        StateMachine<CaseState, Event> result = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;
     }

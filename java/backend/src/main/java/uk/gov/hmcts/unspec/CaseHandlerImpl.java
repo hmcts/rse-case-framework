@@ -11,8 +11,10 @@ import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyRole;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
 import static org.jooq.generated.Tables.CLAIM_PARTIES;
+import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
 
 @Service
@@ -43,8 +46,9 @@ public class CaseHandlerImpl {
     @Autowired
     CaseController caseController;
 
-    public StateMachine<CaseState, Event> build() {
-        StateMachine<CaseState, Event> result = new StateMachine<>();
+    @Bean
+    public StateMachine<CaseState, Event, EventsRecord> build() {
+        StateMachine<CaseState, Event, EventsRecord> result = new StateMachine<>(jooq, EVENTS);
         result.initialState(CaseState.Created, this::onCreate);
 
         result.addEvent(CaseState.Created, Event.AddParty, this::addParty)

@@ -1,5 +1,8 @@
 package uk.gov.hmcts.ccf;
 
+import static org.jooq.generated.Tables.EVENTS;
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -9,12 +12,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
+import org.jooq.InsertSetStep;
+import org.jooq.InsertValuesStepN;
+import org.jooq.Record;
+import org.jooq.Table;
+import org.jooq.generated.tables.Events;
+import org.jooq.generated.tables.records.EventsRecord;
+import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.TableImpl;
+import org.jooq.impl.TableRecordImpl;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 
 import java.util.Collection;
@@ -22,8 +35,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class StateMachine<StateT, EventT> {
+public class StateMachine<StateT, EventT, R extends Record> {
 
+    private final Table<R> table;
+//    private final Function<InsertSetStep<R>, InsertValuesStepN<R>> binder;
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
@@ -31,10 +46,17 @@ public class StateMachine<StateT, EventT> {
     private Map<EventT, TransitionRecord> dynamicEvents = Maps.newHashMap();
     private Class clazz;
     private BiConsumer initialHandler;
+    private DefaultDSLContext jooq;
 
     private StateT initialState;
 
-    public StateMachine() {
+    public StateMachine(DefaultDSLContext jooq,
+                        Table<R> table
+//                        ,Function<InsertSetStep<R>, InsertValuesStepN<R>> binder
+    ) {
+        this.jooq = jooq;
+        this.table = table;
+//        this.binder = binder;
     }
 
     public CaseUpdateViewEvent getEvent(Long caseId, EventT event) {
@@ -50,7 +72,7 @@ public class StateMachine<StateT, EventT> {
         throw new RuntimeException("Unknown event: " + event);
     }
 
-    public <T> StateMachine<StateT, EventT> initialState(StateT state, BiConsumer<TransitionContext, T> c) {
+    public <T> StateMachine<StateT, EventT, R> initialState(StateT state, BiConsumer<TransitionContext, T> c) {
         this.initialState = state;
         this.state = initialState;
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, c.getClass());
@@ -90,11 +112,15 @@ public class StateMachine<StateT, EventT> {
         throw new RuntimeException("Unhandled event:" + event);
     }
 
+    private <T extends TableRecordImpl<T>> void onEvent() {
+      throw new RuntimeException();
+    }
+
     public StateT getState() {
         return state;
     }
 
-    public <T> StateMachine<StateT, EventT> addUniversalEvent(EventT event, BiConsumer<TransitionContext, T> consumer) {
+    public <T> StateMachine<StateT, EventT, R> addUniversalEvent(EventT event, BiConsumer<TransitionContext, T> consumer) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         universalEvents.add(new TransitionRecord(null, event, typeArgs[1], consumer));
         return this;
@@ -120,7 +146,7 @@ public class StateMachine<StateT, EventT> {
         return result;
     }
 
-    public <T> StateMachine<StateT, EventT> dynamicEvent(StateT state, EventT event,
+    public <T> StateMachine<StateT, EventT, R> dynamicEvent(StateT state, EventT event,
                                                          BiConsumer<TransitionContext, T> consumer,
                                                          BiConsumer<Long, EventBuilder<T>> builder) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());

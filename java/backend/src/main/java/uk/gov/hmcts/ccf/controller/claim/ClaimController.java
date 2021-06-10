@@ -8,6 +8,7 @@ import org.jooq.Record2;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.tables.pojos.ClaimHistory;
+import org.jooq.generated.tables.records.ClaimEventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class ClaimController {
             .fetchInto(Claim.class);
 
         for (Claim claim : result) {
-            StateMachine<ClaimState, ClaimEvent> statemachine = build(claim.state);
+            StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> statemachine = build(claim.state);
             claim.setAvailableEvents(statemachine.getAvailableActions(claim.state));
         }
 
@@ -86,7 +87,7 @@ public class ClaimController {
             .limit(1)
             .fetchSingle();
 
-        StateMachine<ClaimState, ClaimEvent> statemachine = build(record.component2());
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> statemachine = build(record.component2());
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, claimId);
         statemachine.handleEvent(context, event, data);
 
@@ -100,8 +101,8 @@ public class ClaimController {
             .body("");
     }
 
-    public StateMachine<ClaimState, ClaimEvent> build(ClaimState state) {
-        StateMachine<ClaimState, ClaimEvent> result = new StateMachine<>();
+    public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build(ClaimState state) {
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq, CLAIM_EVENTS);
         result.initialState(ClaimState.Issued, this::onCreate)
             .addTransition(ClaimState.Issued,
                 ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)

@@ -12,6 +12,7 @@ import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.generated.tables.pojos.ClaimHistory;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -249,7 +250,7 @@ public class UICaseController {
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
 
-        StateMachine<CaseState, Event> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
         List<CaseViewActionableEvent> result = Lists.newArrayList();
         int t = 1;
         for (Event e : statemachine.getAvailableActions(currentState)) {
