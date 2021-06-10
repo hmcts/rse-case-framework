@@ -74,8 +74,9 @@ public class UIStartTriggerController {
                 stateMachineSupplier.build();
             view = s.getEvent(Long.valueOf(caseId), Event.valueOf(eventId));
         } else if (machineId.equalsIgnoreCase("claims")) {
+            String claimId = splits[2];
             StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> s =
-                claimController.build(ClaimState.Issued);
+                claimController.build(Long.parseLong(claimId));
             view = s.getEvent(Long.valueOf(caseId), ClaimEvent.valueOf(eventId));
         }
 
