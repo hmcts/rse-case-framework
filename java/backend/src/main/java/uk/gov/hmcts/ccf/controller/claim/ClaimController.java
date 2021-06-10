@@ -84,18 +84,14 @@ public class ClaimController {
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, claimId);
         statemachine.handleEvent(context, event, data);
 
-        jooq.insertInto(CLAIM_EVENTS)
-            .columns(CLAIM_EVENTS.ID, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE,
-                CLAIM_EVENTS.USER_ID)
-            .values(event, claimId, statemachine.getState(), userId)
-            .execute();
-
         return ResponseEntity.created(URI.create("/claims/" + claimId))
             .body("");
     }
 
     public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build(long claimId) {
-        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq, CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.SEQUENCE_NUMBER);
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq,
+            CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
+            CLAIM_EVENTS.SEQUENCE_NUMBER);
         result.initialState(ClaimState.Issued, this::onCreate)
             .addTransition(ClaimState.Issued,
                 ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)

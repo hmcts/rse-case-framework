@@ -105,19 +105,8 @@ public class CaseController {
 
         statemachine.handleEvent(context, event, data);
 
-        insertEvent(Event.valueOf(eventId), caseId, statemachine.getState(),
-            userId);
         return statemachine.getState().getLiteral();
     }
-
-    private void insertEvent(Event eventId, Long caseId, CaseState state, String userId) {
-        jooq.insertInto(EVENTS)
-            .columns(EVENTS.ID, EVENTS.CASE_ID, EVENTS.STATE,
-                EVENTS.USER_ID)
-            .values(eventId, caseId, state, userId)
-            .execute();
-    }
-
 
     @PostMapping(
         path = "/case-types/{caseTypeId}/cases",

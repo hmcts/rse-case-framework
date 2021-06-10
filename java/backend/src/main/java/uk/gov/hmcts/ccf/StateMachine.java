@@ -1,5 +1,8 @@
 package uk.gov.hmcts.ccf;
 
+import static org.jooq.generated.Tables.CLAIM_EVENTS;
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -30,6 +33,8 @@ public class StateMachine<StateT, EventT, R extends Record> {
     private final Table<R> table;
     private final TableField<R, Long> entityField;
     private final TableField<R, StateT> stateField;
+    private final TableField<R, EventT> eventField;
+    private final TableField<R, String> userField;
     private final TableField<R, Long> sequenceField;
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
@@ -46,11 +51,15 @@ public class StateMachine<StateT, EventT, R extends Record> {
                         Table<R> table,
                         TableField<R, Long> entityField,
                         TableField<R, StateT> stateField,
+                        TableField<R, EventT> eventField,
+                        TableField<R, String> userField,
                         TableField<R, Long> sequenceField) {
         this.jooq = jooq;
         this.table = table;
         this.entityField = entityField;
         this.stateField = stateField;
+        this.eventField = eventField;
+        this.userField = userField;
         this.sequenceField = sequenceField;
     }
 
@@ -93,6 +102,7 @@ public class StateMachine<StateT, EventT, R extends Record> {
                 Object instance = o.treeToValue(data, transitionRecord.clazz);
                 transitionRecord.consumer.accept(context, instance);
                 state = transitionRecord.destination;
+                saveEvent(event, context);
                 return;
             }
         }
@@ -101,10 +111,18 @@ public class StateMachine<StateT, EventT, R extends Record> {
             if (universalEvent.event.equals(event)) {
                 Object instance = o.treeToValue(data, universalEvent.clazz);
                 universalEvent.consumer.accept(context, instance);
+                saveEvent(event, context);
                 return;
             }
         }
         throw new RuntimeException("Unhandled event:" + event);
+    }
+
+    void saveEvent(EventT event, TransitionContext context) {
+        jooq.insertInto(table)
+            .columns(eventField, entityField, stateField, userField)
+            .values(event, context.entityId, state, context.userId)
+            .execute();
     }
 
     public StateT getState() {
