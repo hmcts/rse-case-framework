@@ -169,7 +169,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         controller.createEvent(id, event, userId)
 
         expect:
-        controller.getCase(String.valueOf(id)).state == CaseState.Closed
+        controller.getCase(id).state == CaseState.Closed
     }
 
     def "A closed case can be reopened"() {
@@ -183,7 +183,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         controller.createEvent(id, event, userId)
 
         expect:
-        controller.getCase(String.valueOf(id)).state == CaseState.Stayed
+        controller.getCase(id).state == CaseState.Stayed
     }
 
     private int caseCount() {
@@ -205,7 +205,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
                 .content(body))
                 .andExpect(status().isCreated())
         then:
-        controller.getCase(c.getBody().getId().toString())
+        controller.getCase(c.getBody().getId())
         uiCaseController.getCaseView(c.getBody().getId().toString())
     }
 }

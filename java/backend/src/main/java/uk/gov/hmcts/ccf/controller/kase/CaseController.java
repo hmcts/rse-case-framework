@@ -49,14 +49,10 @@ public class CaseController {
 
 
     @GetMapping(path = "/{caseId}")
-    public CaseActions getCase(@PathVariable("caseId") String caseId) {
-        CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
-            .from(CASES_WITH_STATES)
-            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
-            .fetchOne().value1();
-
+    public CaseActions getCase(@PathVariable("caseId") Long caseId) {
         StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
-        return new CaseActions(Long.valueOf(caseId), currentState, statemachine.getAvailableActions(currentState));
+        statemachine.rehydrate(caseId);
+        return new CaseActions(Long.valueOf(caseId), statemachine.getState(), statemachine.getAvailableActions(statemachine.getState()));
     }
 
     @GetMapping(path = "/{caseId}/events")
