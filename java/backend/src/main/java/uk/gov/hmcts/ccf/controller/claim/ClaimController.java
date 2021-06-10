@@ -80,7 +80,7 @@ public class ClaimController {
                                               ClaimEvent event,
                                               JsonNode data,
                                               String userId) {
-        Record2<Integer, ClaimState> record = jooq.select(CLAIM_EVENTS.SEQUENCE_NUMBER, CLAIM_EVENTS.STATE)
+        Record2<Long, ClaimState> record = jooq.select(CLAIM_EVENTS.SEQUENCE_NUMBER, CLAIM_EVENTS.STATE)
             .from(CLAIM_EVENTS)
             .where(CLAIM_EVENTS.CLAIM_ID.eq(claimId))
             .orderBy(CLAIM_EVENTS.SEQUENCE_NUMBER.desc())
@@ -102,7 +102,7 @@ public class ClaimController {
     }
 
     public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build(ClaimState state) {
-        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq, CLAIM_EVENTS);
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq, CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.SEQUENCE_NUMBER);
         result.initialState(ClaimState.Issued, this::onCreate)
             .addTransition(ClaimState.Issued,
                 ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)

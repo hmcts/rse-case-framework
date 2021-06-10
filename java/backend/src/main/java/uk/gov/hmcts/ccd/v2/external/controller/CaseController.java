@@ -98,20 +98,16 @@ public class CaseController {
         StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
 
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(
-            userId, Long.valueOf(caseId));
+            userId, caseId);
         Event event = Event.valueOf(eventId);
 
-        CaseState state = jooq.select(CASES_WITH_STATES.STATE)
-            .from(CASES_WITH_STATES)
-            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
-            .fetchOne().value1();
-        statemachine.rehydrate(state);
+        statemachine.rehydrate(caseId);
 
         statemachine.handleEvent(context, event, data);
 
-        insertEvent(Event.valueOf(eventId), Long.valueOf(caseId), statemachine.getState(),
+        insertEvent(Event.valueOf(eventId), caseId, statemachine.getState(),
             userId);
-        return state.getLiteral();
+        return statemachine.getState().getLiteral();
     }
 
     private void insertEvent(Event eventId, Long caseId, CaseState state, String userId) {

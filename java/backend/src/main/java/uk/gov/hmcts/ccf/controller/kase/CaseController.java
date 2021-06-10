@@ -96,12 +96,7 @@ public class CaseController {
     public ResponseEntity<String> createEvent(@PathVariable("caseId") Long caseId,
                                               @RequestBody ApiEventCreation event,
                                               String userId) {
-        CaseState state = jooq.select(CASES_WITH_STATES.STATE)
-                .from(CASES_WITH_STATES)
-                .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
-                .fetchOne().value1();
-
-        StateMachine<CaseState, Event, EventsRecord> statemachine = getStatemachine(state);
+        StateMachine<CaseState, Event, EventsRecord> statemachine = getStatemachine(caseId);
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, caseId);
         statemachine.handleEvent(context, Event.valueOf(event.getId()), event.getData());
         insertEvent(Event.valueOf(event.getId()), caseId, statemachine.getState(), userId);
@@ -137,7 +132,7 @@ public class CaseController {
                 .body(new CaseActions(c.getCaseId(), statemachine.getState(), Sets.newHashSet()));
     }
 
-    private StateMachine getStatemachine(CaseState state) {
+    private StateMachine getStatemachine(long state) {
         StateMachine<CaseState, Event, EventsRecord> result = stateMachineSupplier.build();
         result.rehydrate(state);
         return result;

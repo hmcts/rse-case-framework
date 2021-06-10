@@ -55,7 +55,7 @@ create table claim_events(
   user_id varchar not null references users(user_id),
   id claim_event not null,
   state claim_state not null,
-  sequence_number serial not null unique,
+  sequence_number bigserial not null unique,
   timestamp timestamp default now()
 );
 
