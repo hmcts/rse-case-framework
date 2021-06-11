@@ -12,8 +12,6 @@ import uk.gov.hmcts.ccf.StateMachine
 import uk.gov.hmcts.unspec.statemachine.ClaimMachine
 import uk.gov.hmcts.unspec.dto.ConfirmService
 
-@SpringBootTest
-@Transactional
 class ClaimControllerSpec extends BaseSpringBootSpec {
 
     @Autowired

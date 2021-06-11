@@ -5,8 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 
-@SpringBootTest
-@Transactional
 class UICaseControllerSpec extends BaseSpringBootSpec {
     @Autowired
     UICaseController controller;

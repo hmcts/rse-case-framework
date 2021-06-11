@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import uk.gov.hmcts.ccd.endpoint.ui.QueryEndpoint
 
-@SpringBootTest
 class QueryEndpointSpec extends BaseSpringBootSpec {
 
     @Autowired
