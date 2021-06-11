@@ -1,11 +1,15 @@
 package uk.gov.hmcts
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.collect.Sets
+import org.jooq.generated.enums.CaseState
+import org.jooq.generated.enums.Event
+import org.jooq.generated.tables.records.EventsRecord
 import org.jooq.impl.DefaultDSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
-import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
+import uk.gov.hmcts.ccf.StateMachine
 import uk.gov.hmcts.unspec.statemachine.CaseMachine
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
@@ -17,7 +21,7 @@ import static org.jooq.generated.Tables.USERS
 class CaseFactory {
 
     @Autowired
-    CaseMachine controller;
+    StateMachine<CaseState, Event, EventsRecord> machine;
 
     @Autowired
     DefaultDSLContext jooq;
@@ -38,7 +42,8 @@ class CaseFactory {
                 .lowerValue(1)
                 .higherValue(2)
                 .build()
-        def request = new ApiEventCreation("Create", new ObjectMapper().valueToTree(event))
-        return controller.createCase(request, userId)
+        def id = machine.onCreated(userId, new ObjectMapper().valueToTree(event))
+        return ResponseEntity.created(URI.create("/cases/" + id))
+                .body(new CaseMachine.CaseActions(id, machine.getState(), Sets.newHashSet()));
     }
 }

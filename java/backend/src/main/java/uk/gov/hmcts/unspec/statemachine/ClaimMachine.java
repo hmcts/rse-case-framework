@@ -9,6 +9,7 @@ import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.tables.pojos.ClaimHistory;
 import org.jooq.generated.tables.records.ClaimEventsRecord;
+import org.jooq.generated.tables.records.ClaimsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+
+import static org.jooq.generated.Tables.CLAIMS;
 import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
 import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
@@ -54,7 +57,7 @@ public class ClaimMachine {
     public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build() {
         StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(
             "claims", ClaimEvent.class, jooq,
-            CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
+            this::create, ClaimEvent.ClaimIssued, CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
             CLAIM_EVENTS.SEQUENCE_NUMBER);
         result.initialState(ClaimState.Issued, this::onCreate)
             .addTransition(ClaimState.Issued,
@@ -62,6 +65,12 @@ public class ClaimMachine {
             .field(ConfirmService::getName)
             .field(ConfirmService::getRole);
         return result;
+    }
+
+    private Long create() {
+        ClaimsRecord r = jooq.newRecord(CLAIMS);
+        r.store();
+        return r.getClaimId();
     }
 
     public List<Claim> getClaims(@PathVariable("caseId") String caseId) {

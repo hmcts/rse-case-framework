@@ -7,7 +7,6 @@ create table cases(
 CREATE TYPE case_state AS ENUM ('Created', 'Stayed', 'Closed');
 
 create type event as enum (
-    'CreateCase',
     'CreateClaim',
     'AddParty',
     'AddClaim',

@@ -34,7 +34,6 @@ import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TabBuilder;
 import uk.gov.hmcts.unspec.statemachine.ClaimMachine;
 import uk.gov.hmcts.unspec.statemachine.CaseMachine;
-import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,10 +54,6 @@ public class UICaseController {
 
     @Autowired
     private ClaimMachine claimController;
-
-    @Autowired
-    CaseHandlerImpl stateMachineSupplier;
-
 
     @GetMapping(
         path = "/{caseId}",
@@ -244,13 +239,15 @@ public class UICaseController {
         return caseView;
     }
 
+    @Autowired
+    StateMachine<CaseState, Event, EventsRecord> statemachine;
+
     private List<CaseViewActionableEvent> getActionableEvents(String caseId) {
         CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
             .from(CASES_WITH_STATES)
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
 
-        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.buildCase();
         List<CaseViewActionableEvent> result = Lists.newArrayList();
         int t = 1;
         for (Event e : statemachine.getAvailableActions(currentState)) {

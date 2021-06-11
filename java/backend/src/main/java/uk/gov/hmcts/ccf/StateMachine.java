@@ -1,6 +1,6 @@
 package uk.gov.hmcts.ccf;
 
-import static org.jooq.generated.Tables.CLAIM_EVENTS;
+import static org.jooq.generated.Tables.CASES;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,13 +32,15 @@ import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record> {
 
     public final String id;
-    private final Table<R> table;
+    private final Table<R> eventTable;
+    private final EventT initialEvent;
     private final TableField<R, Long> entityField;
     private final TableField<R, StateT> stateField;
     private final TableField<R, EventT> eventField;
     private final TableField<R, String> userField;
     private final TableField<R, Long> sequenceField;
     private final Class<EventT> enumClass;
+    private final Supplier<Long> entityCreator;
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
@@ -52,7 +55,9 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
     public StateMachine(String id,
                         Class<EventT> enumClass,
                         DefaultDSLContext jooq,
-                        Table<R> table,
+                        Supplier<Long> creator,
+                        EventT initialEvent,
+                        Table<R> eventTable,
                         TableField<R, Long> entityField,
                         TableField<R, StateT> stateField,
                         TableField<R, EventT> eventField,
@@ -61,7 +66,9 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
         this.id = id;
         this.enumClass = enumClass;
         this.jooq = jooq;
-        this.table = table;
+        this.initialEvent = initialEvent;
+        this.entityCreator = creator;
+        this.eventTable = eventTable;
         this.entityField = entityField;
         this.stateField = stateField;
         this.eventField = eventField;
@@ -96,10 +103,21 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
     }
 
     @SneakyThrows
-    public void onCreated(String userId, Long caseId, JsonNode data) {
-        Object instance = new ObjectMapper().treeToValue(data, clazz);
-        initialHandler.accept(new TransitionContext(userId, caseId), instance);
+    public long onCreated(String userId, JsonNode data) {
         state = initialState;
+        Long id = entityCreator.get();
+        saveEvent(initialEvent, new TransitionContext(userId, id));
+        Object instance = new ObjectMapper().treeToValue(data, clazz);
+        initialHandler.accept(new TransitionContext(userId, id), instance);
+        return id;
+    }
+
+    public void handleEvent(String userId, Long entityId, EventT event, Object data) {
+        handleEvent(userId, entityId, event, new ObjectMapper().valueToTree(data));
+    }
+
+    public void handleEvent(String userId, Long entityId, EventT event, JsonNode data) {
+        handleEvent(new TransitionContext(userId, entityId), event, data);
     }
 
     public void handleEvent(TransitionContext context, String event, JsonNode data) {
@@ -134,7 +152,7 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
     }
 
     void saveEvent(EventT event, TransitionContext context) {
-        jooq.insertInto(table)
+        jooq.insertInto(eventTable)
             .columns(eventField, entityField, stateField, userField)
             .values(event, context.entityId, state, context.userId)
             .execute();
@@ -198,7 +216,7 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
 
     public void rehydrate(Long id) {
         state = jooq.select(stateField)
-            .from(table)
+            .from(eventTable)
             .where(entityField.eq(id))
             .orderBy(sequenceField.desc())
             .limit(1)

@@ -8,6 +8,7 @@ import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.generated.enums.CaseState
 import org.jooq.generated.enums.Event
+import org.jooq.generated.tables.records.EventsRecord
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 import uk.gov.hmcts.ccf.StateMachine
-import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
 import uk.gov.hmcts.unspec.statemachine.CaseMachine
-import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.event.CloseCase
 import uk.gov.hmcts.unspec.event.CreateClaim
@@ -43,10 +42,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @Transactional
-class CaseControllerSpecification extends BaseSpringBootSpec {
+class CaseMachineSpecification extends BaseSpringBootSpec {
 
     @Autowired
     private CaseMachine controller
+
+    @Autowired
+    private StateMachine<CaseState, Event, EventsRecord> stateMachine;
 
     @Autowired
     private UICaseController uiCaseController;
@@ -56,9 +58,6 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
 
     @Autowired
     private CaseFactory factory;
-
-    @Autowired
-    private CaseHandlerImpl handler;
 
     @Autowired
     private WebApplicationContext context;
@@ -72,15 +71,6 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
                 .build();
     }
 
-    def "exports openAPI specification"() {
-        when:
-        def f = mockMvc.perform(get('/v3/api-docs').with(oidcLogin()))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString()
-        then:
-        new File("build/open-api.yaml").write(JsonOutput.prettyPrint(f))
-    }
-
     def "A case can be created"() {
         given:
         def response = factory.CreateCase()
@@ -90,25 +80,13 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         response.getHeaders().getLocation().toString().contains("/cases")
     }
 
-    def "a case can be retrieved when logged in"() {
-        given:
-        def result = factory.CreateCase().getBody()
-        def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString()
-        CaseMachine.CaseActions a = new ObjectMapper().readValue(json, CaseMachine.CaseActions.class)
-
-        expect:
-        a.getState() == CaseState.Created
-        a.getActions().isEmpty() == false
-    }
-
     def "an invalid case is not created"() {
         when:
+        def userId = factory.createUser()
         def count = caseCount()
         CreateClaim sol = CreateClaim.builder().defendantReference("@!").claimantReference("@").build()
         JsonNode j = new ObjectMapper().valueToTree(sol)
-        controller.createCase(new ApiEventCreation('Create', j), factory.createUser())
+        stateMachine.onCreated(userId, j)
 
         then:
         thrown IllegalArgumentException
@@ -148,7 +126,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         def response = factory.CreateCase(userId).getBody()
         def parties = controller.getParties(String.valueOf(response.getId()))
         Long partyId = parties[0].partyId
-        handler.addClaim(StateMachine.TransitionContext.builder().userId(userId).entityId(response.getId()).build(),
+        stateMachine.handleEvent(userId, response.getId(), Event.AddClaim,
                 AddClaim.builder()
                         .lowerValue(10)
                         .higherValue(20)
@@ -165,11 +143,11 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         def userId = factory.createUser()
         def response = factory.CreateCase(userId)
         def id = response.getBody().id
-        ApiEventCreation event = new ApiEventCreation(Event.CloseCase, new CloseCase("Case withdrawn"))
-        controller.createEvent(id, event, userId)
+        def data = new ObjectMapper().valueToTree(new CloseCase("Withdrawn"));
+        stateMachine.handleEvent(userId, id, Event.CloseCase, data)
 
         expect:
-        controller.getCase(id).state == CaseState.Closed
+        stateMachine.state == CaseState.Closed
     }
 
     def "A closed case can be reopened"() {
@@ -177,13 +155,13 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         def userId = factory.createUser()
         def response = factory.CreateCase(userId)
         def id = response.getBody().id
-        ApiEventCreation event = new ApiEventCreation(Event.CloseCase, new CloseCase("Case withdrawn"))
-        controller.createEvent(id, event, userId)
-        event = new ApiEventCreation(Event.SubmitAppeal, new SubmitAppeal("New evidence"))
-        controller.createEvent(id, event, userId)
+        def data = new ObjectMapper().valueToTree(new CloseCase("Withdrawn"));
+        stateMachine.handleEvent(userId, id, Event.CloseCase, data)
+        data = new ObjectMapper().valueToTree(new SubmitAppeal("New evidence"));
+        stateMachine.handleEvent(userId, id, Event.SubmitAppeal, data)
 
         expect:
-        controller.getCase(id).state == CaseState.Stayed
+        stateMachine.state == CaseState.Stayed
     }
 
     private int caseCount() {
@@ -195,6 +173,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
     def "Adds a new party"() {
         when:
         def c = factory.CreateCase()
+        stateMachine.rehydrate(c.getBody().getId());
         URL url = Resources.getResource("requests/data/cases/157/addParty.json");
         String body = Resources.toString(url, StandardCharsets.UTF_8);
         String path = String.format('/data/cases/%s/events', c.getBody().getId());
@@ -205,7 +184,6 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
                 .content(body))
                 .andExpect(status().isCreated())
         then:
-        controller.getCase(c.getBody().getId())
         uiCaseController.getCaseView(c.getBody().getId().toString())
     }
 }

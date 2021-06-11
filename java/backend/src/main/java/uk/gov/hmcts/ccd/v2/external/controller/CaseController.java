@@ -24,7 +24,6 @@ import uk.gov.hmcts.ccd.v2.external.resource.CaseResource;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.config.UserProvider;
 import uk.gov.hmcts.unspec.statemachine.ClaimMachine;
-import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 
 import static org.springframework.http.ResponseEntity.status;
@@ -32,9 +31,6 @@ import static org.springframework.http.ResponseEntity.status;
 @RestController(value = "CCDController")
 @RequestMapping(path = "/data")
 public class CaseController {
-
-    @Autowired
-    CaseHandlerImpl stateMachineSupplier;
 
     @Autowired
     ClaimMachine claimController;

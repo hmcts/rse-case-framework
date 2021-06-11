@@ -5,13 +5,14 @@ import com.google.common.io.Resources;
 import lombok.SneakyThrows;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
+import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.Event;
+import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation;
-import uk.gov.hmcts.unspec.statemachine.CaseMachine;
+import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Company;
@@ -31,7 +32,7 @@ import static org.jooq.impl.DSL.count;
 public class TestDataGenerator implements Callback {
 
     @Autowired
-    private CaseMachine controller;
+    private StateMachine<CaseState, Event, EventsRecord> controller;
 
     @Value("${generate-data:true}")
     public String generate;
@@ -69,8 +70,7 @@ public class TestDataGenerator implements Callback {
             .claimant(new Company("Acme Ltd"))
             .defendant(new Organisation("Megacorp Inc"))
             .build();
-        ApiEventCreation e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        Long caseId = controller.createCase(e, testUserId).getBody().getId();
+        Long caseId = controller.onCreated(testUserId, new ObjectMapper().valueToTree(o));
 
         AddParty ap = AddParty.builder()
             .partyType(PartyType.Individual)
@@ -79,8 +79,7 @@ public class TestDataGenerator implements Callback {
             .lastName("")
             .build();
 
-        e = new ApiEventCreation(Event.AddParty, new ObjectMapper().valueToTree(ap));
-        controller.createEvent(caseId, e, testUserId);
+        controller.handleEvent(testUserId, caseId, Event.AddParty, new ObjectMapper().valueToTree(ap));
 
         ap = AddParty.builder()
             .partyType(PartyType.Individual)
@@ -89,8 +88,7 @@ public class TestDataGenerator implements Callback {
             .lastName("")
             .build();
 
-        e = new ApiEventCreation(Event.AddParty, new ObjectMapper().valueToTree(ap));
-        controller.createEvent(caseId, e, testUserId);
+        controller.handleEvent(testUserId, caseId, Event.AddParty, new ObjectMapper().valueToTree(ap));
 
         AddClaim a = AddClaim.builder()
                 .defendants(Set.of(1L))
@@ -98,8 +96,7 @@ public class TestDataGenerator implements Callback {
                 .lowerValue(10000)
                 .higherValue(100000)
                 .build();
-        e = new ApiEventCreation(Event.AddClaim, new ObjectMapper().valueToTree(a));
-        controller.createEvent(caseId, e, testUserId);
+        controller.handleEvent(testUserId, caseId, Event.AddClaim, new ObjectMapper().valueToTree(a));
 
         o = CreateClaim.builder()
                 .claimantReference("1111")
@@ -109,8 +106,8 @@ public class TestDataGenerator implements Callback {
                 .claimant(new Company("Hooli"))
                 .defendant(new Organisation("Acme Inc"))
                 .build();
-        e = new ApiEventCreation(Event.CreateClaim, new ObjectMapper().valueToTree(o));
-        controller.createCase(e, testUserId);
+        controller.onCreated(testUserId, new ObjectMapper().valueToTree(o));
+        controller.handleEvent(testUserId, caseId, Event.AddClaim, new ObjectMapper().valueToTree(a));
 
         URL url = Resources.getResource("seed_data/seed.sql");
         String sql = Resources.toString(url, StandardCharsets.UTF_8);
