@@ -250,7 +250,7 @@ public class UICaseController {
             .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
             .fetchOne().value1();
 
-        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.buildCase();
         List<CaseViewActionableEvent> result = Lists.newArrayList();
         int t = 1;
         for (Event e : statemachine.getAvailableActions(currentState)) {

@@ -47,8 +47,9 @@ public class CaseHandlerImpl {
     CaseController caseController;
 
     @Bean
-    public StateMachine<CaseState, Event, EventsRecord> build() {
-        StateMachine<CaseState, Event, EventsRecord> result = new StateMachine<>(jooq,
+    public StateMachine<CaseState, Event, EventsRecord> buildCase() {
+        StateMachine<CaseState, Event, EventsRecord> result = new StateMachine<>(
+            "cases", Event.class, jooq,
             EVENTS, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.ID, EVENTS.USER_ID, EVENTS.SEQUENCE_NUMBER);
         result.initialState(CaseState.Created, this::onCreate);
 

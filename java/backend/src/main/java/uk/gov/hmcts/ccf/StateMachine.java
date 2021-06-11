@@ -28,14 +28,16 @@ import org.jooq.TableField;
 import org.jooq.impl.DefaultDSLContext;
 import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 
-public class StateMachine<StateT, EventT, R extends Record> {
+public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record> {
 
+    public final String id;
     private final Table<R> table;
     private final TableField<R, Long> entityField;
     private final TableField<R, StateT> stateField;
     private final TableField<R, EventT> eventField;
     private final TableField<R, String> userField;
     private final TableField<R, Long> sequenceField;
+    private final Class<EventT> enumClass;
     private StateT state;
     private Multimap<String, TransitionRecord> transitions = HashMultimap.create();
     private Collection<TransitionRecord> universalEvents = Lists.newArrayList();
@@ -47,13 +49,17 @@ public class StateMachine<StateT, EventT, R extends Record> {
 
     private StateT initialState;
 
-    public StateMachine(DefaultDSLContext jooq,
+    public StateMachine(String id,
+                        Class<EventT> enumClass,
+                        DefaultDSLContext jooq,
                         Table<R> table,
                         TableField<R, Long> entityField,
                         TableField<R, StateT> stateField,
                         TableField<R, EventT> eventField,
                         TableField<R, String> userField,
                         TableField<R, Long> sequenceField) {
+        this.id = id;
+        this.enumClass = enumClass;
         this.jooq = jooq;
         this.table = table;
         this.entityField = entityField;
@@ -61,6 +67,10 @@ public class StateMachine<StateT, EventT, R extends Record> {
         this.eventField = eventField;
         this.userField = userField;
         this.sequenceField = sequenceField;
+    }
+
+    public CaseUpdateViewEvent getEvent(Long caseId, String event) {
+        return getEvent(caseId, Enum.valueOf(enumClass, event));
     }
 
     public CaseUpdateViewEvent getEvent(Long caseId, EventT event) {
@@ -90,6 +100,11 @@ public class StateMachine<StateT, EventT, R extends Record> {
         Object instance = new ObjectMapper().treeToValue(data, clazz);
         initialHandler.accept(new TransitionContext(userId, caseId), instance);
         state = initialState;
+    }
+
+    public void handleEvent(TransitionContext context, String event, JsonNode data) {
+        EventT e = Enum.valueOf(enumClass, event);
+        handleEvent(context, e, data);
     }
 
     @SneakyThrows

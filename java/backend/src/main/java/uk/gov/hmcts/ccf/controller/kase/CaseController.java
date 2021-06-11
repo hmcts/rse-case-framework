@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jooq.generated.Tables.CASES;
-import static org.jooq.generated.Tables.CASES_WITH_STATES;
 import static org.jooq.generated.Tables.CASE_HISTORY;
 import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
@@ -50,7 +49,7 @@ public class CaseController {
 
     @GetMapping(path = "/{caseId}")
     public CaseActions getCase(@PathVariable("caseId") Long caseId) {
-        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.buildCase();
         statemachine.rehydrate(caseId);
         return new CaseActions(Long.valueOf(caseId), statemachine.getState(), statemachine.getAvailableActions(statemachine.getState()));
     }
@@ -119,7 +118,7 @@ public class CaseController {
     public ResponseEntity<CaseActions> createCase(ApiEventCreation event, String userId) {
         CasesRecord c = jooq.newRecord(CASES);
         c.store();
-        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.buildCase();
         insertEvent(Event.CreateClaim, c.getCaseId(), statemachine.getState(), userId);
 
         statemachine.onCreated(userId, c.getCaseId(), event.getData());
@@ -129,7 +128,7 @@ public class CaseController {
     }
 
     private StateMachine getStatemachine(long state) {
-        StateMachine<CaseState, Event, EventsRecord> result = stateMachineSupplier.build();
+        StateMachine<CaseState, Event, EventsRecord> result = stateMachineSupplier.buildCase();
         result.rehydrate(state);
         return result;
     }

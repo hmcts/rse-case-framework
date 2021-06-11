@@ -1,5 +1,9 @@
 package uk.gov.hmcts.ccd.v2.internal.controller;
 
+import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import org.jooq.Statement;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
@@ -25,11 +29,15 @@ import uk.gov.hmcts.unspec.CaseHandlerImpl;
 public class UIStartTriggerController {
     private static final String ERROR_CASE_ID_INVALID = "Case ID is not valid";
 
-    @Autowired
-    CaseHandlerImpl stateMachineSupplier;
+    private Map<String, StateMachine> stateMachines;
 
     @Autowired
-    ClaimController claimController;
+    public UIStartTriggerController(List<StateMachine> machines) {
+        this.stateMachines = Maps.newHashMap();
+        for (StateMachine machine : machines) {
+            stateMachines.put(machine.id, machine);
+        }
+    }
 
     @GetMapping(
         path = "/case-types/{caseTypeId}/event-triggers/{triggerId}",
@@ -59,7 +67,7 @@ public class UIStartTriggerController {
             V2.MediaType.CASE_UPDATE_VIEW_EVENT
         }
     )
-    public ResponseEntity<CaseUpdateViewEventResource> getCaseUpdateViewEvent(@PathVariable("caseId") String caseId,
+    public ResponseEntity<CaseUpdateViewEventResource> getCaseUpdateViewEvent(@PathVariable("caseId") long caseId,
                                                                             @PathVariable("triggerId") String triggerId,
                                                                             @RequestParam(value = "ignore-warning",
                                                                                 required = false)
@@ -68,23 +76,16 @@ public class UIStartTriggerController {
         String machineId = splits[0];
         String eventId = splits[1];
 
-        CaseUpdateViewEvent view = null;
-        if (machineId.equalsIgnoreCase("cases")) {
-            StateMachine<CaseState, Event, EventsRecord> s =
-                stateMachineSupplier.build();
-            view = s.getEvent(Long.valueOf(caseId), Event.valueOf(eventId));
-        } else if (machineId.equalsIgnoreCase("claims")) {
-            String claimId = splits[2];
-            StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> s =
-                claimController.build(Long.parseLong(claimId));
-            view = s.getEvent(Long.valueOf(caseId), ClaimEvent.valueOf(eventId));
-        }
+        StateMachine<?, ? extends Enum<?>, ?> machine = stateMachines.get(machineId);
+        long entityId = splits.length > 2 ? Long.parseLong(splits[2]) : caseId;
+        machine.rehydrate(entityId);
+        CaseUpdateViewEvent view = machine.getEvent(entityId, eventId);
 
         CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(
             view,
-            caseId,
+            String.valueOf(caseId),
             ignoreWarning);
-        e.getCaseUpdateViewEvent().setCaseId(caseId);
+        e.getCaseUpdateViewEvent().setCaseId(String.valueOf(caseId));
         e.getCaseUpdateViewEvent().setId(triggerId);
         return ResponseEntity.ok(e);
     }

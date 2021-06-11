@@ -86,12 +86,6 @@ public class CaseResource extends RepresentationModel<RepresentationModel<?>> {
         add(linkTo(methodOn(CaseController.class).getCase(reference)).withSelfRel());
     }
 
-    public CaseResource(@NonNull CaseDetails caseDetails, @NotNull CaseDataContent caseDataContent) {
-        copyProperties(caseDetails);
-
-        add(linkTo(methodOn(CaseController.class).createEvent(reference, caseDataContent)).withSelfRel());
-    }
-
     private void copyProperties(CaseDetails caseDetails) {
         this.reference = caseDetails.getReference().toString();
         this.jurisdiction = caseDetails.getJurisdiction();

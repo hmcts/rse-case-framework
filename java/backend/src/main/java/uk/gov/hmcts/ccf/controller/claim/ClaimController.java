@@ -11,6 +11,7 @@ import org.jooq.generated.tables.pojos.ClaimHistory;
 import org.jooq.generated.tables.records.ClaimEventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,7 +60,8 @@ public class ClaimController {
             .fetchInto(Claim.class);
 
         for (Claim claim : result) {
-            StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> statemachine = build(claim.claimId);
+            StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> statemachine = build();
+            statemachine.rehydrate(claim.claimId);
             claim.setAvailableEvents(statemachine.getAvailableActions(claim.state));
         }
 
@@ -76,20 +78,10 @@ public class ClaimController {
             .into(ClaimHistory.class);
     }
 
-    public ResponseEntity<String> createEvent(Long claimId,
-                                              ClaimEvent event,
-                                              JsonNode data,
-                                              String userId) {
-        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> statemachine = build(claimId);
-        StateMachine.TransitionContext context = new StateMachine.TransitionContext(userId, claimId);
-        statemachine.handleEvent(context, event, data);
-
-        return ResponseEntity.created(URI.create("/claims/" + claimId))
-            .body("");
-    }
-
-    public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build(long claimId) {
-        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(jooq,
+    @Bean
+    public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build() {
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(
+            "claims", ClaimEvent.class, jooq,
             CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
             CLAIM_EVENTS.SEQUENCE_NUMBER);
         result.initialState(ClaimState.Issued, this::onCreate)
@@ -97,7 +89,6 @@ public class ClaimController {
                 ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)
             .field(ConfirmService::getName)
             .field(ConfirmService::getRole);
-        result.rehydrate(claimId);
         return result;
     }
 

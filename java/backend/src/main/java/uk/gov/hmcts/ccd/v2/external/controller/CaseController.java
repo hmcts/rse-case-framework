@@ -2,6 +2,9 @@ package uk.gov.hmcts.ccd.v2.external.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 import lombok.SneakyThrows;
 import org.jooq.generated.enums.CaseState;
 import org.jooq.generated.enums.ClaimEvent;
@@ -47,6 +50,8 @@ public class CaseController {
     @Autowired
     UserProvider user;
 
+    private Map<String, StateMachine> statemachines;
+
     @GetMapping(
         path = "/cases/{caseId}",
         headers = {
@@ -60,6 +65,14 @@ public class CaseController {
         throw new RuntimeException();
     }
 
+    @Autowired
+    public CaseController(List<StateMachine> machines) {
+        this.statemachines = Maps.newHashMap();
+        for (StateMachine sm : machines) {
+            statemachines.put(sm.id, sm);
+        }
+    }
+
     @SneakyThrows
     @PostMapping(
         path = "/cases/{caseId}/events"
@@ -67,45 +80,36 @@ public class CaseController {
     @ResponseStatus(HttpStatus.CREATED) // To remove default 200 response from Swagger
     @SuppressWarnings("unchecked")
     @Transactional
-    public ResponseEntity<CaseResource> createEvent(@PathVariable("caseId") String caseId,
+    public ResponseEntity<CaseResource> createEvent(@PathVariable("caseId") long caseId,
                                                     @RequestBody final CaseDataContent content) {
         String json = new ObjectMapper().writeValueAsString(content.getData());
         JsonNode node = new ObjectMapper().readTree(json);
 
         String[] splits = content.getEventId().split("_");
-        String state;
-        if (splits[0].equalsIgnoreCase("cases")) {
-            state = handleCaseEvent(Long.parseLong(caseId), splits[1], node, user.getCurrentUserId());
-        } else {
-            state = handleClaimEvent(splits[1], Long.parseLong(splits[2]), node);
+        String machineId = splits[0];
+        StateMachine<?, ? extends Enum<?>, ?> machine = statemachines.get(machineId);
+        if (machine == null) {
+            return status(HttpStatus.NOT_FOUND).body(CaseResource.builder().build());
         }
+
+        String eventId = splits[1];
+        // Entity refers to the case unless specified.
+        long entityId = splits.length > 2 ? Long.parseLong(splits[2]) : caseId;
+
+        StateMachine.TransitionContext context = new StateMachine.TransitionContext(
+            user.getCurrentUserId(), entityId);
+
+        machine.rehydrate(entityId);
+
+        machine.handleEvent(context, eventId, node);
 
         CaseResource result = CaseResource.builder()
             .data(content.getData())
             .reference(content.getCaseReference())
             .jurisdiction("NFD")
-            .state(state)
+            .state(machine.getState().toString())
             .build();
         return status(HttpStatus.CREATED).body(result);
-    }
-
-    private String handleClaimEvent(String eventId, long claimId, JsonNode data) {
-        claimController.createEvent(claimId, ClaimEvent.valueOf(eventId), data, user.getCurrentUserId());
-        return "";
-    }
-
-    private String handleCaseEvent(long caseId, String eventId, JsonNode data, String userId) {
-        StateMachine<CaseState, Event, EventsRecord> statemachine = stateMachineSupplier.build();
-
-        StateMachine.TransitionContext context = new StateMachine.TransitionContext(
-            userId, caseId);
-        Event event = Event.valueOf(eventId);
-
-        statemachine.rehydrate(caseId);
-
-        statemachine.handleEvent(context, event, data);
-
-        return statemachine.getState().getLiteral();
     }
 
     @PostMapping(
