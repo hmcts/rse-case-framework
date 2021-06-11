@@ -32,8 +32,8 @@ import uk.gov.hmcts.ccd.v2.internal.resource.CaseViewResource;
 import uk.gov.hmcts.ccf.CaseViewBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.TabBuilder;
-import uk.gov.hmcts.ccf.controller.claim.ClaimController;
-import uk.gov.hmcts.ccf.controller.kase.CaseController;
+import uk.gov.hmcts.unspec.statemachine.ClaimMachine;
+import uk.gov.hmcts.unspec.statemachine.CaseMachine;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 import java.time.LocalDateTime;
@@ -54,7 +54,7 @@ public class UICaseController {
     private DefaultDSLContext jooq;
 
     @Autowired
-    private ClaimController claimController;
+    private ClaimMachine claimController;
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;
@@ -89,13 +89,13 @@ public class UICaseController {
 
     @SneakyThrows
     private CaseViewBuilder buildParties(String caseId, CaseViewBuilder builder) {
-        List<CaseController.CaseParty> parties =
+        List<CaseMachine.CaseParty> parties =
             jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
                 .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
                 .where(PARTIES.CASE_ID.eq(Long.valueOf(caseId)))
                 .orderBy(PARTIES.CASE_ID.asc())
-                .fetchInto(CaseController.CaseParty.class);
+                .fetchInto(CaseMachine.CaseParty.class);
 
         builder.newTab("Parties", "Parties")
             .label(renderTemplate(
@@ -120,8 +120,8 @@ public class UICaseController {
 
     @SneakyThrows
     private CaseViewBuilder buildClaims(String caseId, CaseViewBuilder builder) {
-        List<ClaimController.Claim> claims = claimController.getClaims(caseId);
-        for (ClaimController.Claim claim : claims) {
+        List<ClaimMachine.Claim> claims = claimController.getClaims(caseId);
+        for (ClaimMachine.Claim claim : claims) {
             String tabName = getClaimName(claim.getParties());
             TabBuilder tab = builder.newTab(tabName, tabName);
 
@@ -148,7 +148,7 @@ public class UICaseController {
         return builder;
     }
 
-    private String getClaimName(ClaimController.ClaimParties parties) {
+    private String getClaimName(ClaimMachine.ClaimParties parties) {
         return parties.getClaimants().get(0).name() + " vs.";
     }
 

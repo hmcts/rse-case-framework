@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf.controller.kase;
+package uk.gov.hmcts.unspec.statemachine;
 
 import com.google.common.collect.Sets;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 import uk.gov.hmcts.unspec.dto.Party;
 
@@ -38,7 +39,7 @@ import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 
 @RestController
 @RequestMapping("/web/cases")
-public class CaseController {
+public class CaseMachine {
 
     @Autowired
     CaseHandlerImpl stateMachineSupplier;

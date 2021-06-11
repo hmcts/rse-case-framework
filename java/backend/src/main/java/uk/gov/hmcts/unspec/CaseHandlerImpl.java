@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.controller.kase.CaseController;
+import uk.gov.hmcts.unspec.statemachine.CaseMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Individual;
@@ -44,7 +44,7 @@ public class CaseHandlerImpl {
     DefaultDSLContext jooq;
 
     @Autowired
-    CaseController caseController;
+    CaseMachine caseController;
 
     @Bean
     public StateMachine<CaseState, Event, EventsRecord> buildCase() {
@@ -74,9 +74,9 @@ public class CaseHandlerImpl {
     }
 
     private void buildAddClaimEvent(Long caseId, EventBuilder<AddClaim> builder) {
-        List<CaseController.CaseParty> parties = caseController.getParties(String.valueOf(caseId));
+        List<CaseMachine.CaseParty> parties = caseController.getParties(String.valueOf(caseId));
         Map<Long, String> options = Maps.newHashMap();
-        for (CaseController.CaseParty party : parties) {
+        for (CaseMachine.CaseParty party : parties) {
             options.put(party.getPartyId(), party.getData().name());
         }
 

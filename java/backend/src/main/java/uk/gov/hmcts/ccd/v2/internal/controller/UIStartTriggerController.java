@@ -3,13 +3,6 @@ package uk.gov.hmcts.ccd.v2.internal.controller;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
-import org.jooq.Statement;
-import org.jooq.generated.enums.CaseState;
-import org.jooq.generated.enums.ClaimEvent;
-import org.jooq.generated.enums.ClaimState;
-import org.jooq.generated.enums.Event;
-import org.jooq.generated.tables.records.ClaimEventsRecord;
-import org.jooq.generated.tables.records.EventsRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +14,6 @@ import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseUpdateViewEventResource;
 import uk.gov.hmcts.ccf.StateMachine;
-import uk.gov.hmcts.ccf.controller.claim.ClaimController;
-import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
 @RestController
 @RequestMapping(path = "/data/internal")

@@ -6,10 +6,6 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
-import org.jooq.generated.enums.CaseState;
-import org.jooq.generated.enums.ClaimEvent;
-import org.jooq.generated.enums.Event;
-import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +23,10 @@ import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.external.resource.CaseResource;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.ccf.config.UserProvider;
-import uk.gov.hmcts.ccf.controller.claim.ClaimController;
+import uk.gov.hmcts.unspec.statemachine.ClaimMachine;
 import uk.gov.hmcts.unspec.CaseHandlerImpl;
 
-import static org.jooq.generated.Tables.CASES_WITH_STATES;
-import static org.jooq.generated.Tables.EVENTS;
+
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController(value = "CCDController")
@@ -42,7 +37,7 @@ public class CaseController {
     CaseHandlerImpl stateMachineSupplier;
 
     @Autowired
-    ClaimController claimController;
+    ClaimMachine claimController;
 
     @Autowired
     DefaultDSLContext jooq;

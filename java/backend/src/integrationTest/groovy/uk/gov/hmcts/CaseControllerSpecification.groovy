@@ -21,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 import uk.gov.hmcts.ccf.StateMachine
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.kase.CaseController
+import uk.gov.hmcts.unspec.statemachine.CaseMachine
 import uk.gov.hmcts.unspec.CaseHandlerImpl
 import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.event.CloseCase
@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CaseControllerSpecification extends BaseSpringBootSpec {
 
     @Autowired
-    private CaseController controller
+    private CaseMachine controller
 
     @Autowired
     private UICaseController uiCaseController;
@@ -96,7 +96,7 @@ class CaseControllerSpecification extends BaseSpringBootSpec {
         def json = mockMvc.perform(get("/web/cases/" + result.getId()).with(oidcLogin()))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-        CaseController.CaseActions a = new ObjectMapper().readValue(json, CaseController.CaseActions.class)
+        CaseMachine.CaseActions a = new ObjectMapper().readValue(json, CaseMachine.CaseActions.class)
 
         expect:
         a.getState() == CaseState.Created

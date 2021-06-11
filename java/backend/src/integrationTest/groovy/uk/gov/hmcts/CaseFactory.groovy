@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import uk.gov.hmcts.ccf.controller.kase.ApiEventCreation
-import uk.gov.hmcts.ccf.controller.kase.CaseController
+import uk.gov.hmcts.unspec.statemachine.CaseMachine
 import uk.gov.hmcts.unspec.dto.Company
 import uk.gov.hmcts.unspec.dto.Organisation
 import uk.gov.hmcts.unspec.event.CreateClaim
@@ -17,7 +17,7 @@ import static org.jooq.generated.Tables.USERS
 class CaseFactory {
 
     @Autowired
-    CaseController controller;
+    CaseMachine controller;
 
     @Autowired
     DefaultDSLContext jooq;
@@ -29,7 +29,7 @@ class CaseFactory {
         return id;
     }
 
-    ResponseEntity<CaseController.CaseActions> CreateCase(String userId = createUser()) {
+    ResponseEntity<CaseMachine.CaseActions> CreateCase(String userId = createUser()) {
         def event = CreateClaim.builder()
                 .claimantReference("Foo")
                 .defendantReference("Bar")

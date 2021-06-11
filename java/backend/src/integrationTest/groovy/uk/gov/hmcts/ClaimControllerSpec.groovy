@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.jooq.generated.enums.ClaimEvent
 import org.jooq.generated.enums.ClaimState
 import org.jooq.generated.tables.records.ClaimEventsRecord
-import org.jooq.generated.tables.records.ClaimsRecord
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.hmcts.ccf.StateMachine
-import uk.gov.hmcts.ccf.controller.claim.ClaimController
+import uk.gov.hmcts.unspec.statemachine.ClaimMachine
 import uk.gov.hmcts.unspec.dto.ConfirmService
 
 @SpringBootTest
@@ -21,7 +20,7 @@ class ClaimControllerSpec extends BaseSpringBootSpec {
     CaseFactory factory
 
     @Autowired
-    ClaimController controller
+    ClaimMachine controller
 
     @Autowired
     StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> stateMachine;
@@ -30,7 +29,7 @@ class ClaimControllerSpec extends BaseSpringBootSpec {
         given:
         def response = factory.CreateCase().getBody()
         def claims = controller.getClaims(String.valueOf(response.getId()))
-        ClaimController.Claim claim = claims[0]
+        ClaimMachine.Claim claim = claims[0]
 
         expect: "Case has single claim"
         claims.size() == 1

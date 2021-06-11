@@ -1,4 +1,4 @@
-package uk.gov.hmcts.ccf.controller.claim;
+package uk.gov.hmcts.unspec.statemachine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,7 @@ import org.jooq.generated.tables.records.ClaimEventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +32,8 @@ import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
 import static org.jooq.generated.Tables.CLAIM_EVENTS;
 import static org.jooq.generated.Tables.CLAIM_HISTORY;
 
-@RestController
-@RequestMapping("/web")
-public class ClaimController {
+@Configuration
+public class ClaimMachine {
 
     @Autowired
     DefaultDSLContext jooq;
@@ -50,7 +50,20 @@ public class ClaimController {
         Set<ClaimEvent> availableEvents;
     }
 
-    @GetMapping(path = "/cases/{caseId}/claims")
+    @Bean
+    public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build() {
+        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(
+            "claims", ClaimEvent.class, jooq,
+            CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
+            CLAIM_EVENTS.SEQUENCE_NUMBER);
+        result.initialState(ClaimState.Issued, this::onCreate)
+            .addTransition(ClaimState.Issued,
+                ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)
+            .field(ConfirmService::getName)
+            .field(ConfirmService::getRole);
+        return result;
+    }
+
     public List<Claim> getClaims(@PathVariable("caseId") String caseId) {
         List<Claim> result = jooq.select()
             .from(CLAIMS_WITH_STATES)
@@ -68,7 +81,6 @@ public class ClaimController {
         return result;
     }
 
-    @GetMapping(path = "/claims/{claimId}/events")
     public List<ClaimHistory> getClaimEvents(@PathVariable("claimId") String claimId) {
         return jooq.select()
             .from(CLAIM_HISTORY)
@@ -78,19 +90,6 @@ public class ClaimController {
             .into(ClaimHistory.class);
     }
 
-    @Bean
-    public StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> build() {
-        StateMachine<ClaimState, ClaimEvent, ClaimEventsRecord> result = new StateMachine<>(
-            "claims", ClaimEvent.class, jooq,
-            CLAIM_EVENTS, CLAIM_EVENTS.CLAIM_ID, CLAIM_EVENTS.STATE, CLAIM_EVENTS.ID, CLAIM_EVENTS.USER_ID,
-            CLAIM_EVENTS.SEQUENCE_NUMBER);
-        result.initialState(ClaimState.Issued, this::onCreate)
-            .addTransition(ClaimState.Issued,
-                ClaimState.ServiceConfirmed, ClaimEvent.ConfirmService, this::confirmService)
-            .field(ConfirmService::getName)
-            .field(ConfirmService::getRole);
-        return result;
-    }
 
     public void onCreate(StateMachine.TransitionContext transitionContext, CreateClaim c) {
 
