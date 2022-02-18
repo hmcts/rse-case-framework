@@ -47,7 +47,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: springBootVersion
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation group: 'org.springframework.cloud', name:'spring-cloud-starter-openfeign', version: '3.0.1'
+    implementation group: 'org.springframework.cloud', name:'spring-cloud-starter-openfeign', version: '3.1.1'
     implementation "io.github.openfeign:feign-httpclient:11.0"
     implementation "io.github.openfeign:feign-jackson:11.0"
 
